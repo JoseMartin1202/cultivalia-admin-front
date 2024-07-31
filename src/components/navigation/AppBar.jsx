@@ -1,5 +1,4 @@
 import {React, useState, useEffect } from 'react'
-import ImagenP from "../../assets/PerfilPrueba.png";
 import { Icons } from '../../constants/Icons';
 import  { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom';
 import { useMediaQuery } from 'react-responsive';

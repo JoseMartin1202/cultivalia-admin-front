@@ -33,4 +33,9 @@
   background-color: #49C27A;
 }
 
+.total-center{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 

@@ -2,7 +2,8 @@ import {
     FaFileContract as Contract,
     FaClock as Wait,
     FaCircleCheck as Accepted,
-    FaCircleXmark as Refused
+    FaCircleXmark as Refused,
+    FaCircleUser as User
 } from "react-icons/fa6";
 
 import {
@@ -18,7 +19,9 @@ import {
     FaHome as Home,
     FaSlidersH as Filter,
     FaTrashAlt as Trash,
-    FaMoneyBillWave as Prices
+    FaMoneyBillWave as Prices,
+    FaUser as User2,
+    FaLock as Password
 } from "react-icons/fa";
 
 import {
@@ -41,6 +44,7 @@ export const Icons={
     Wait,
     Accepted,
     Refused,
+    User,
     Report,
     Properties,
     Current,
@@ -53,5 +57,7 @@ export const Icons={
     Gallery,
     Add,
     Prices,
-    Edit
+    User2,
+    Edit,
+    Password
 }

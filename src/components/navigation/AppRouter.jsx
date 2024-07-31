@@ -9,7 +9,7 @@ import Login from '../../screens/Auth/Login'
 
 export const appRoutes={
     main: [
-        { exact: true, path: '*', element: <Navigate to="/home" /> },
+        { exact: true, path: '*', element: <Navigate to="/login" /> },
         { path: '/home', element: <HomeScreen/> },
         { path: '/contract', element: <Contract/> },
         { path: '/report', element: <Report/> },
