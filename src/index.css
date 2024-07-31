@@ -10,3 +10,27 @@
   flex-direction: row;
   display: flex;
 }
+
+@media screen and (max-width: 639.9px) {
+    #root{
+      flex-direction: column;
+    }
+}
+
+.custom-table{
+  width: 100%;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.custom-table th{
+  width: 25%;
+  height: 30px;
+  background-color: #E2E8F0;
+}
+
+.navItem:hover{
+  background-color: #49C27A;
+}
+
+
