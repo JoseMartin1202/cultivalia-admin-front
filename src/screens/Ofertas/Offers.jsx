@@ -4,14 +4,18 @@ import Filter from '../../components/filter';
 import {Filters}  from '../../constants/datasFilter';
 import '../../index.css'
 import { Columns } from '../../constants/ColumsDataTable';
+import { Icons } from '../../constants/Icons';
 
-export const HomeScreen = () => {
-    return (
+export const Offers=()=>{
+    return(
         <div className='sm:ml-14 w-full h-full flex-col bg-[#F1F5F9] p-2'>
             <div className='w-full flex items-start'>
-                <div className='flex flex-row gap-4 max-sm:flex-col items-center w-full'>
+                <div className='flex flex-row gap-4 max-md:flex-col items-center w-full'>
                     <InputSearch/>
-                    <Filter data={Filters.HomeFilterData}/> 
+                    <div className='flex flex-row md:w-auto w-full gap-2 sm:min-w-fit'>
+                        <Filter data={Filters.OffersFilterData}/> 
+                        <button><Icons.Add className='size-11 text-[#6B9DFF]'/></button>
+                    </div>
                 </div>
             </div>
             <div>
@@ -39,5 +43,5 @@ export const HomeScreen = () => {
         </div>
     );
 }
-// 
-export default HomeScreen
+
+export default Offers

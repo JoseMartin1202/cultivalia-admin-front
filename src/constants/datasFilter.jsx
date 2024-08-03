@@ -13,7 +13,7 @@ const OffersFilterData = [
     { name: 'Finalizadas', value: 'finalizadas' },
 ];
 
-const PriceFilterData = [
+const PricesFilterData = [
     { name: 'Todos', value: 'todas' },
     { name: 'Actuales', value: 'actuales' },
     { name: 'No actuales', value: 'noActuales' }
@@ -22,5 +22,5 @@ const PriceFilterData = [
   export const Filters={
     HomeFilterData,
     OffersFilterData,
-    PriceFilterData
+    PricesFilterData
   }

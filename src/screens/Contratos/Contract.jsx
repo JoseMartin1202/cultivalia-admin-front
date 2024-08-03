@@ -5,11 +5,11 @@ import {Filters}  from '../../constants/datasFilter';
 import '../../index.css'
 import { Columns } from '../../constants/ColumsDataTable';
 
-export const HomeScreen = () => {
-    return (
+export const Contract=()=>{
+    return(
         <div className='sm:ml-14 w-full h-full flex-col bg-[#F1F5F9] p-2'>
             <div className='w-full flex items-start'>
-                <div className='flex flex-row gap-4 max-sm:flex-col items-center w-full'>
+                <div className='flex flex-row gap-4 max-sm:flex-col items-center w-full max-sm:pe-2'>
                     <InputSearch/>
                     <Filter data={Filters.HomeFilterData}/> 
                 </div>
@@ -39,5 +39,5 @@ export const HomeScreen = () => {
         </div>
     );
 }
-// 
-export default HomeScreen
+
+export default Contract

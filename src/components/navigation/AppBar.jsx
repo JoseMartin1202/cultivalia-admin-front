@@ -46,32 +46,32 @@ export const AppBar = () => {
     return(
         <div className='sm:absolute sm:z-10 font-[arial] sm:min-w-fit sm:h-full bg-[#279E54] flex flex-col text-white max-sm:flex-row max-sm:w-full max-sm:h-fit' onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
             <div className='flex w-full flex-col items-center max-sm:flex-row sm:h-full max-sm:h-fit overflow-auto'>
-                <Link to="/home" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(0)}`} onClick={()=>setSelectedOption(0)} onMouseEnter={()=>handleMouse(0)} onMouseLeave={()=>handleMouse(0)}>
+                <Link to="/supervisiones" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(0)}`} onClick={()=>setSelectedOption(0)} onMouseEnter={()=>handleMouse(0)} onMouseLeave={()=>handleMouse(0)}>
                     <Icons.Home className='size-8'/>
                     {isHover && !isSmall && <span>Supervisiones</span>}
                     {hoverSmall[0] && <span>Supervisiones</span>}
                 </Link>
-                <Link to="/contract" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(1)}`} onClick={()=>setSelectedOption(1)} onMouseEnter={()=>handleMouse(1)} onMouseLeave={()=>handleMouse(1)}>
+                <Link to="/predios" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(1)}`} onClick={()=>setSelectedOption(1)} onMouseEnter={()=>handleMouse(1)} onMouseLeave={()=>handleMouse(1)}>
                     <Icons.Properties className='size-8'/>
                     {isHover && !isSmall && <span>Predios</span>}
                     {hoverSmall[1] && <span>Predios</span>}
                 </Link>
-                <Link to="/contract" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(2)}`} onClick={()=>setSelectedOption(2)} onMouseEnter={()=>handleMouse(2)} onMouseLeave={()=>handleMouse(2)}>
+                <Link to="/galeria" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(2)}`} onClick={()=>setSelectedOption(2)} onMouseEnter={()=>handleMouse(2)} onMouseLeave={()=>handleMouse(2)}>
                     <Icons.Gallery className='size-8'/>
                     {isHover && !isSmall && <span>Galeria</span>}
                     {hoverSmall[2] && <span>Galeria</span>}
                 </Link>
-                <Link to="/report" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(3)}`} onClick={()=>setSelectedOption(3)} onMouseEnter={()=>handleMouse(3)} onMouseLeave={()=>handleMouse(3)}>
+                <Link to="/precios" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(3)}`} onClick={()=>setSelectedOption(3)} onMouseEnter={()=>handleMouse(3)} onMouseLeave={()=>handleMouse(3)}>
                     <Icons.Prices className='size-8'/>
                     {isHover && !isSmall && <span>Precios</span>}
                     {hoverSmall[3] && <span>Precios</span>}
                 </Link>
-                <Link to="/contract" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(4)}`} onClick={()=>setSelectedOption(4)} onMouseEnter={()=>handleMouse(4)} onMouseLeave={()=>handleMouse(4)}>
+                <Link to="/contratos" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(4)}`} onClick={()=>setSelectedOption(4)} onMouseEnter={()=>handleMouse(4)} onMouseLeave={()=>handleMouse(4)}>
                     <Icons.Contract className='size-8'/>
                     {isHover && !isSmall && <span>Contratos</span>}
                     {hoverSmall[4] && <span>Contratos</span>}
                 </Link>
-                <Link to="/contract" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(5)}`} onClick={()=>setSelectedOption(5)} onMouseEnter={()=>handleMouse(5)} onMouseLeave={()=>handleMouse(5)}>
+                <Link to="/ofertas" className={`navItem sm:w-full flex flex-row items-center gap-2 p-3 ${selected(5)}`} onClick={()=>setSelectedOption(5)} onMouseEnter={()=>handleMouse(5)} onMouseLeave={()=>handleMouse(5)}>
                     <Icons.Offers className='size-8'/>
                     {isHover && !isSmall && <span>Ofertas</span>}
                     {hoverSmall[5] && <span>Ofertas</span>}

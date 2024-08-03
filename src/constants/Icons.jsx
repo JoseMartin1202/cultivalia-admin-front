@@ -21,7 +21,9 @@ import {
     FaTrashAlt as Trash,
     FaMoneyBillWave as Prices,
     FaUser as User2,
-    FaLock as Password
+    FaLock as Password,
+    FaArrowAltCircleLeft as ArrowBack,
+    FaImage as Image
 } from "react-icons/fa";
 
 import {
@@ -32,7 +34,8 @@ import {
     IoIosSearch as Search,
     IoIosPricetags as Offers,
     IoMdPhotos as Gallery,
-    IoIosAddCircle as Add
+    IoIosAddCircle as Add,
+    IoMdAdd as AddGallery
 } from "react-icons/io";
 
 import {
@@ -59,5 +62,8 @@ export const Icons={
     Prices,
     User2,
     Edit,
-    Password
+    Password,
+    ArrowBack,
+    Image,
+    AddGallery
 }

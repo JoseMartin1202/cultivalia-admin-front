@@ -21,10 +21,10 @@
   width: 100%;
   text-align: center;
   margin-top: 20px;
+  background-color: white;
 }
 
 .custom-table th{
-  width: 25%;
   height: 30px;
   background-color: #E2E8F0;
 }
