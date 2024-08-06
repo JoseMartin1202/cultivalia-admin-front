@@ -35,7 +35,8 @@ import {
     IoIosPricetags as Offers,
     IoMdPhotos as Gallery,
     IoIosAddCircle as Add,
-    IoMdAdd as AddGallery
+    IoMdAdd as AddGallery,
+    IoIosArrowUp as ArrowUp
 } from "react-icons/io";
 
 import {
@@ -65,5 +66,6 @@ export const Icons={
     Password,
     ArrowBack,
     Image,
-    AddGallery
+    AddGallery,
+    ArrowUp
 }
