@@ -27,7 +27,8 @@ import {
 } from "react-icons/fa";
 
 import {
-    FiLogOut as LogOut
+    FiLogOut as LogOut,
+    FiAlertTriangle as Alert
 } from "react-icons/fi";
 
 import { 
@@ -67,5 +68,6 @@ export const Icons={
     ArrowBack,
     Image,
     AddGallery,
-    ArrowUp
+    ArrowUp,
+    Alert
 }

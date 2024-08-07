@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react'
-import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import AppBar from './AppBar'
 import HomeScreen from '../../screens/Home/HomeScreen'
 import Contract from '../../screens/Contratos/Contract'
@@ -30,14 +30,14 @@ const Router = () => {
     const routes =appRoutes.main
     
     return (
-        <BrowserRouter>
+        <>
             <AppBar />
             <Routes>
                 {routes.map((r, i) =>
                     <Route key={`r_${i}`} {...r} />
                 )}
             </Routes>
-        </BrowserRouter>
+        </>
     )
 }
 
