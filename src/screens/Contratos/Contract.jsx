@@ -18,11 +18,7 @@ export const Contract=()=>{
                 <table className="custom-table font-[Roboto]">
                     <thead>
                         <tr>
-                            {Columns.ColumnsDataHome.map((col, i) =>
-                                <th className='border-b-2 border-black' key={`TH_${i}`}>
-                                    <p>{col}</p>
-                                </th>
-                            )}
+                           
                         </tr>
                     </thead>
                     <tbody>
@@ -32,7 +28,6 @@ export const Contract=()=>{
                             <td>dffd</td>
                             <td>dffd</td>
                         </tr>
-                        
                     </tbody>
                 </table>
             </div>

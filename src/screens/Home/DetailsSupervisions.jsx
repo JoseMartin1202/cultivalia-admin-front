@@ -1,81 +1,144 @@
-import {React,useEffect,useState } from 'react'
-import '../../index.css'
+import { React, useEffect, useState } from 'react'
+import { useNavigate, useParams } from 'react-router-dom';
 import { Icons } from '../../constants/Icons';
+import '../../index.css'
+import Loader from '../../components/loader';
+import useSupervision from '../../Server/Supervisions/SupervisionProvider';
+import { useFormik } from 'formik'
+import * as Yup from 'yup';
+import { valueFromId } from '../../constants/functions';
 
-export const DetailsSupervisions=()=>{
-    const data=["sdadas"]
-    const [value, setValue] = useState('');
-    const [selectedOption, setSelectedOption] = useState('');
+export const DetailsSupervisions = () => {
+    const navigate = useNavigate();
+    const { supervisionId } = useParams();
+    const { supervision, supervisionStatus, updateSupervision } = useSupervision(supervisionId);
+    const back = import.meta.env.VITE_BACKEND_HOST;
     const [bgOption, setbgOption] = useState('');
 
-    const handleChange = (event) => {
-        setValue(event.target.value);
-    };
+    const formik = useFormik({
+        initialValues: {
+            comentaios: '',
+            estado: '',
+        },
+        validationSchema: Yup.object().shape({
+          comentaios: Yup.string().required('Requerido'),
+          estado: Yup.string().required('Requerido')
+        }),
+        onSubmit: async (values) => {
+          try {
+            updateSupervision(values)
+          } catch (e) {
+            notify(getErrorMessage(e), true)
+          }
+        }
+    })
 
-    const handleChangeOption = (event) => {
-        setSelectedOption(event.target.value);
-    };
-    
     useEffect(() => {
-        if (selectedOption=='Aceptado') {
-            setbgOption('bg-[#49C27A]/50');
-        }else if(selectedOption=='Rechazado'){
+        if (supervision) {
+            formik.setValues({
+                comentaios: supervision.comentaios,
+                estado: supervision.estado
+            });
+        }
+    }, [supervision]);
+
+    const handleChange = (e) => {
+        formik.handleChange(e)
+    }
+
+    const error = valueFromId("comentaios", formik.errors)
+    const touched = valueFromId("comentaios", formik.touched)
+    const showError = error && (touched || formik.submitCount > 0);
+
+    useEffect(() => {
+        if (formik.values.estado === 'Validada') {
+            setbgOption('bg-[#49C27A]/60');
+        } else if (formik.values.estado === 'Rechazada') {
             setbgOption('bg-[#edb3b3]');
-        }else{
+        } else {
             setbgOption('bg-[#FFFFFF]');
         }
-      }, [selectedOption]);
+    }, [formik.values.estado]);
 
-    return(
-        <div className='sm:ml-14 size-full gap-4 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] max-sm:overflow-y-auto max-sm:mb-2'>
-            <div className='flex flex-row w-full h-full gap-4 max-sm:flex-col-reverse'>
-                <div className='flex flex-col w-1/2 gap-4 h-full max-sm:flex-row max-sm:w-full'>
-                    <div className='flex flex-col flex-1'>
+
+    if (supervisionStatus === 'loading' || !supervision) {
+        return <Loader />;
+    }
+
+    return (
+        <form onSubmit={formik.handleSubmit} className='sm:ml-14 size-full gap-4 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] max-sm:overflow-y-auto max-sm:mb-2 h-screen'>
+            <div className='flex flex-row w-full gap-4 max-md:flex-col-reverse flex-grow '>
+                <div className='flex flex-col w-1/2 gap-4 h-full max-md:flex-row max-md:w-full max-md:h-1/2'>
+                    <div className='flex flex-col flex-1 max-md:max-w-[50%]'>
                         <p className='font-bold text-lg'>Descripción:</p>
-                        <div className='size-full shadow-lg shadow-black/30 bg-white rounded-2xl p-2 overflow-y-auto'><span>{data}</span></div>
+                        <div className='size-full shadow-lg shadow-black/30 bg-white rounded-2xl p-2 overflow-y-auto'>
+                            <span>{supervision?.supervisar}</span>
+                        </div>
                     </div>
                     <div className='flex flex-col flex-1'>
-                        <p htmlFor="multiline-input" className='font-bold text-lg'>Comentarios:</p>
+                        <p htmlFor="comments" className='font-bold text-lg'>Comentarios:</p>
                         <textarea
-                            id="multiline-input"
-                            value={value}
+                            id="comentaios"
+                            name="comentaios"
+                            value={formik?.values.comentaios || ''}
                             onChange={handleChange}
-                            className='p-2 w-full h-full resize-none border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500'
-                            placeholder="Escribe tus comentarios aquí..."/>
+                            className='p-2 w-full h-full resize-none border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 overflow-y-auto'
+                            placeholder="Escribe tus comentarios aquí..."
+                        />
+                         {showError &&
+                        <div className='h-4 pt-4'>
+                            <p className='font-normal text-lg flex items-center gap-1 h-full italic text-red-500 '>
+                                <Icons.Alert size="14px" />
+                                {error}
+                            </p>
+                        </div>}
                     </div>
                 </div>
-                <div className='flex flex-col w-1/2 h-full shadow-lg shadow-black/30 p-2 bg-white rounded-2xl max-sm:w-full overflow-y-auto'>
-                    <div id='Credencial'>
-                        {data}
+                <div className='relative w-1/2 shadow-lg shadow-black/30 bg-white rounded-2xl max-md:w-full max-md:h-1/2 overflow-y-auto'>
+                    <div className='absolute w-full top-4 flex flex-col items-center gap-2 pb-4 '>
+                        <img className='size-[90%]' src={back + supervision?.entidad.credencialFrente} />
+                        <img className='size-[90%]' src={back + supervision?.entidad.credencialReverso} />
+                        <div className='size-[90%] border-2 border-gray-300 px-2 rounded-lg text-lg'>
+                            <p className='font-bold text-3xl text-center'>RESUMEN GENERAL</p>
+                            <p><span className='font-bold'>Nombre completo:</span> {supervision?.entidad.nombre + " " + supervision?.entidad.apellidos}</p>
+                            <p><span className='font-bold'>Sexo:</span> {supervision?.entidad.sexo == "M" ? <span>Masculino</span> : <span>Femenino</span>}</p>
+                            <p><span className='font-bold'>Telefono:</span> {supervision?.entidad.telefono}</p>
+                            <p><span className='font-bold'>Correo:</span> {supervision?.entidad.correo}</p>
+                            <p><span className='font-bold'>Nacionalidad:</span> {supervision?.entidad.nacionalidad}</p>
+                            <p><span className='font-bold'>Dirección:</span> {supervision?.entidad.direccion +", colonia "+supervision?.entidad.colonia+". CP. "+supervision?.entidad.codigoPostal}</p>
+                            <p><span className='font-bold'>Ciudad:</span> {supervision?.entidad.ciudad}</p>
+                            <p><span className='font-bold'>Tipo de movimiento:</span> {supervision?.tipoMovimiento.nombre}</p>
+                            <p><span className='font-bold'>Fecha de registro:</span> {supervision?.fechaRegistro.split('T')[0]}</p>
+                        </div>
                     </div>
-                    <div>{data}</div>
                 </div>
             </div>
-            <div className='w-full sm:h-auto flex flex-row gap-4 items-center max-sm:flex-col'>
+            <div className='w-full h-[40px] min-h-[40px] flex flex-row gap-4 items-center max-sm:flex-col'>
                 <div className='flex flex-row w-full sm:w-[40%] items-center gap-2'>
                     <p className='font-bold text-lg'>Estado:</p>
-                    <div className='relative size-full text-xl min-w-fit'>
+                    <div className='relative w-full min-w-fit'>
                         <select
-                        id="custom-select"
-                        value={selectedOption}
-                        onChange={handleChangeOption}
-                        className={`w-full text appearance-none block size-full border-gray-300 border-[1px] py-2 px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 ${bgOption}`}
+                            id="estado"
+                            value={formik?.values.estado}
+                            onChange={formik.handleChange}
+                            onBlur={formik.handleBlur}
+                            className={`size-full py-2 appearance-none block border-gray-300 border-[1px] px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 ${bgOption}`}
                         >
-                            <option className='bg-white' value="Aceptado">Aceptado</option>
-                            <option className='bg-white' value="Rechazado" >Rechazado</option>
                             <option className='bg-white' value="Pendiente">Pendiente</option>
+                            <option className='bg-white' value="Validada">Validada</option>
+                            <option className='bg-white' value="Rechazada" >Rechazada</option>
                         </select>
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                            <Icons.ArrowUp className='size-[80%] max-md:size-[60%]'/>
+                            <Icons.ArrowUp className='size-[80%]' />
                         </div>
                     </div>
                 </div>
                 <div className='flex flex-row size-full sm:w-[60%] gap-4'>
-                    <button className='bg-[#FFD34B] size-full max-sm:py-2 rounded-2xl text-xl font-bold'>Guardar</button>
-                    <button className='bg-[#CBD5E1] size-full rounded-2xl text-xl font-bold'>Cancelar</button>
+                    <button className='bg-[#FFD34B] h-full flex-1 max-sm:py-2 rounded-2xl text-xl flex total-center font-bold' type='submit'>Guardar</button>
+                    <button className='bg-[#CBD5E1] h-full flex-1 rounded-2xl text-xl font-bold flex total-center' type='button' onClick={() => { navigate(-1); }}>Cancelar</button>
                 </div>
             </div>
-        </div>
+        </form>
     );
 }
 

@@ -3,14 +3,14 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAxios } from '../../context/AxiosContext';
 import { useApp } from '../../context/AppContext';
 import { getErrorMessage } from '../../constants/functions';
-
-const HOST = import.meta.env.VITE_BACKEND_HOST;
+import { useNavigate } from 'react-router-dom'
 
 const useSession = () => {
 
   const queryClient = useQueryClient();
   const { notify } = useApp();
   const { myAxios } = useAxios();
+  const navigate = useNavigate()
 
   /** Functions */
 
@@ -30,7 +30,7 @@ const useSession = () => {
     if (!refresh_token) {
       throw new Error('Logout error')
     }
-    const res = await myAxios.post(`${HOST}/logout/`, {
+    const res = await myAxios.post(`auth/logout/`, {
       refresh: refresh_token
     })
     return res.data
@@ -50,10 +50,12 @@ const useSession = () => {
     mutationFn: postLogin,
     onSuccess: (newUser) => {
       localStorage.setItem('auth', JSON.stringify(newUser));
-      queryClient.setQueryData(['session'], newUser)
-      notify('Welcome back!')
+      queryClient.setQueryData(['session'], newUser);
+      navigate('/supervisiones');
+      notify('¡Bienvenido!')
     },
     onError: (e) => {
+      //console.log(getErrorMessage(e))
       notify(getErrorMessage(e), true)
     }
   })
@@ -63,14 +65,16 @@ const useSession = () => {
     onSuccess: () => {
       localStorage.removeItem('auth')
       queryClient.setQueryData(['session'], null)
-      queryClient.removeQueries(['member'])
-      notify('See you soon!')
+      queryClient.clear()
+      notify('¡Nos vemos!')
+      navigate('/login') 
     },
     onError: (e) => {
       localStorage.removeItem('auth')
       queryClient.setQueryData(['session'], null)
-      queryClient.removeQueries(['member'])
+      queryClient.clear()
       notify(getErrorMessage(e), true)
+      navigate('/login') 
     }
   })
 

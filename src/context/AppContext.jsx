@@ -1,4 +1,4 @@
-import React, { createContext, useContext} from 'react';
+import React, { createContext, useContext, useState} from 'react';
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -11,6 +11,7 @@ export const useApp = () => {
 
 export const AppProvider = ({ children }) => {
 
+    const [filterState, setFilterState] = useState('Pendiente');
     const notify = (message, error = false) => {
         let options = {
             position: "bottom-right",
@@ -28,6 +29,8 @@ export const AppProvider = ({ children }) => {
     return (
         <AppContext.Provider value={{
             notify,
+            filterState,
+            setFilterState,
         }}>
             {children}
             <ToastContainer />

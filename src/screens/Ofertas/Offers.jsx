@@ -6,7 +6,7 @@ import '../../index.css'
 import { Columns } from '../../constants/ColumsDataTable';
 import { Icons } from '../../constants/Icons';
 
-export const Offers=()=>{
+ const Offers=()=>{
     return(
         <div className='sm:ml-14 w-full h-full flex-col bg-[#F1F5F9] p-2'>
             <div className='w-full flex items-start'>
@@ -22,11 +22,7 @@ export const Offers=()=>{
                 <table className="custom-table font-[Roboto]">
                     <thead>
                         <tr>
-                            {Columns.ColumnsDataHome.map((col, i) =>
-                                <th className='border-b-2 border-black' key={`TH_${i}`}>
-                                    <p>{col}</p>
-                                </th>
-                            )}
+                          
                         </tr>
                     </thead>
                     <tbody>

@@ -9,7 +9,6 @@ export const useAxios = () => {
 
 export const AxiosProvider = ({ children }) => {
     const HOST = import.meta.env.VITE_BACKEND_HOST;
-    console.log(HOST);
     const [isRefreshing, setIsRefreshing] = useState(false);
     const [failedQueue, setFailedQueue] = useState([]);
 

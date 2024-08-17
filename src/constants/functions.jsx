@@ -8,7 +8,7 @@ export const valueFromId = (id, obj) => {
 export const getErrorMessage = (error) => {
     const statusCode = error?.response?.status || null
     if (statusCode >= 500) {
-       return "An error has occurred with the server"
+       return "Un error ha ocurrido con el server"
     }
     let errObj = error?.response?.data || null
     if (errObj) {
@@ -17,5 +17,6 @@ export const getErrorMessage = (error) => {
        if (messages.length > 0 && messages.length < 70)
           return messages
     }
-    return "An error has occurred while processing the request"
+    
+    return "Ocurrió un error, valida que la contraseña sea mayor a 6 caracteres"
  }

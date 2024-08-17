@@ -1,8 +1,8 @@
 const HomeFilterData = [
-    { name: 'Todas', value: 'todos' },
-    { name: 'Pendientes', value: 'pendientes' },
-    { name: 'Aceptados', value: 'aceptados' },
-    { name: 'Rechazados', value: 'rechazados' },
+    { name: 'Todas', value: '' },
+    { name: 'Pendientes', value: 'Pendiente' },
+    { name: 'Validadas', value: 'Validada' },
+    { name: 'Rechazadas', value: 'Rechazada' },
 ];
 
 const OffersFilterData = [
