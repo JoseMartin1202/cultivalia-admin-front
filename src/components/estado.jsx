@@ -6,7 +6,7 @@ const EstadoView = ({state}) => {
     switch (state) {
         case "Validada":
             return(
-                <span className='flex flex-row total-center gap-2'>
+                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
                     <Icons.Accepted className='text-[#279E54] size-5'/>
                 </span>
@@ -14,17 +14,17 @@ const EstadoView = ({state}) => {
 
         case "Rechazada":
             return(
-                <span className='flex flex-row total-center gap-2'>
+                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
-                    <Icons.Refused className='text-[#279E54] size-5'/>
+                    <Icons.Refused className='text-[#E04646] size-5'/>
                 </span>
             );
     
         default://Pendiente
             return(
-                <span className='flex flex-row total-center gap-2'>
+                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
-                    <Icons.Wait className='text-[#279E54] size-5'/>
+                    <Icons.Wait className='text-[#6B9DFF] size-5'/>
                 </span>
             );
             break;

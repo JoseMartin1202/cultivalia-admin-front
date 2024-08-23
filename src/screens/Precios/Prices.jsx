@@ -24,7 +24,7 @@ export const Prices=()=>{
                         <tr>
                             {Columns.ColumnsDataPrecios.map((col, i) =>
                                 <th className='border-b-2 border-black' key={`TH_${i}`}>
-                                    <p>{col}</p>
+                                    
                                 </th>
                             )}
                         </tr>

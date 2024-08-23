@@ -41,7 +41,8 @@ import {
     IoMdPhotos as Gallery,
     IoIosAddCircle as Add,
     IoMdAdd as AddGallery,
-    IoIosArrowUp as ArrowUp
+    IoIosArrowUp as ArrowUp,
+    IoIosArrowDown as ArrowDown
 } from "react-icons/io";
 
 import { 
@@ -79,5 +80,6 @@ export const Icons={
     ArrowUp,
     Alert,
     Empty,
-    Clear
+    Clear,
+    ArrowDown
 }

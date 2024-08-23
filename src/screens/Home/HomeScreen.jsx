@@ -18,8 +18,9 @@ const HomeScreen = () => {
          path={"detallesSupervision"}
          search={true}
          filter={true}
-         dataFilter={Filters.HomeFilterData}/>     
+         dataFilter={Filters.HomeFilterData}
+         add={false}/>     
     );
 }
-// 
+
 export default HomeScreen

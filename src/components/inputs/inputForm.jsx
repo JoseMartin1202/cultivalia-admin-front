@@ -2,12 +2,18 @@ import React from 'react'
 import { Icons } from '../../constants/Icons';
 import { valueFromId } from '../../constants/functions';
 
-const InputLogin = ({ id, formik, onChangeExtra, message, Icon, password,number}) => {
+const InputForm = ({ id, formik, onChangeExtra, message, password,number,preventSigns}) => {
 
     const handleChange = (e) => {
         formik.handleChange(e)
         onChangeExtra && onChangeExtra(true)
     }
+
+    const handleKeyDown = (e) => {
+        if (number && preventSigns && (e.key === '-' || e.key === '.')) {
+            e.preventDefault();
+        }
+    };
 
     const handleBlur = (e) => {
         formik.handleBlur(e)
@@ -18,20 +24,22 @@ const InputLogin = ({ id, formik, onChangeExtra, message, Icon, password,number}
 
     return (
         <div className='flex flex-col w-full'>
-            <div className='flex flex-row relative items-center w-full' >
+            <div className='flex flex-row w-full' >
                 <input 
                 id={id}
                 name={id}
                 value={formik?.values[id] || ''}
                 onChange={handleChange}
                 onBlur={handleBlur}
-                type={`${password ? 'password': number ? 'numeric':'text'}`}
-                className='shadow-lg shadow-black/40 w-full rounded-2xl border-2 py-2 ps-10 pe-2 focus:ring-4 focus:ring-indigo-400/70 focus:border-indigo-500 focus:outline-none'
+                onKeyDown={handleKeyDown}
+                type={`${password ? 'password': number ? 'number':'text'}`}
+                min={number ? "0" : undefined} 
+                step={number ? "1" : undefined}
+                className=' w-full rounded-[10px] border-2 p-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 focus:outline-none'
                 placeholder={message}/>
-                {Icon ? <Icon className='size-5 absolute left-2'/>: null}
             </div>
             {showError &&
-            <div className='h-4 pt-4'>
+            <div className='h-fit'>
                 <p className='font-normal text-lg flex items-center gap-1 h-full italic text-red-500 '>
                     <Icons.Alert size="14px" />
                     {error}
@@ -43,4 +51,4 @@ const InputLogin = ({ id, formik, onChangeExtra, message, Icon, password,number}
 
 }
 
-export default InputLogin
+export default InputForm

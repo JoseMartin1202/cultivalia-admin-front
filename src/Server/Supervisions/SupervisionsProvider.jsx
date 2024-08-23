@@ -1,8 +1,8 @@
-import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext";
 import useSession from '../Session/SessionProvider';
 
-const useSupervisions=(supervisionId)=>{
+const useSupervisions=()=>{
     const { myAxios } = useAxios();
     const { session } = useSession();
 

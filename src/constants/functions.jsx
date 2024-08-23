@@ -20,3 +20,16 @@ export const getErrorMessage = (error) => {
     
     return "Ocurrió un error, valida que la contraseña sea mayor a 6 caracteres"
  }
+
+ export const emptyPredio =()=>{
+      return {
+      nombre:'',
+      anio:'',
+      galeria:'',
+      latitud:'',
+      longitud:'',
+      plantasTotales:'',
+      plantasDisponibles:'',
+      hectareas:''
+   }
+ }

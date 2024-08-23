@@ -4,6 +4,7 @@ import  { Link, useMatch, useNavigate, useResolvedPath } from 'react-router-dom'
 import { useMediaQuery } from 'react-responsive';
 import '../../index.css';
 import useSession from '../../Server/Session/SessionProvider';
+import { useApp } from '../../context/AppContext';
 
 export const AppBar = () => {
     //<img src={ImagenP} className='size-14 rounded-full border-cyan-100 border-[3px]'/>
@@ -12,6 +13,7 @@ export const AppBar = () => {
     const [isSmall,setIsSmall]=useState(false);
     const [hoverSmall,setHoverSmall]=useState(Array(6).fill(false));
     const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
+    const {setFilterState } = useApp();
     const { logout } = useSession();
 
     useEffect(() => {
@@ -31,9 +33,9 @@ export const AppBar = () => {
 
     function selected(value){
         if(selectedOption==value)
-            return 'bg-[#49C27A]';
+            return 'bg-[#c3edd3] text-[#279E54]';
         else
-            return '';
+            return 'hover:bg-[#73d79b] hover:text-white';
     }
 
     return(
@@ -69,7 +71,13 @@ export const AppBar = () => {
                      {isSmall &&<span>Ofertas</span>}
                      {isHover && !isSmall &&<span>Ofertas</span>}
                 </Link>
-                <button className='sm:mt-auto max-sm:ms-auto sm:w-full flex flex-row items-center gap-2 p-3' onClick={()=>logout()}>
+                <button className='sm:mt-auto max-sm:ms-auto sm:w-full flex flex-row items-center gap-2 p-3 hover:bg-[#73d79b] hover:text-white ' 
+                onClick={()=>{
+                    setHoverSmall(Array(6).fill(false));
+                    setIsHover(false)
+                    setSelectedOption(0)
+                    setFilterState('Pendiente')
+                    logout()}}>
                     <Icons.LogOut className='size-8'/>
                     {isSmall &&<span>Salir</span>}
                     {isHover && !isSmall &&<span>Salir</span>}

@@ -2,11 +2,11 @@ import { React, useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom';
 import { Icons } from '../../constants/Icons';
 import '../../index.css'
-import Loader from '../../components/loader';
+import Loader from '../../components/Loader';
 import useSupervision from '../../Server/Supervisions/SupervisionProvider';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
-import { valueFromId } from '../../constants/functions';
+import { getErrorMessage, valueFromId } from '../../constants/functions';
 
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
@@ -28,7 +28,7 @@ export const DetailsSupervisions = () => {
           try {
             updateSupervision(values)
           } catch (e) {
-            notify(getErrorMessage(e), true)
+           // notify(getErrorMessage(e), true)
           }
         }
     })
@@ -119,6 +119,7 @@ export const DetailsSupervisions = () => {
                     <div className='relative w-full min-w-fit'>
                         <select
                             id="estado"
+                            name="estado"
                             value={formik?.values.estado}
                             onChange={formik.handleChange}
                             onBlur={formik.handleBlur}

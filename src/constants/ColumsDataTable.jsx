@@ -4,12 +4,37 @@ const ColumnsDataHome= [
     { label: "Supervisión", attribute:"entidad", search:true},
     { label: "Descripción", attribute: "supervisar", search:true},
     { label: "Estado", attribute: "estado",Component: EstadoView },
-    { label: "Fecha", attribute: "fechaRegistro" }, 
+    { label: "Fecha", attribute: "fechaRegistro" } 
   ];
-const ColumnsDataOfertas=["Cantidad de plantas","Plantas restantes","Precio por planta", "Estado", "Predio","Estatus",""];
-const ColumnsDataPredios=["Predio","Plantas totales","Plantas disponibles","ssasasad", "Hectareas", "Año", "Galería",""];
-const ColumnsDataGallery=["Galería","Fecha de creación","Predios relacionados",""];
-const ColumnsDataPrecios=["Precio","Año","Fecha registro", "Es jimada", "Precio actual",""];
+
+const ColumnsDataPredios=[
+  {label:"Predio",attribute:"nombre", search:true},
+  {label:"Plantas totales",attribute:"plantasTotales"},
+  {label:"Plantas disponibles",attribute:"plantasDisponibles"},
+  {label:"Hectareas ",attribute:"hectareas"},
+  {label:"Año",attribute:"anio",key:""},
+  {label:"Galeria",attribute:"galeria",key:""}
+];
+
+const ColumnsDataOfertas=[
+  {},
+  {},
+  {},
+];
+
+const ColumnsDataGallery=[
+  {label:"Galería"},
+  {label:"Fecha de creación"},
+  {label:"Predios relacionados"},
+];
+
+const ColumnsDataPrecios=[
+  {label:"Precio"},
+  {label:"Año"},
+  {label:"Fecha registro"},
+  {label:"Es jimada"},
+  {label:"Precio actual"}
+];
 
 export const Columns={
     ColumnsDataHome,

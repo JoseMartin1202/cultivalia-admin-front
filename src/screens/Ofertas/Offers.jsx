@@ -3,7 +3,6 @@ import InputSearch from '../../components/inputs/InputSeacrh';
 import Filter from '../../components/filter';
 import {Filters}  from '../../constants/datasFilter';
 import '../../index.css'
-import { Columns } from '../../constants/ColumsDataTable';
 import { Icons } from '../../constants/Icons';
 
  const Offers=()=>{
