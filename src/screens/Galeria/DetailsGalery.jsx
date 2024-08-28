@@ -1,54 +1,244 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../../index.css'
-import LogoCult from '../../assets/cultivaliaLogo.png';
 import { Icons } from '../../constants/Icons';
-import Fondo from '../../assets/fondoAgave.jpg'
+import { useNavigate, useParams } from 'react-router-dom';
+import useGallery from '../../Server/Gallery/GalleryProvider';
+import Loader from '../../components/Loader';
+import ModalElimiar from '../../components/modals/ModalEliminar';
+import { useFormik } from 'formik';
+import GenericModal from '../../components/modals/GenericModal';
+import FileInput from '../../components/inputs/FileInput';
+import Selector from '../../components/inputs/Selector';
+import InputForm from '../../components/inputs/inputForm';
+import * as Yup from 'yup';
 
-export const DetailsGallery=({data})=>{
+export const DetailsGallery=()=>{
 
-    const dataExample=[Fondo,LogoCult,Fondo,LogoCult,Fondo,LogoCult]
     const containerRef = useRef(null);
+    const navigate =useNavigate();
+    const { galleryId } = useParams();
+    const {deletePhotosStatus,dropPhotoStatus,deletePhotos,dropPhoto,reloadPhotos, photosGallery, photosGalleryStatus}= useGallery(galleryId)
+    const back = import.meta.env.VITE_BACKEND_HOST;
+    const [eliminarTodas, setEliminarTodas] = useState(false)
+    const [modal, setModal] = useState(false)
+    const [eliminando, setEliminando] = useState(false)
+    const [adding, setadding] = useState(false)
+    const [btnmodal, setBtnModal] = useState(false)
+    const [photoId, setphotoId] = useState()
+    const [showFormModal, setShowFormModal] = useState(false)
 
     useEffect(() => {
-      const updateColumns = () => {
+        const updateColumns = () => {
+            const container = containerRef.current;
+            if (container) {
+                const containerWidth = container.offsetWidth;
+                const itemWidth = 240; // Ancho del elemento en píxeles (ajusta según tu diseño)
+                const gap = 16; // Espacio entre elementos en píxeles (ajusta según tu diseño)
+                const newColumns = Math.floor(containerWidth / (itemWidth + gap));
+                container.style.gridTemplateColumns = `repeat(${newColumns}, minmax(0, 1fr))`;
+            }
+        };
+    
+        const handleImageLoad = () => {
+            updateColumns();
+        };
+    
+        // Debounce para el evento de redimensionado
+        let debounceTimer;
+        const debounceResize = () => {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                requestAnimationFrame(updateColumns);
+            }, 100); // Ajusta el tiempo de debounce según tus necesidades
+        };
+    
+        // ResizeObserver para detectar cambios en el tamaño del contenedor
+        const resizeObserver = new ResizeObserver(() => {
+            requestAnimationFrame(updateColumns);
+        });
+    
         if (containerRef.current) {
-          const containerWidth = containerRef.current.offsetWidth;
-          const itemWidth = 240; // Ancho del elemento en píxeles (ajusta según tu diseño)
-          const gap = 16; // Espacio entre elementos en píxeles (ajusta según tu diseño)
-          const newColumns = Math.floor(containerWidth / (itemWidth + gap));
-          containerRef.current.style.gridTemplateColumns = `repeat(${newColumns}, minmax(0, 1fr))`;
+            resizeObserver.observe(containerRef.current);
         }
-      };
-  
-      updateColumns();
-      window.addEventListener('resize', updateColumns);
-      return () => {
-        window.removeEventListener('resize', updateColumns);
-      };
-    }, []);
+    
+        // Añadir el listener para cada imagen
+        const images = containerRef.current.querySelectorAll('img');
+        images.forEach(img => {
+            if (img.complete) {
+                handleImageLoad();
+            } else {
+                img.addEventListener('load', handleImageLoad);
+            }
+        });
+    
+        window.addEventListener('resize', debounceResize);
+    
+        // Ejecutar el cálculo inicial al montar el componente
+        updateColumns();
+    
+        return () => {
+            window.removeEventListener('resize', debounceResize);
+            if (containerRef.current) {
+                resizeObserver.unobserve(containerRef.current);
+            }
+            images.forEach(img => img.removeEventListener('load', handleImageLoad));
+        };
+    }, [photosGalleryStatus]);
+    
+    useEffect(()=>{
+        if(deletePhotosStatus=='success'){
+            setBtnModal(false)
+            setEliminando(false)
+            setEliminarTodas(false)
+            setModal(false)
+        }
+    },[deletePhotosStatus])
+
+    useEffect(()=>{
+        if(dropPhotoStatus=='success' ){
+            setBtnModal(false)
+            setEliminando(false)
+            setEliminarTodas(false)
+            setModal(false)
+        }
+    },[dropPhotoStatus])
   
     return (
-      <div className='sm:ml-14 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto'>
-        <div className='w-full h-[93%] bg-white shadow-lg  rounded-2xl overflow-y-auto p-2'>
-          <div ref={containerRef} className='w-full h-fit grid gap-4'>
-          {dataExample.map((item, i) => (
-            <div key={i} className='w-full h-fit rounded-2xl relative'>
-              <img src={item} className='size-full object-cover max-h-40 rounded-2xl' />
-              <button className='absolute top-0 right-0 bg-gray-800/80 rounded-lg'><Icons.Trash className='size-8 p-2 text-red-500' /></button>
+    <div className='sm:ml-14 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto'>
+        { modal && 
+            <ModalElimiar
+                title={eliminarTodas ? "Eliminar todas":"Eliminar foto"}
+                close={()=>setModal(false)}
+                content={
+                        <div className='total-center text-xl'>
+                            <div className=' flex-col total-center gap-3'>
+                                {console.log(deletePhotosStatus)}
+                                {
+                                eliminando ? 
+                                <>
+                                <Loader />
+                                {dropPhotoStatus==='pending' &&  <p>Eliminando...</p>}
+                                {deletePhotosStatus==='pending' &&  <p>Eliminando...</p>}
+                                </>:
+                                eliminarTodas ?
+                                <>{photosGalleryStatus ==='success' && photosGallery.length>0 ?
+                                    <>
+                                    <p>¿Estás seguro que deseas eliminar todas las fotos?</p>
+                                    <Icons.Alert className='size-24 text-red-400'/>
+                                    </>:
+                                    <>
+                                    <p>No hay fotos por eliminar</p>
+                                    <Icons.Empty className='size-24 text-orange-300'/>
+                                    </>
+                                }</>:<> {photosGalleryStatus ==='success' && photosGallery.length>0 &&
+                                    <div className='flex flex-col total-center gap-3'>
+                                    <p>¿Estás seguro que deseas eliminar esta foto?</p>
+                                    <Icons.Alert className='size-24 text-red-400'/>
+                                    </div>
+                                }</>}
+                            </div>
+                        </div> 
+                }
+                loading={btnmodal}
+                actions={[{ label: "Aceptar", onClick: ()=> {
+                    if(photosGalleryStatus ==='success' && photosGallery.length>0){
+                        setBtnModal(true)
+                        setEliminando(true)
+                        if(eliminarTodas){
+                            deletePhotos()
+                        }else{
+                            dropPhoto(photoId)
+                        }
+                    }else{
+                        setModal(false)
+                    }
+                    
+                }}]}
+           />
+        }
+        {showFormModal &&
+            <FormModal
+               title={"Nueva foto"}
+               id={galleryId}
+               close={()=>setShowFormModal(false)}
+               adding={adding}
+            />
+         }
+        <div className='w-full h-full bg-white shadow-lg  rounded-2xl overflow-y-auto p-2'>
+            <div ref={containerRef} className='w-full h-fit grid gap-4'>
+                {photosGalleryStatus ==='pending' ? <Loader/>: 
+                photosGalleryStatus  ==='success' ? 
+                (photosGallery.length>0 && 
+                    photosGallery.map((photo,i)=>(
+                        <div key={i} className='w-full h-40 rounded-2xl relative'>
+                            <img src={back+photo.file} className='size-full object-cover max-h-40 rounded-2xl' />
+                            <button className='absolute top-0 right-0 bg-gray-700/70 rounded-s-lg rounded-se-2xl rounded-ee-lg' onClick={()=>{setphotoId(photo.id); setEliminarTodas(false); setModal(true)}}><Icons.Trash className='size-8 p-2 text-red-500' /></button>
+                        </div>
+                    )) 
+                  ):''}
+                <div className='w-full h-40 rounded-2xl border-2 border-[#696969] hover:bg-gray-700/30 hover:text-white flex flex-col items-center gap-2'>
+                  <button className='size-full total-center' onClick={()=>setShowFormModal(true)}><Icons.AddGallery className='size-full max-h-40' /></button>
+                </div>
             </div>
-          ))}
-          <div className='size-full rounded-2xl border-2 border-[#696969] p-1 flex flex-col items-center gap-2'>
-              <button className='size-full flex justify-center items-center'><Icons.AddGallery className='size-full max-h-40' /></button>
-          </div>
-          </div>
         </div>
-        <div className='w-full h-[7%] max-sm:h-[5%] flex flex-row items-center font-[Roboto]'>
-            <button className='h-full'><Icons.ArrowBack className='size-full min-h-8 min-w-8 text-[#4382ff] hover:text-[#81aafe]'/></button>
-            <p className='text-xl max-sm:text-base font-bold pl-3'>Total de fotos:X</p>
-            <button className='ms-auto hover:bg-red-300 max-sm:text-base text-xl font-bold bg-red-400 rounded-full py-1 px-3'>Eliminar todas</button>
+        <div className='w-full flex gap-3 flex-row total-center font-[Roboto]'>
+            <button className='h-full' onClick={()=>{reloadPhotos();navigate(-1)}}><Icons.ArrowBack className='size-10 text-[#6B9DFF] hover:text-[#81aafe]'/></button>
+            <div className='bg-[#E2E8F0] w-fit p-2 font-bold text-md rounded-xl'>
+                    {<p>Fotos: {photosGallery?.length}</p>}
+            </div>
+            <button className='ms-auto hover:bg-red-300 max-sm:text-base text-lg font-bold bg-red-400 rounded-full py-1 px-3' onClick={()=>{setEliminarTodas(true); setModal(true)}}>Eliminar todas</button>
         </div>
-      </div>
+    </div>
     );
 }
+
+const FormModal = ({ close, title, id }) => {
+    const {AddPhotoStatus,AddPhoto}= useGallery(id)
+    
+    useEffect(()=>{
+       if(AddPhotoStatus === 'success'){
+            close()
+       }
+    },[AddPhotoStatus])
+
+    const initVals = {
+       galeria: id,
+       file: null,
+    }
+ 
+    const formik = useFormik({
+        initialValues: initVals,
+        validationSchema: Yup.object().shape({
+            file: Yup.string().required('Requerido')
+          }),
+        onSubmit: async (values) => {
+            AddPhoto(values)
+        }
+    })
+ 
+ 
+    return (
+       <GenericModal
+          title={title}
+          content={
+             <div className='p-4'>
+                <div className='p-2 border text-xl'>
+                    {AddPhotoStatus === 'pending' ?
+                     <div className='total-center flex-col '>
+                     <Loader/>
+                     <p>Subiendo...</p></div>:
+                     <FileInput id="file" formik={formik} />
+                     }
+                </div>
+             </div>
+          }
+          loading={AddPhotoStatus === 'pending'}
+          close={close}
+          actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}
+          necesary={false}
+          gallery={true}
+       />
+    )
+ }
 
 export default DetailsGallery

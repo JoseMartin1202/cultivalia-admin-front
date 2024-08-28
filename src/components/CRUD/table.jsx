@@ -9,9 +9,11 @@ import { useFormik } from 'formik';
 import { useApp } from '../../context/AppContext';
 import GenericModal from '../modals/GenericModal';
 import PropertiesForm from '../forms/ProperitesForm';
-import { emptyPredio } from '../../constants/functions';
+import { emptyGalería, emptyPredio } from '../../constants/functions';
 import usePropertie from '../../Server/Properties/PropertieProvider';
 import * as Yup from 'yup';
+import GalleryForm from '../forms/GalleryForm';
+import useGalleries from '../../Server/Gallery/GalleriesProvider';
 
 const CRUD=({
     columns, 
@@ -23,7 +25,8 @@ const CRUD=({
     search,
     filter,
     dataFilter,
-    add
+    add,
+    galleries
     })=>{
 
     const navigate = useNavigate();
@@ -34,6 +37,7 @@ const CRUD=({
     const [editForm, setEditForm] = useState(null)
     const [agregar, setAgregar] = useState(false)
     const [optionForm, setoptionForm] = useState()
+    const [necesary, setNecesary] = useState(true)
     
 
     const formik = useFormik({
@@ -44,8 +48,8 @@ const CRUD=({
     })
 
     const EditViewModal = ({ Form, item, close,title,option}) => {
-         const { updatePropertie, propertieAdd } = usePropertie(item.id);
-        
+        const { updatePropertie, propertieAdd } = usePropertie(item.id);
+        const { galerryAdd } = useGalleries()
         
         const formik = useFormik({
             initialValues: item,
@@ -87,11 +91,13 @@ const CRUD=({
                 if(option=="Predios"){
                     if(item.id){
                         delete values.id
-                        
                         updatePropertie(values)
                     }else{
                         propertieAdd(values)
                     }
+                }
+                if(option=="Galerias"){
+                    galerryAdd(values)
                 }
                 close()
            }
@@ -103,6 +109,8 @@ const CRUD=({
               close={close}
               content={<Form formik={formik}/>}
               actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}
+              necesary={necesary}
+              gallery={option=="Galerias"}
            />
         )
      }
@@ -111,8 +119,14 @@ const CRUD=({
     if (predios) {
         setEditForm(() => PropertiesForm);
         setoptionForm("Predios")
+        setNecesary(true)
     }
-    }, [predios]);
+    if(galleries){
+        setEditForm(() => GalleryForm);
+        setoptionForm("Galerias")
+        setNecesary(false)
+    }
+    }, [predios,galleries]);
 
     useEffect(() => {
         if(data?.length>0){
@@ -122,7 +136,7 @@ const CRUD=({
             if (formik?.values?.estado && filter) {
                 newElements = newElements.filter(item => item.estado === formik.values.estado);
             }
-            
+
             if(supervision){
                 newElements= newElements.map((item)=>{
                     const newItem = { ...item };
@@ -154,12 +168,25 @@ const CRUD=({
                     return newItem
                 })
             }
-           
+
+            if(galleries){
+                newElements= newElements.map((item)=>{
+                    const newItem = { ...item };
+                    columns.forEach((col)=>{
+                        if(col.attribute==="fecha"){
+                            newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                        }
+                    })
+                    return newItem
+                })
+            }
+
             newElements = newElements.filter(item => {
                 return columns.some(col => {
                     return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
                 });
             });
+
 
             setElements(newElements)
             setFilterState(formik.values.estado)
@@ -175,6 +202,7 @@ const CRUD=({
                             <InputSearch formik={formik}/>
                             <button onClick={()=>{
                                 if(predios)setSelectedItem(emptyPredio)
+                                if(galleries) setSelectedItem(emptyGalería)
                                 setAgregar(true)
                                 setModal(true)
                             }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button>
@@ -189,8 +217,8 @@ const CRUD=({
                     Form={editForm}
                     close={()=>setModal(false)}
                     title={
-                        predios && !agregar ? "Predio: "+selectedItem.nombre :
-                        "Nuevo Predio"
+                        predios ? !agregar ? "Predio: "+selectedItem.nombre : "Nuevo Predio":
+                        galleries && "Nueva Galería"
                     }
                     option={optionForm}/>
                 }

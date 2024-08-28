@@ -13,12 +13,8 @@ export const Properties=()=>{
         columns={Columns.ColumnsDataPredios} 
         data={properties} 
         estatusdata={propertiesStatus} 
-        supervision={false} 
         predios={true}
-        editRow={true}
-        drop={false}
         search={true}
-        filter={false}
         add={true}/> 
     );
 }

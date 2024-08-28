@@ -19,9 +19,9 @@ export const getErrorMessage = (error) => {
     }
     
     return "Ocurrió un error, valida que la contraseña sea mayor a 6 caracteres"
- }
+}
 
- export const emptyPredio =()=>{
+export const emptyPredio =()=>{
       return {
       nombre:'',
       anio:'',
@@ -32,4 +32,10 @@ export const getErrorMessage = (error) => {
       plantasDisponibles:'',
       hectareas:''
    }
- }
+}
+
+export const emptyGalería =()=>{
+   return {
+   titulo:''
+   }
+}

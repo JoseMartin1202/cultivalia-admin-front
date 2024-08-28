@@ -23,9 +23,8 @@ const ColumnsDataOfertas=[
 ];
 
 const ColumnsDataGallery=[
-  {label:"Galería"},
-  {label:"Fecha de creación"},
-  {label:"Predios relacionados"},
+  {label:"Galería", attribute:"titulo", search:true},
+  {label:"Fecha de creación", attribute:"fecha"},
 ];
 
 const ColumnsDataPrecios=[

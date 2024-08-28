@@ -29,13 +29,13 @@ const PropertiesForm = ({formik}) => {
     }, [yearsStatus, galleriesStatus, galleries, years]);
 
     return (
-    <div  className='p-3 flex flex-col w-full h-full gap-3'>
-        <div className='flex flex-row w-full gap-3'>
+    <div className='p-6 flex flex-col w-full gap-3'>
+        <div className='flex flex-row w-full gap-3 max-sm:flex-col'>
             <div className='flex-grow flex-col'>
                 <p className='font-bold'>Nombre:</p>
                 <InputForm formik={formik} id="nombre" name="nombre"/>
             </div>
-            <div className='flex flex-col w-32'>
+            <div className='flex flex-col sm:w-32'>
                 <p className='font-bold'>Año:</p>
                 <div className='relative w-full min-w-fit'>
                     <select
@@ -58,9 +58,9 @@ const PropertiesForm = ({formik}) => {
                 </div>
             </div>
         </div>
-        <div className='flex flex-row w-full gap-3'>
+        <div className='flex flex-row w-full gap-3 max-sm:flex-col'>
             <div className='flex-1 flex-col'>
-                <p className='font-bold'>Plantas totales:</p>
+                <p className='font-bold '>Plantas totales:</p>
                 <InputForm formik={formik} name="plantasTotales" id="plantasTotales" number={true} preventSigns={true}/>
             </div>
             <div className='flex-1 flex-col'>
@@ -97,7 +97,7 @@ const PropertiesForm = ({formik}) => {
                     </div>
                 </div>
             </div>
-            <div className='flex flex-row gap-3 w-full sm:w-1/2'>
+            <div className='flex flex-row gap-3 w-full sm:w-1/2 max-sm:flex-col'>
                 <div className='flex-1 flex-col'>
                     <p className='font-bold'>Longitud:</p>
                     <InputForm formik={formik} id="longitud" name="longitud" number={true}/>
