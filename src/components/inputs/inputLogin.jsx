@@ -28,7 +28,7 @@ const InputLogin = ({ id, formik, onChangeExtra, message, Icon, password,number}
                 type={`${password ? 'password': number ? 'numeric':'text'}`}
                 className='shadow-lg shadow-black/40 w-full rounded-2xl border-2 py-2 ps-10 pe-2 focus:ring-4 focus:ring-indigo-400/70 focus:border-indigo-500 focus:outline-none'
                 placeholder={message}/>
-                {Icon ? <Icon className='size-5 absolute left-2'/>: null}
+                <Icon className='size-5 absolute left-2'/>
             </div>
             {showError &&
             <div className='h-4 pt-4'>

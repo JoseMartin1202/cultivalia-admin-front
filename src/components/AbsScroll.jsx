@@ -1,7 +1,6 @@
 import React, { useRef } from 'react'
 import Loader from './Loader'
 
-
 const AbsScroll = ({
     vertical = false,
     horizontal = false,

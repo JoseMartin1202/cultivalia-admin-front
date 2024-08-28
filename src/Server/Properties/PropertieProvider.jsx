@@ -1,10 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext"
-import useSession from "../Session/SessionProvider"
+import { useApp } from '../../context/AppContext';
 
 const usePropertie=(propertieId)=>{
     const {myAxios} = useAxios();
     const queryClient = useQueryClient();
+    const { notify } = useApp();
 
     /*const getPredio = async() =>{
         const res= await myAxios.get(`predio/${propertieId}/`);
@@ -31,7 +32,7 @@ const usePropertie=(propertieId)=>{
 
     const PropertieMutator = useMutation({
         mutationFn: updatePartial,
-        onSuccess: (newPropertie) => {
+        onSuccess: () => {
             queryClient.invalidateQueries(['predios']) 
             notify('Predio actualizado con exito')
         },

@@ -22,7 +22,7 @@ export const appRoutes={
         { path: '/contratos', element: <Contract/> },
         { path: '/ofertas', element: <Offers/> },
         { path: '/detallesSupervision/:supervisionId', element: <DetailsSupervisions/> },
-        { path: '/detallesGaleria/:id', element: <DetailsGallery/> },
+        { path: '/detallesGaleria/:galleryId', element: <DetailsGallery/> },
     ],
     auth: [
         { exact: true, path: '*', element: <Navigate to="/login" /> },

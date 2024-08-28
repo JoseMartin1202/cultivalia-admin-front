@@ -53,6 +53,11 @@ import {
     HiPencilSquare as Edit
 } from "react-icons/hi2";
 
+import {
+    MdOutlineFileUpload as Upload,
+
+} from "react-icons/md";
+
 export const Icons={
     Contract,
     Wait,
@@ -81,5 +86,6 @@ export const Icons={
     Alert,
     Empty,
     Clear,
-    ArrowDown
+    ArrowDown,
+    Upload
 }
