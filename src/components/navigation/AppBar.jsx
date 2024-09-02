@@ -12,7 +12,7 @@ export const AppBar = () => {
     const [isHover,setIsHover]=useState(false);
     const [isSmall,setIsSmall]=useState(false);
     const [hoverSmall,setHoverSmall]=useState(Array(6).fill(false));
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
+    const isSmallScreen = useMediaQuery({ query: '(max-width: 639.9px)' });
     const {setFilterState } = useApp();
     const { logout } = useSession();
 

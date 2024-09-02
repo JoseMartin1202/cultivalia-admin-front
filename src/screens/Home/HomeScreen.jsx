@@ -16,10 +16,9 @@ const HomeScreen = () => {
          estatusdata={supervisionsStatus} 
          supervision={true} 
          path={"detallesSupervision"}
-         search={true}
          filter={true}
          dataFilter={Filters.HomeFilterData}
-         add={false}/>     
+         searchFilter={true}/>     
     );
 }
 

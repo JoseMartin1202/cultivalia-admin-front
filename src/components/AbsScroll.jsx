@@ -38,7 +38,7 @@ const AbsScroll = ({
                     if (onBottomReached || setBottom)
                         handleScroll
                 }}
-                className={`relative w-full h-full ${vertical ? 'overflow-y-scroll' : 'overflow-y-hidden'} ${horizontal ? 'overflow-x-scroll' : 'overflow-x-hidden'}`}>
+                className={`relative w-full h-full ${vertical ? 'overflow-y-auto' : 'overflow-y-hidden'} ${horizontal ? 'overflow-x-auto' : 'overflow-x-hidden'}`}>
                 {loading ? <Loader /> :
                     <div className='absolute top-0 w-full emerge'>
                         {children}

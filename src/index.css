@@ -19,11 +19,8 @@
 
 .custom-table{
   width: 100%;
-  max-height: 90%;
   text-align: center;
-  margin-top: 20px;
   background-color: white;
-  table-layout: fixed; 
 }
 
 .navItem:hover{

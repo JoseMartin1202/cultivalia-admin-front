@@ -6,15 +6,15 @@ const HomeFilterData = [
 ];
 
 const OffersFilterData = [
-    { name: 'Todas', value: 'todas' },
-    { name: 'Visibles', value: 'visibles' },
-    { name: 'No visibles', value: 'noVisibles' },
-    { name: 'Vigentes', value: 'vigentes' },
-    { name: 'Finalizadas', value: 'finalizadas' },
+    { name: 'Todas', value: '' },
+    { name: 'Visibles', value: true },
+    { name: 'No visibles', value: false },
+    { name: 'Vigentes', value: 'Vigente' },
+    { name: 'Finalizadas', value: 'Finalizada' },
 ];
 
 const PricesFilterData = [
-    { name: 'Todos', value: 'todas' },
+    { name: 'Todos', value: '' },
     { name: 'Actuales', value: 'actuales' },
     { name: 'No actuales', value: 'noActuales' }
 ];

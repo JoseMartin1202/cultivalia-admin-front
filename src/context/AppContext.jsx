@@ -11,7 +11,9 @@ export const useApp = () => {
 
 export const AppProvider = ({ children }) => {
 
-    const [filterState, setFilterState] = useState('Pendiente');
+    const [filterStateSupervisions, setFilterStateSupervisions] = useState('Pendiente');
+    const [filterStateOffers, setFilterStateOffers] = useState('');
+    const [filterStatePrices, setFilterStatePrices] = useState('');
     const notify = (message, error = false) => {
         let options = {
             position: "bottom-right",
@@ -29,8 +31,12 @@ export const AppProvider = ({ children }) => {
     return (
         <AppContext.Provider value={{
             notify,
-            filterState,
-            setFilterState,
+            filterStateSupervisions,
+            filterStateOffers,
+            filterStatePrices,
+            setFilterStateSupervisions,
+            setFilterStateOffers,
+            setFilterStatePrices
         }}>
             {children}
             <ToastContainer />

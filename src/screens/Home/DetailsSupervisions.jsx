@@ -15,6 +15,20 @@ export const DetailsSupervisions = () => {
     const back = import.meta.env.VITE_BACKEND_HOST;
     const [bgOption, setbgOption] = useState('');
 
+    const supervisionData = [
+        { label: 'Nombre completo', value: `${supervision?.entidad.nombre} ${supervision?.entidad.apellidos}` },
+        { label: 'Sexo', value: supervision?.entidad.sexo === 'M' ? 'Masculino' : 'Femenino' },
+        { label: 'Teléfono', value: supervision?.entidad.telefono },
+        { label: 'Correo', value: supervision?.entidad.correo },
+        { label: 'Nacionalidad', value: supervision?.entidad.nacionalidad },
+        { label: 'Dirección', value: supervision?.entidad.direccion },
+        { label: 'CP', value: supervision?.entidad.codigoPostal },
+        { label: 'Ciudad', value: supervision?.entidad.ciudad },
+        { label: 'Tipo de movimiento', value: supervision?.tipoMovimiento.nombre },
+        { label: 'Fecha de registro', value: supervision?.fechaRegistro.split('T')[0] },
+      ];
+      
+
     const formik = useFormik({
         initialValues: {
             comentaios: '',
@@ -96,19 +110,27 @@ export const DetailsSupervisions = () => {
                 </div>
                 <div className='relative w-1/2 shadow-lg shadow-black/30 bg-white rounded-2xl max-md:w-full max-md:h-1/2 overflow-y-auto'>
                     <div className='absolute w-full top-4 flex flex-col items-center gap-2 pb-4 '>
-                        <img className='size-[90%]' src={back + supervision?.entidad.credencialFrente} />
-                        <img className='size-[90%]' src={back + supervision?.entidad.credencialReverso} />
+                        { supervision?.entidad.credencialFrente ? 
+                            <img className='size-[90%]' src={back + supervision?.entidad.credencialFrente} />:
+                            <div className=' size-[90%] total-center border-2 border-gray-300 rounded-lg'>
+                                <Icons.EmptyImage className='size-20'/>
+                                <p>Sin imagen</p>
+                            </div>
+                        }
+                        { supervision?.entidad.credencialReverso ? 
+                            <img className='size-[90%]' src={back + supervision?.entidad.credencialReverso} />:
+                            <div className=' size-[90%] total-center border-2 border-gray-300 rounded-lg'>
+                                <Icons.EmptyImage className='size-20'/>
+                                <p>Sin imagen</p>
+                            </div>
+                        }
                         <div className='size-[90%] border-2 border-gray-300 px-2 rounded-lg text-lg'>
                             <p className='font-bold text-3xl text-center'>RESUMEN GENERAL</p>
-                            <p><span className='font-bold'>Nombre completo:</span> {supervision?.entidad.nombre + " " + supervision?.entidad.apellidos}</p>
-                            <p><span className='font-bold'>Sexo:</span> {supervision?.entidad.sexo == "M" ? <span>Masculino</span> : <span>Femenino</span>}</p>
-                            <p><span className='font-bold'>Telefono:</span> {supervision?.entidad.telefono}</p>
-                            <p><span className='font-bold'>Correo:</span> {supervision?.entidad.correo}</p>
-                            <p><span className='font-bold'>Nacionalidad:</span> {supervision?.entidad.nacionalidad}</p>
-                            <p><span className='font-bold'>Dirección:</span> {supervision?.entidad.direccion +", colonia "+supervision?.entidad.colonia+". CP. "+supervision?.entidad.codigoPostal}</p>
-                            <p><span className='font-bold'>Ciudad:</span> {supervision?.entidad.ciudad}</p>
-                            <p><span className='font-bold'>Tipo de movimiento:</span> {supervision?.tipoMovimiento.nombre}</p>
-                            <p><span className='font-bold'>Fecha de registro:</span> {supervision?.fechaRegistro.split('T')[0]}</p>
+                            {supervisionData.map((item, index) => (
+                            <p key={index}>
+                                <span className='font-bold'>{item.label}:</span> {item.value ? item.value:"---"}
+                            </p>
+                            ))}
                         </div>
                     </div>
                 </div>
