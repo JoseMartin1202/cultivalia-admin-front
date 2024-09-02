@@ -35,15 +35,8 @@ const useGallery=(galeryId)=>{
 
     const deletePhotosGallery = async () => {
         if (!photosGallery || photosGallery.length === 0) return false;
-        const deletePromises = photosGallery.map(foto =>
-            myAxios.delete(`fotografia/${foto.id}`)
-        );
-        await Promise.all(deletePromises);
+        await myAxios.delete(`fotografias/galeria/${galeryId}`)
         return true
-    }
-
-    const reloadPhotos= async () =>{
-        queryClient.invalidateQueries(['fotosGaleria',galeryId]) 
     }
 
     /**Querys */
@@ -106,7 +99,6 @@ const useGallery=(galeryId)=>{
     return ({
         photosGallery,
         photosGalleryStatus,
-        reloadPhotos,
         dropPhoto,
         dropPhotoStatus,
         deletePhotos,

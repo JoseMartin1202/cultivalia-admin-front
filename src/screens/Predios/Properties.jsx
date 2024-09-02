@@ -4,7 +4,7 @@ import { Columns } from '../../constants/ColumsDataTable';
 import useProperties from '../../Server/Properties/PropertiesProvider';
 import CRUD from '../../components/CRUD/table';
 
-export const Properties=()=>{
+const Properties=()=>{
     
     const { properties, propertiesStatus }= useProperties();
 
@@ -14,8 +14,7 @@ export const Properties=()=>{
         data={properties} 
         estatusdata={propertiesStatus} 
         predios={true}
-        search={true}
-        add={true}/> 
+        searchAdd={true}/> 
     );
 }
 

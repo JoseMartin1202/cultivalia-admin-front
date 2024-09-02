@@ -15,6 +15,10 @@ import {
 } from "react-icons/lu";
 
 import {
+    BsPersonBadgeFill  as OfferIndirect
+} from "react-icons/bs";
+
+import {
     PiPlantFill as Properties,
     PiClockCountdownFill as Current
 } from "react-icons/pi";
@@ -28,7 +32,10 @@ import {
     FaLock as Password,
     FaArrowAltCircleLeft as ArrowBack,
     FaImage as Image,
-    FaRegTimesCircle as Clear
+    FaRegTimesCircle as Clear,
+    FaAngleRight as Right,
+    FaAngleLeft as Left,
+    FaCalendarCheck as Complete
 } from "react-icons/fa";
 
 import {
@@ -55,7 +62,7 @@ import {
 
 import {
     MdOutlineFileUpload as Upload,
-
+    MdImageNotSupported as EmptyImage
 } from "react-icons/md";
 
 export const Icons={
@@ -87,5 +94,10 @@ export const Icons={
     Empty,
     Clear,
     ArrowDown,
-    Upload
+    Upload,
+    Right,
+    Left,
+    EmptyImage,
+    OfferIndirect,
+    Complete
 }
