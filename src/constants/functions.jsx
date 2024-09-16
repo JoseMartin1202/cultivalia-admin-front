@@ -22,7 +22,7 @@ export const getErrorMessage = (error) => {
 }
 
 export const emptyPredio =()=>{
-      return {
+   return {
       nombre:'',
       anio:'',
       galeria:'',
@@ -36,6 +36,27 @@ export const emptyPredio =()=>{
 
 export const emptyGalería =()=>{
    return {
-   titulo:''
+      titulo:''
+   }
+}
+
+export const emptyOffer =()=>{
+   return {
+      tipo:'',
+      plantas_totales:'',
+      plantas_disponibles:'',
+      precio_reventa:'',
+      predio:'',
+      is_visible:true,
+      vendedor:''
+   }
+}
+
+export const emptyPrice =()=>{
+   return {
+      precio:'',
+      anio:'',
+      isCurrent:true,
+      isJimated:false,
    }
 }

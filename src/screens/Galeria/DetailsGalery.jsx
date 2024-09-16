@@ -121,7 +121,7 @@ export const DetailsGallery=()=>{
                 close={()=>setModal(false)}
                 content={
                         <div className='total-center text-xl'>
-                            <div className=' flex-col total-center gap-3'>
+                            <div className=' flex-col total-center text-center gap-3'>
                                 {console.log(deletePhotosStatus)}
                                 {
                                 eliminando ? 

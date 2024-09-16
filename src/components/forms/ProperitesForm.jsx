@@ -11,19 +11,17 @@ const PropertiesForm = ({formik}) => {
     
     useEffect(() => {
        if (yearsStatus === "success" && galleriesStatus === "success") {
-            if(!formik.values.anio){
+            const yearSelected= years.find(y => y.anio == formik.values.anio);
+            if(yearSelected){
+                formik.setFieldValue('anio', yearSelected.id)
+            }else{
                 formik.setFieldValue('anio', years[0].id);
-            }else{
-                years.map((y,i)=>(
-                    y.anio==formik.values.anio ? formik.setFieldValue('anio', y.id):undefined
-                ))
             }
-            if(!formik.values.galeria){
-                formik.setFieldValue('galeria', galleries[0].id);
+            const gallerySelected= galleries.find(g => g.titulo == formik.values.galeria);
+            if(gallerySelected){
+                formik.setFieldValue('galeria', gallerySelected.id)
             }else{
-                galleries.map((g,i)=>(
-                    g.titulo==formik.values.galeria ? formik.setFieldValue('galeria', g.id):undefined
-                ))
+                formik.setFieldValue('galeria', galleries[0].id);
             }
        }
     }, [yearsStatus, galleriesStatus, galleries, years]);

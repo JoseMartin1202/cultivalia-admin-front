@@ -2,32 +2,32 @@ import { useQuery } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext";
 import useSession from '../Session/SessionProvider';
 
-const useOffers=()=>{
+const usePrices=()=>{
     const { myAxios } = useAxios();
     const { session } = useSession();
 
     /**Functions */
-    const getOffers = async () =>{
-        const res=await myAxios.get("/oferta/list_offers")
+    const getPrices = async () =>{
+        const res=await myAxios.get("/precioplanta/")
         return res.data
     }
 
     /**Querys */
-    const OffersQuery = useQuery({
-        queryKey: ['ofertas'],
-        queryFn: getOffers,
+    const PricesQuery = useQuery({
+        queryKey: ['preciosPlantas'],
+        queryFn: getPrices,
         enabled: !!session
     })
 
     const {
-        data:offers,
-        status:offersStatus
-    }=OffersQuery
+        data:prices,
+        status:pricesStatus
+    }=PricesQuery
 
     return({
-        offers,
-        offersStatus
+        prices,
+        pricesStatus
     })
 }
 
-export default useOffers
+export default usePrices

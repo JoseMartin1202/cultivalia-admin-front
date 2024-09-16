@@ -11,7 +11,7 @@ const GenericModal = ({
   actions = [],
   loading = false,
   necesary=true,
-  gallery
+  center
 }) => {
   const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
   const [isSmall,setIsSmall]=useState(false);
@@ -25,7 +25,7 @@ const GenericModal = ({
   }, [isSmallScreen]);
 
   return (
-    <div id="modalBackground" className={`absolute z-40 size-full left-0 top-0 bg-neutral-900/70 flex justify-center ${gallery? 'items-center':'items-end'} sm:items-center`}>
+    <div id="modalBackground" className={`absolute z-40 size-full left-0 top-0 bg-neutral-900/70 flex justify-center ${center? 'items-center':'items-end'} sm:items-center`}>
       <div id="modalBox"
       className={`rounded-2xl flex flex-col w-full bg-white ${necesary ? 'max-sm:h-[95%]':''} h-fit sm:w-4/5 lg:w-[70%]`}>
         <div id="modalHeader" className='relative flex w-full h-12 shadow-md total-center bg-slate-300 rounded-ss-2xl rounded-se-2xl'>

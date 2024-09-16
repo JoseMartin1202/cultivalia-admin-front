@@ -7,8 +7,12 @@ import {
 } from "react-icons/fa6";
 
 import {
-    RiContractFill as Report
+    RiContractFill as Report 
 } from "react-icons/ri";
+
+import {
+    GiAgave as jimated  
+} from "react-icons/gi";
 
 import {
     LuFolderOpen as Empty
@@ -99,5 +103,6 @@ export const Icons={
     Left,
     EmptyImage,
     OfferIndirect,
-    Complete
+    Complete,
+    jimated
 }

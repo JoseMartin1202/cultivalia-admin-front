@@ -9,19 +9,26 @@ import { useFormik } from 'formik';
 import { useApp } from '../../context/AppContext';
 import GenericModal from '../modals/GenericModal';
 import PropertiesForm from '../forms/ProperitesForm';
-import { emptyGalería, emptyPredio } from '../../constants/functions';
+import { emptyGalería, emptyOffer, emptyPredio, emptyPrice } from '../../constants/functions';
 import usePropertie from '../../Server/Properties/PropertieProvider';
 import * as Yup from 'yup';
 import GalleryForm from '../forms/GalleryForm';
 import useGalleries from '../../Server/Gallery/GalleriesProvider';
 import AbsScroll from '../AbsScroll';
+import OfferForm from '../forms/OfferForm';
+import useOffer from '../../Server/Offers/OfferProvider';
+import Switch from '../switch';
+import PricesForm from '../forms/PriceForm';
+import usePrice from '../../Server/Prices/PriceProvider';
+import ModalElimiar from '../modals/ModalEliminar';
 
 const CRUD=({
     columns, 
     data, 
     estatusdata, 
     supervision,
-    predios, 
+    predios,
+    prices, 
     path,
     filter,
     dataFilter,
@@ -30,6 +37,7 @@ const CRUD=({
     searchAdd,
     searchFilterAdd,
     searchFilter,
+    switchFilterAdd
     })=>{
 
     const navigate = useNavigate();
@@ -54,8 +62,10 @@ const CRUD=({
 
     const EditViewModal = ({ Form, item, close,title,option}) => {
         const { updatePropertie, propertieAdd } = usePropertie(item.id);
-        const { galerryAdd } = useGalleries()
-        
+        const { galerryAdd } = useGalleries();
+        const { offerAdd } = useOffer(item.id);
+        const { priceAdd } = usePrice();
+
         const formik = useFormik({
             initialValues: item,
             validationSchema : Yup.object().shape(
@@ -90,11 +100,49 @@ const CRUD=({
                             return value > 0;
                         }
                     ),
+                }) : 
+                option === "Ofertas" ? Yup.object().shape({
+                    plantas_totales: Yup.number()
+                    .test(
+                        'is-less-than-disponibles',//nombre prueba
+                        'No disponible',//mensaje de error
+                        function (value) {
+                            const { plantas_disponibles } = this.parent;
+                            return value <= plantas_disponibles && value>0;
+                        }
+                    ),
+                    precio_reventa: Yup.number()
+                    .when('tipo', (tipo, schema) => {
+                        if (tipo == "Indirecta") {
+                            return schema
+                            .required('Requerido')
+                            .test(
+                                'disponibles',
+                                'No disponible',
+                                function (value) {
+                                    console.log("entra")
+                                    const { plantas_disponibles } = this.parent;
+                                    return value <= plantas_disponibles && value > 0;
+                                }
+                            );
+                        }
+                        return schema.notRequired();
+                    }),
+                }) : 
+                option === "Precios" ?  Yup.object().shape({
+                    precio: Yup.number()
+                    .test(
+                        'is-less-0',//nombre prueba
+                        'No valido',//mensaje de error
+                        function (value) {
+                            return value>0;
+                        }
+                    ),
                 }) : Yup.object({})
             ),
             onSubmit: async (values) => {
                 if(option=="Predios"){
-                    if(item.id){
+                    if(item.id){//saber si se seleccionó o es nuevo
                         delete values.id
                         updatePropertie(values)
                     }else{
@@ -104,19 +152,34 @@ const CRUD=({
                 if(option=="Galerias"){
                     galerryAdd(values)
                 }
+                if(option=="Ofertas"){
+                    offerAdd(values)
+                }
+                if(option=="Precios"){
+                    priceAdd(values)
+                }
                 close()
            }
         })
      
         return (
-           <GenericModal
-              title={title}
-              close={close}
-              content={<Form formik={formik}/>}
-              actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}
-              necesary={necesary}
-              gallery={option=="Galerias"}
-           />
+            <>
+            {prices ?
+                <ModalElimiar
+                title={title}
+                close={close}
+                content={<Form formik={formik}/>}
+                actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}/>
+                :
+                <GenericModal
+                title={title}
+                close={close}
+                content={<Form formik={formik}/>}
+                actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}
+                necesary={necesary}//Si se ocupa el Abscroll
+                center={option=="Galerias"}/>
+            }</>
+           
         )
      }
 
@@ -131,19 +194,29 @@ const CRUD=({
         setoptionForm("Galerias")
         setNecesary(false)
     }
-    }, [predios,galleries]);
+    if(offers){
+        setEditForm(() => OfferForm);
+        setoptionForm("Ofertas")
+        setNecesary(false)
+    }
+    if(prices){
+        setEditForm(() => PricesForm);
+        setoptionForm("Precios")
+        setNecesary(false)
+    }
+    }, [predios,galleries,offers]);
 
     useEffect(() => {
             let newElements = data ? [...data] : [];
 
             if (supervision) setFilterStateSupervisions(formik.values.estado);
             if (offers) setFilterStateOffers(formik.values.estado);
-            //if () setFilterStatePrices(formik.values.estado);
+            if (prices) setFilterStatePrices(formik.values.estado);
 
             let searchText = formik?.values?.searchText?.toLowerCase()
             if (formik?.values?.estado!==undefined && formik?.values?.estado!=='' && filter) {
                 newElements = newElements.filter(item => 
-                    item.estado === formik.values.estado || item.is_visible === formik.values.estado
+                    item.estado === formik.values.estado || item.is_visible === formik.values.estado || item.isCurrent === formik.values.estado 
                 );
             }
 
@@ -217,13 +290,30 @@ const CRUD=({
                 })
             }
             
+            if(prices){
+                newElements= newElements.map((item)=>{
+                    const newItem = { ...item };
+                    columns.forEach((col)=>{
+                        if(col.attribute==="fechaRegistro"){
+                            newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                        }else if(col.attribute==="isCurrent"){
+                            newItem[col.attribute] ? newItem[col.attribute]= "actual": newItem[col.attribute]= "NoActual"
+                        }else if(col.attribute==="isJimated"){
+                             newItem[col.attribute] ? newItem[col.attribute]= "jimada": newItem[col.attribute]= "NoJimada"
+                        }else if(col.attribute==="anio"){
+                            newItem[col.attribute]=  newItem[col.attribute].anio
+                       }
+                    })
+                    return newItem
+                })
+            }
 
+            if(!prices)
             newElements = newElements.filter(item => {
                 return columns.some(col => {
                     return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
                 });
             });
-
             setElements(newElements)
     }, [data,formik.values]);
 
@@ -235,10 +325,9 @@ const CRUD=({
                      <div className='flex flex-row w-full gap-2'>
                      <InputSearch formik={formik}/>
                      <button onClick={()=>{
-                         if(predios)setSelectedItem(emptyPredio)
-                         if(galleries) setSelectedItem(emptyGalería)
-                         setAgregar(true)
-                         setModal(true)
+                        setSelectedItem(emptyGalería)
+                        setAgregar(true)
+                        setModal(true)
                      }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
                     {searchFilterAdd &&
                         <><InputSearch formik={formik}/>
@@ -248,7 +337,7 @@ const CRUD=({
                         undefined}
                         <button onClick={()=>{
                             if(predios)setSelectedItem(emptyPredio)
-                            if(galleries) setSelectedItem(emptyGalería)
+                            if(offers) setSelectedItem(emptyOffer)
                             setAgregar(true)
                             setModal(true)
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
@@ -259,6 +348,17 @@ const CRUD=({
                         offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
                         undefined}</>
                     }
+                    {switchFilterAdd &&
+                        <div className='flex flex-row gap-3 w-full'>
+                            <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
+                            <div className='flex flex-row gap-1 w-full'>
+                                <Switch/>
+                                <button onClick={()=>{
+                                    setSelectedItem(emptyPrice)
+                                    setAgregar(true)
+                                    setModal(true)
+                                }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>
+                        </div>}
                 </div>
             </div>
                 {modal && 
@@ -268,13 +368,15 @@ const CRUD=({
                     close={()=>setModal(false)}
                     title={
                         predios ? !agregar ? "Predio: "+selectedItem.nombre : "Nuevo Predio":
-                        galleries && "Nueva Galería"
+                        galleries ? "Nueva Galería":
+                        offers ? 'Nueva Oferta':
+                        prices && "Nuevo precio" 
                     }
                     option={optionForm}/>
                 }
                 {estatusdata==='pending' ? <Loader/>: 
                 estatusdata==='success' ?  
-                (elements?.length>0  ? 
+                (elements && elements.length>0  ? 
                 <>
                 <AbsScroll vertical horizontal>
                 <table className="custom-table">
@@ -294,13 +396,15 @@ const CRUD=({
                     </thead>
                     <tbody>
                         {elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className='hover:cursor-pointer h-[30px] bg-white hover:bg-blue-100' onClick={() => {
+                            <tr key={`TR_${i}`} className={`${galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
                                 navigate(`/${path}/${item.id}`);
                                 } else {
                                 setSelectedItem(item);
-                                setAgregar(false)
-                                setModal(true);
+                                    if(predios){
+                                        setAgregar(false)
+                                        setModal(true);
+                                    }
                                 }
                             }}>
                                 {columns.map((col, j) => (
