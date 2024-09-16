@@ -15,8 +15,8 @@ const OffersFilterData = [
 
 const PricesFilterData = [
     { name: 'Todos', value: '' },
-    { name: 'Actuales', value: 'actuales' },
-    { name: 'No actuales', value: 'noActuales' }
+    { name: 'Actuales', value: true },
+    { name: 'No actuales', value: false}
 ];
 
   export const Filters={

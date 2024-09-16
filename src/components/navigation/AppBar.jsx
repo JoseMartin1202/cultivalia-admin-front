@@ -13,7 +13,7 @@ export const AppBar = () => {
     const [isSmall,setIsSmall]=useState(false);
     const [hoverSmall,setHoverSmall]=useState(Array(6).fill(false));
     const isSmallScreen = useMediaQuery({ query: '(max-width: 639.9px)' });
-    const {setFilterState } = useApp();
+    const { setFilterStateSupervisions,setFilterStateOffers,setFilterStatePrices } = useApp();
     const { logout } = useSession();
 
     useEffect(() => {
@@ -76,7 +76,9 @@ export const AppBar = () => {
                     setHoverSmall(Array(6).fill(false));
                     setIsHover(false)
                     setSelectedOption(0)
-                    setFilterState('Pendiente')
+                    setFilterStateSupervisions('Pendiente')
+                    setFilterStateOffers('')
+                    setFilterStatePrices('')
                     logout()}}>
                     <Icons.LogOut className='size-8'/>
                     {isSmall &&<span>Salir</span>}

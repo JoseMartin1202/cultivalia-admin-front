@@ -25,7 +25,7 @@ const ColumnsDataOfertas=[
   {label:"Estado",attribute: "estado", Component: EstadoView},
   {label:"Predio",attribute: "predio", search:true},
   {label:"Estatus", attribute: "is_visible", Component: EstadoView },
-  {label:"Origen",attribute: "tipo",Component: EstadoView },
+  {label:"Origen",attribute: "tipo", Component: EstadoView },
   {label:"Fecha",attribute: "fecha_creacion"},
 ];
 
@@ -35,11 +35,11 @@ const ColumnsDataGallery=[
 ];
 
 const ColumnsDataPrecios=[
-  {label:"Precio"},
-  {label:"Año"},
-  {label:"Fecha registro"},
-  {label:"Es jimada"},
-  {label:"Precio actual"}
+  {label:"Precio",attribute:"precio"},
+  {label:"Año",attribute:"anio"},
+  {label:"Fecha registro",attribute:"fechaRegistro"},
+  {label:"Es jimada",attribute:"isJimated",Component: EstadoView},
+  {label:"Precio actual", attribute:"isCurrent",Component: EstadoView}
 ];
 
 export const Columns={

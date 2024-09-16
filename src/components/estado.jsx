@@ -65,6 +65,36 @@ const EstadoView = ({state}) => {
                 </span>
             );
 
+        case "jimada":
+            return(
+                <span className='total-center gap-2'>
+                    <p>Si</p>
+                    <Icons.jimated className='text-yellow-600 size-5'/>
+                </span>
+            );
+
+        case "actual":
+            return(
+                <span className='total-center gap-2'>
+                    <p>Si</p>
+                    <Icons.Complete className='text-[#279E54] size-5'/>
+                </span>
+            );
+
+        case "NoActual":
+            return(
+                <span className='total-center'>
+                    <p>No</p>
+                </span>
+            );
+
+        case "NoJimada":
+            return(
+                <span className='total-center'>
+                    <p>No</p>
+                </span>
+            );
+
         default://Finalizada
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
