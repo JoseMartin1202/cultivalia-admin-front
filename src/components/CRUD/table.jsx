@@ -21,6 +21,7 @@ import Switch from '../switch';
 import PricesForm from '../forms/PriceForm';
 import usePrice from '../../Server/Prices/PriceProvider';
 import ModalElimiar from '../modals/ModalEliminar';
+import GroupTable from './tableGroup';
 
 const CRUD=({
     columns, 
@@ -50,13 +51,15 @@ const CRUD=({
     const [editForm, setEditForm] = useState(null)
     const [agregar, setAgregar] = useState(false)
     const [optionForm, setoptionForm] = useState()
-    const [necesary, setNecesary] = useState(true)
-    
+    const [necesary, setNecesary] = useState(true);
+    const [yearsGroup, setyearsGroup] = useState();
+    const [colsGroup, setcolsGroup] = useState();
 
     const formik = useFormik({
         initialValues: {
             searchText: '',
             estado: supervision ? filterStateSupervisions :offers ? filterStateOffers:filterStatePrices ,
+            groupByYear: false
         }
     })
 
@@ -207,114 +210,139 @@ const CRUD=({
     }, [predios,galleries,offers]);
 
     useEffect(() => {
-            let newElements = data ? [...data] : [];
+        let newElements = data ? [...data] : []; 
+        let newCols=columns ? [...columns] : [];
+        let mark = new Map()// marks the idclient with the index in the list
+        let years = []
+        if (supervision) setFilterStateSupervisions(formik.values.estado);
+        if (offers) setFilterStateOffers(formik.values.estado);
+        if (prices) setFilterStatePrices(formik.values.estado);
 
-            if (supervision) setFilterStateSupervisions(formik.values.estado);
-            if (offers) setFilterStateOffers(formik.values.estado);
-            if (prices) setFilterStatePrices(formik.values.estado);
+        let searchText = formik?.values?.searchText?.toLowerCase()
+        if (formik?.values?.estado!==undefined && formik?.values?.estado!=='' && filter) {
+            newElements = newElements.filter(item => 
+                item.estado === formik.values.estado || item.is_visible === formik.values.estado || item.isCurrent === formik.values.estado 
+            );
+        }
 
-            let searchText = formik?.values?.searchText?.toLowerCase()
-            if (formik?.values?.estado!==undefined && formik?.values?.estado!=='' && filter) {
-                newElements = newElements.filter(item => 
-                    item.estado === formik.values.estado || item.is_visible === formik.values.estado || item.isCurrent === formik.values.estado 
-                );
-            }
-
-            if(supervision){
-                newElements= newElements.map((item)=>{
-                    const newItem = { ...item };
-                    columns.forEach((col)=>{ 
-                        if(col.attribute === "supervisar") {
-                            newItem[col.attribute] = newItem[col.attribute].length > 50
-                            ? newItem[col.attribute].substring(0, 50) + "..."
-                            : newItem[col.attribute];
-                        }else if(col.attribute === "entidad"){
-                            newItem[col.attribute]= newItem["tipoMovimiento"].nombre+" "+newItem["entidad"].nombre
-                        }else if(col.attribute === "fechaRegistro"){
-                            newItem[col.attribute]= newItem[col.attribute].split('T')[0]
-                        }    
-                    })
-                    return newItem
+        if(supervision){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{ 
+                    if(col.attribute === "supervisar") {
+                        newItem[col.attribute] = newItem[col.attribute].length > 50
+                        ? newItem[col.attribute].substring(0, 50) + "..."
+                        : newItem[col.attribute];
+                    }else if(col.attribute === "entidad"){
+                        newItem[col.attribute]= newItem["tipoMovimiento"].nombre+" "+newItem["entidad"].nombre
+                    }else if(col.attribute === "fechaRegistro"){
+                        newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                    }    
                 })
-            }
-            
-            if(predios){
-                newElements= newElements.map((item)=>{
-                    const newItem = { ...item };
-                    columns.forEach((col)=>{
-                        if(col.attribute==="anio"){
-                            newItem[col.attribute]= newItem[col.attribute].anio
-                        }else if(col.attribute==="galeria"){
-                            newItem[col.attribute]= newItem[col.attribute].titulo
-                        }
-                    })
-                    return newItem
+                return newItem
+            })
+        }
+        
+        if(predios){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="anio"){
+                        newItem[col.attribute]= newItem[col.attribute].anio
+                    }else if(col.attribute==="galeria"){
+                        newItem[col.attribute]= newItem[col.attribute].titulo
+                    }
                 })
-            }
+                return newItem
+            })
+        }
 
-            if(galleries){
-                newElements= newElements.map((item)=>{
-                    const newItem = { ...item };
-                    columns.forEach((col)=>{
-                        if(col.attribute==="fecha"){
-                            newItem[col.attribute]= newItem[col.attribute].split('T')[0]
-                        }
-                    })
-                    return newItem
+        if(galleries){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="fecha"){
+                        newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                    }
                 })
-            }
+                return newItem
+            })
+        }
 
-            if(offers){
-                newElements= newElements.map((item)=>{
-                    const newItem = { ...item };
-                    columns.forEach((col)=>{
-                        if(col.attribute==="fecha_creacion"){
-                            newItem[col.attribute]= newItem[col.attribute].split('T')[0]
-                        }else if(col.attribute==="predio"){
-                            newItem[col.attribute]= newItem[col.attribute].nombre
-                        }else if(col.attribute==="precio_planta"){
+        if(offers){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="fecha_creacion"){
+                        newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                    }else if(col.attribute==="predio"){
+                        newItem[col.attribute]= newItem[col.attribute].nombre
+                    }else if(col.attribute==="precio_planta"){
+                        newItem[col.attribute]="$ "+newItem[col.attribute]
+                    }else if(col.attribute==="is_visible"){
+                        if(newItem[col.attribute])
+                            newItem[col.attribute]="Visible"
+                        else
+                            newItem[col.attribute]="No visible"
+                    }else if(col.attribute==="precio_reventa"){
+                        if(newItem[col.attribute])
                             newItem[col.attribute]="$ "+newItem[col.attribute]
-                        }else if(col.attribute==="is_visible"){
-                            if(newItem[col.attribute])
-                                newItem[col.attribute]="Visible"
-                            else
-                                newItem[col.attribute]="No visible"
-                        }else if(col.attribute==="precio_reventa"){
-                            if(newItem[col.attribute])
-                                newItem[col.attribute]="$ "+newItem[col.attribute]
-                            else
-                                newItem[col.attribute]="- - -"
-                        }
-                    })
-                    return newItem
+                        else
+                            newItem[col.attribute]="- - -"
+                    }
                 })
-            }
-            
-            if(prices){
-                newElements= newElements.map((item)=>{
-                    const newItem = { ...item };
-                    columns.forEach((col)=>{
-                        if(col.attribute==="fechaRegistro"){
-                            newItem[col.attribute]= newItem[col.attribute].split('T')[0]
-                        }else if(col.attribute==="isCurrent"){
-                            newItem[col.attribute] ? newItem[col.attribute]= "actual": newItem[col.attribute]= "NoActual"
-                        }else if(col.attribute==="isJimated"){
-                             newItem[col.attribute] ? newItem[col.attribute]= "jimada": newItem[col.attribute]= "NoJimada"
-                        }else if(col.attribute==="anio"){
-                            newItem[col.attribute]=  newItem[col.attribute].anio
-                       }
-                    })
-                    return newItem
+                return newItem
+            })
+        }
+        
+        if(prices){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="fechaRegistro"){
+                        newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                    }else if(col.attribute==="isCurrent"){
+                        newItem[col.attribute] ? newItem[col.attribute]= "actual": newItem[col.attribute]= "NoActual"
+                    }else if(col.attribute==="isJimated"){
+                            newItem[col.attribute] ? newItem[col.attribute]= "jimada": newItem[col.attribute]= "NoJimada"
+                    }else if(col.attribute==="anio"){
+                        newItem[col.attribute]= newItem[col.attribute].anio
+                    }else if(col.attribute==="precio"){
+                        newItem[col.attribute]= "$ "+newItem[col.attribute]
+                    }
                 })
-            }
+                return newItem
+            })
 
-            if(!prices)
-            newElements = newElements.filter(item => {
-                return columns.some(col => {
-                    return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
-                });
+            // Gruping by years
+            newElements.forEach(p => {
+                let yCopy = { ...p };
+                if (!mark.has(p.anio)) {
+                    mark.set(p.anio, years.length)
+                    delete yCopy.id;
+                    delete yCopy.anio;
+                    years.push({
+                        anio:p.anio,
+                        precios:[yCopy]
+                    })
+                }else{
+                    let anio = years[mark.get(p.anio)]
+                    delete yCopy.id;
+                    delete yCopy.anio;
+                    anio.precios.push(yCopy)
+                }
+            })
+            setcolsGroup(newCols.splice(1,1))
+            setyearsGroup(years)
+        }
+
+        if(!prices)
+        newElements = newElements.filter(item => {
+            return columns.some(col => {
+                return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
             });
-            setElements(newElements)
+        });
+        setElements(newElements)
     }, [data,formik.values]);
 
     return(
@@ -352,7 +380,7 @@ const CRUD=({
                         <div className='flex flex-row gap-3 w-full'>
                             <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
                             <div className='flex flex-row gap-1 w-full'>
-                                <Switch/>
+                                <Switch formik={formik}/>
                                 <button onClick={()=>{
                                     setSelectedItem(emptyPrice)
                                     setAgregar(true)
@@ -387,6 +415,11 @@ const CRUD=({
                                     <p>{col.label}</p>
                                 </th>
                             )):
+                            formik.values.groupByYear && prices?
+                            <th className={'h-[35px] bg-[#E2E8F0]'}>
+                                <p>Año</p>
+                            </th>
+                            :
                             columns.map((col, i) =>(
                                 <th className={'h-[35px] bg-[#E2E8F0]'} key={`TH_${i}`}>
                                     <p>{col.label}</p>
@@ -395,7 +428,8 @@ const CRUD=({
                         </tr>
                     </thead>
                     <tbody>
-                        {elements.map((item, i) => (
+                        {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
+                        elements.map((item, i) => (
                             <tr key={`TR_${i}`} className={`${galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
                                 navigate(`/${path}/${item.id}`);
