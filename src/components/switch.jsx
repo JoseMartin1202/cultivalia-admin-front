@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 
-const Switch = () => {
+const Switch = ({formik}) => {
     const [isOn, setIsOn] = useState(false);
 
     const toggleSwitch = () => {
-        setIsOn(!isOn);
+        const newIsOn = !isOn;
+        setIsOn(newIsOn);
+        formik.setFieldValue('groupByYear', newIsOn);
     };
 
     return (

@@ -52,7 +52,7 @@ const OfferForm = ({formik}) => {
     },[vendedores,vendedoresStatus,formik.values.vendedor])
 
     return (
-    <div className='p-6 flex flex-col w-full items-center gap-3'>
+    <div className='p-6 flex flex-col w-full items-center gap-4'>
         <div className='flex flex-row w-full sm:items-center sm:gap-3 max-sm:flex-col'>
             <p className='font-bold min-w-fit'>Tipo de oferta:</p>
             <div className='relative w-full min-w-fit'>
@@ -65,6 +65,30 @@ const OfferForm = ({formik}) => {
                 >
                     <option value='Directa'>Directa</option>
                     <option value='Indirecta'>Indirecta</option>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
+                    <Icons.ArrowDown className='size-[80%]' />
+                </div>
+            </div>
+        </div>
+        <div className='flex flex-col w-full sm:flex-row sm:items-center sm:gap-3'>
+            <p className='font-bold'>Predio:</p>
+            <div className='relative w-full min-w-fit'>
+                <select
+                    className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
+                    onChange={formik.handleChange}
+                    id="predio"
+                    name="predio"
+                    value={formik.values.predio} 
+                >
+                    { 
+                    propertiesStatus==='success' && properties?.length>0 && (
+                        <>
+                        {properties.map((p,i)=>(
+                            <option key={i} value={p.id}>{p.nombre}</option>
+                        ))} 
+                        </>
+                    )}
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
                     <Icons.ArrowDown className='size-[80%]' />
@@ -102,30 +126,6 @@ const OfferForm = ({formik}) => {
                         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
                             <Icons.ArrowDown className='size-[80%]' />
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div className='flex flex-col w-full'>
-                <p className='font-bold'>Predio:</p>
-                <div className='relative w-full min-w-fit'>
-                    <select
-                        className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                        onChange={formik.handleChange}
-                        id="predio"
-                        name="predio"
-                        value={formik.values.predio} 
-                    >
-                        { 
-                        propertiesStatus==='success' && properties?.length>0 && (
-                            <>
-                            {properties.map((p,i)=>(
-                                <option key={i} value={p.id}>{p.nombre}</option>
-                            ))} 
-                            </>
-                        )}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                        <Icons.ArrowDown className='size-[80%]' />
                     </div>
                 </div>
             </div>
