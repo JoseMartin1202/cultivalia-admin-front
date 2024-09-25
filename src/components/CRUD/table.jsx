@@ -68,7 +68,7 @@ const CRUD=({
         const { galerryAdd } = useGalleries();
         const { offerAdd } = useOffer(item.id);
         const { priceAdd } = usePrice();
-
+        
         const formik = useFormik({
             initialValues: item,
             validationSchema : Yup.object().shape(
@@ -233,8 +233,12 @@ const CRUD=({
                         newItem[col.attribute] = newItem[col.attribute].length > 50
                         ? newItem[col.attribute].substring(0, 50) + "..."
                         : newItem[col.attribute];
-                    }else if(col.attribute === "entidad"){
-                        newItem[col.attribute]= newItem["tipoMovimiento"].nombre+" "+newItem["entidad"].nombre
+                    }else if(col.attribute === "mov"){
+                        if(newItem["movimiento"].tipo_movimiento==="PagoEntrante"){
+                            newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" por "+newItem["movimiento"].data.metodo
+                        }else{
+                            newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" "+newItem["movimiento"].data.nombre
+                        }
                     }else if(col.attribute === "fechaRegistro"){
                         newItem[col.attribute]= newItem[col.attribute].split('T')[0]
                     }    
@@ -250,7 +254,7 @@ const CRUD=({
                     if(col.attribute==="anio"){
                         newItem[col.attribute]= newItem[col.attribute].anio
                     }else if(col.attribute==="galeria"){
-                        newItem[col.attribute]= newItem[col.attribute].titulo
+                        newItem[col.attribute]= newItem[col.attribute]?.titulo
                     }
                 })
                 return newItem
@@ -276,7 +280,8 @@ const CRUD=({
                     if(col.attribute==="fecha_creacion"){
                         newItem[col.attribute]= newItem[col.attribute].split('T')[0]
                     }else if(col.attribute==="predio"){
-                        newItem[col.attribute]= newItem[col.attribute].nombre
+                        console.log( newItem[col.attribute])
+                        newItem[col.attribute]= newItem["predio_data"].nombre
                     }else if(col.attribute==="precio_planta"){
                         newItem[col.attribute]="$ "+newItem[col.attribute]
                     }else if(col.attribute==="is_visible"){
@@ -336,12 +341,14 @@ const CRUD=({
             setyearsGroup(years)
         }
 
-        if(!prices)
-        newElements = newElements.filter(item => {
-            return columns.some(col => {
-                return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
+        if(!prices){
+            newElements = newElements.filter(item => {
+                return columns.some(col => {
+                    return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
+                });
             });
-        });
+        }
+
         setElements(newElements)
     }, [data,formik.values]);
 
@@ -353,7 +360,8 @@ const CRUD=({
                      <div className='flex flex-row w-full gap-2'>
                      <InputSearch formik={formik}/>
                      <button onClick={()=>{
-                        setSelectedItem(emptyGalería)
+                        if(predios) setSelectedItem(emptyPredio)
+                        if(galleries) setSelectedItem(emptyGalería)
                         setAgregar(true)
                         setModal(true)
                      }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
@@ -364,8 +372,7 @@ const CRUD=({
                         offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
                         undefined}
                         <button onClick={()=>{
-                            if(predios)setSelectedItem(emptyPredio)
-                            if(offers) setSelectedItem(emptyOffer)
+                            setSelectedItem(emptyOffer)
                             setAgregar(true)
                             setModal(true)
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>

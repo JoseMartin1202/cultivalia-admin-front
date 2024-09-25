@@ -7,27 +7,65 @@ import useSupervision from '../../Server/Supervisions/SupervisionProvider';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import { getErrorMessage, valueFromId } from '../../constants/functions';
+import { PhotosModal } from '../Galeria/DetailsGalery';
 
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
     const { supervisionId } = useParams();
     const { supervision, supervisionStatus, updateSupervision } = useSupervision(supervisionId);
-    const back = import.meta.env.VITE_BACKEND_HOST;
+    const [verFotos,setverFotos]= useState(false)
     const [bgOption, setbgOption] = useState('');
+    const [initIndex, setInitIndex] = useState(0)
+    const [loading, setLoading] = useState(true)
 
-    const supervisionData = [
-        { label: 'Nombre completo', value: `${supervision?.entidad.nombre} ${supervision?.entidad.apellidos}` },
-        { label: 'Sexo', value: supervision?.entidad.sexo === 'M' ? 'Masculino' : 'Femenino' },
-        { label: 'Teléfono', value: supervision?.entidad.telefono },
-        { label: 'Correo', value: supervision?.entidad.correo },
-        { label: 'Nacionalidad', value: supervision?.entidad.nacionalidad },
-        { label: 'Dirección', value: supervision?.entidad.direccion },
-        { label: 'CP', value: supervision?.entidad.codigoPostal },
-        { label: 'Ciudad', value: supervision?.entidad.ciudad },
-        { label: 'Tipo de movimiento', value: supervision?.tipoMovimiento.nombre },
-        { label: 'Fecha de registro', value: supervision?.fechaRegistro.split('T')[0] },
-      ];
-      
+    const supervisionData = []
+    const ImagenesData=[]
+
+   
+    if(supervision?.movimiento?.tipo_movimiento === 'Beneficiario' || supervision?.movimiento?.tipo_movimiento === 'Inversor'){
+        ImagenesData.push( 
+            supervision?.movimiento?.data?.credencialFrente,
+            supervision?.movimiento?.data?.credencialReverso
+        )
+    }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
+        ImagenesData.push( supervision?.movimiento?.data.comprobante)
+    }
+
+    if (supervision?.movimiento?.tipo_movimiento === 'Inversor') {
+        supervisionData.push(
+            { label: 'Nombre completo', value: `${supervision?.movimiento?.data?.nombre} ${supervision?.movimiento?.data?.apellidos}` },
+            { label: 'Teléfono', value: supervision?.movimiento?.data?.telefono }, 
+            { label: 'Fecha de nacimiento', value: supervision?.movimiento?.data?.fechaNacimiento },
+            { label: 'Sexo', value: supervision?.movimiento?.data?.sexo =="M" ? "Masculino":"Femenino"},
+            { label: 'Nacionalidad', value: supervision?.movimiento?.data?.nacionalidad },
+            { label: 'Dirección', value: supervision?.movimiento?.data?.direccion },
+            { label: 'Colonia', value: supervision?.movimiento?.data?.colonia },
+            { label: 'Código postal', value: supervision?.movimiento?.data?.codigoPostal },
+            { label: 'Ciudad', value: supervision?.movimiento?.data?.ciudad },
+            { label: 'Estado', value: supervision?.movimiento?.data?.estado !='[Please select]' ?supervision?.movimiento?.data?.parentesco :''},
+            { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
+            { label: 'Correo', value: supervision?.movimiento?.data?.correo },
+        );
+    }else if (supervision?.movimiento?.tipo_movimiento === 'Beneficiario') {
+        supervisionData.push(
+            { label: 'Nombre completo', value: `${supervision?.movimiento?.data?.nombre} ${supervision?.movimiento?.data?.apellidos}` },
+            { label: 'Teléfono', value: supervision?.movimiento?.data?.telefono },
+            { label: 'Sexo', value: supervision?.movimiento?.data?.sexo =="M" ? "Masculino":"Femenino"},
+            { label: 'Correo', value: supervision?.movimiento?.data?.correo },
+            { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
+        );
+    }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
+        supervisionData.push(
+            { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
+            { label: 'Monto', value: supervision?.movimiento?.data?.monto },
+            { label: 'Método', value: supervision?.movimiento?.data?.metodo },
+            { label: 'Comentarios', value: supervision?.movimiento?.data?.comentarios},
+            { label: 'Inversor', value: `${supervision?.movimiento?.data?.inversor.nombre} ${supervision?.movimiento?.data?.inversor.apellidos}`},
+            { label: 'Fecha de la venta', value: supervision?.movimiento?.data?.venta.fecha.split('T')[0] },
+            { label: 'Monto de la venta', value: supervision?.movimiento?.data?.venta.monto },
+        );
+    }
+
 
     const formik = useFormik({
         initialValues: {
@@ -80,7 +118,16 @@ export const DetailsSupervisions = () => {
     }
 
     return (
-        <form onSubmit={formik.handleSubmit} className='sm:ml-14 size-full gap-4 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] max-sm:overflow-y-auto max-sm:mb-2 h-screen'>
+        <>
+        {verFotos &&
+            <PhotosModal
+               photos={ImagenesData}
+               onClose={() => setverFotos(false)}
+               initIndex={initIndex}
+               supervision={true}
+            />
+        } 
+        <form onSubmit={formik.handleSubmit} className='sm:pl-[4.5rem] size-full gap-4 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] max-sm:overflow-y-auto max-sm:mb-2 h-screen'>
             <div className='flex flex-row w-full gap-4 max-md:flex-col-reverse flex-grow '>
                 <div className='flex flex-col w-1/2 gap-4 h-full max-md:flex-row max-md:w-full max-md:h-1/2'>
                     <div className='flex flex-col flex-1 max-md:max-w-[50%]'>
@@ -110,22 +157,22 @@ export const DetailsSupervisions = () => {
                 </div>
                 <div className='relative w-1/2 shadow-lg shadow-black/30 bg-white rounded-2xl max-md:w-full max-md:h-1/2 overflow-y-auto'>
                     <div className='absolute w-full top-4 flex flex-col items-center gap-2 pb-4 '>
-                        { supervision?.entidad.credencialFrente ? 
-                            <img className='size-[90%]' src={back + supervision?.entidad.credencialFrente} />:
-                            <div className=' size-[90%] total-center border-2 border-gray-300 rounded-lg'>
-                                <Icons.EmptyImage className='size-20'/>
+                        { ImagenesData.map((item,i)=>(
+                            item ?
+                            <>{loading&& <Loader/>}
+                            <img className={`size-[95%] hover:cursor-pointer ${loading ? 'invisible' : 'visible'}`} src={item} 
+                            onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
+                            onLoad={() => setLoading(false)}/></>: 
+                            
+                            <div className=' size-[95%] total-center border-2 border-gray-300 rounded-lg'>
+                                <Icons.EmptyImage className='size-20 text-gray-500'/>
                                 <p>Sin imagen</p>
                             </div>
+                            
+                            ))
                         }
-                        { supervision?.entidad.credencialReverso ? 
-                            <img className='size-[90%]' src={back + supervision?.entidad.credencialReverso} />:
-                            <div className=' size-[90%] total-center border-2 border-gray-300 rounded-lg'>
-                                <Icons.EmptyImage className='size-20'/>
-                                <p>Sin imagen</p>
-                            </div>
-                        }
-                        <div className='size-[90%] border-2 border-gray-300 px-2 rounded-lg text-lg'>
-                            <p className='font-bold text-3xl text-center'>RESUMEN GENERAL</p>
+                        <div className='size-[95%] border-2 border-gray-300 px-2 rounded-lg text-lg'>
+                            <p className='font-bold text-3xl pb-3 text-center'>RESUMEN GENERAL</p>
                             {supervisionData.map((item, index) => (
                             <p key={index}>
                                 <span className='font-bold'>{item.label}:</span> {item.value ? item.value:"---"}
@@ -162,6 +209,7 @@ export const DetailsSupervisions = () => {
                 </div>
             </div>
         </form>
+        </>
     );
 }
 

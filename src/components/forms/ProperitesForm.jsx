@@ -21,7 +21,7 @@ const PropertiesForm = ({formik}) => {
             if(gallerySelected){
                 formik.setFieldValue('galeria', gallerySelected.id)
             }else{
-                formik.setFieldValue('galeria', galleries[0].id);
+                formik.setFieldValue('galeria', 'ninguna');
             }
        }
     }, [yearsStatus, galleriesStatus, galleries, years]);
@@ -84,6 +84,7 @@ const PropertiesForm = ({formik}) => {
                         { 
                         galleriesStatus==='success' && galleries?.length>0 && (
                             <>
+                            <option value={'ninguna'}>Ninguna</option>
                             {galleries.map((g,i)=>(
                                 <option key={i} value={g.id}>{g.titulo}</option>
                             ))} 

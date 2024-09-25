@@ -18,7 +18,6 @@ export const DetailsGallery=()=>{
     const navigate =useNavigate();
     const { galleryId } = useParams();
     const {deletePhotosStatus,dropPhotoStatus,deletePhotos,dropPhoto, photosGallery, photosGalleryStatus}= useGallery(galleryId)
-    const back = import.meta.env.VITE_BACKEND_HOST;
     const [eliminarTodas, setEliminarTodas] = useState(false)
     const [modal, setModal] = useState(false)
     const [eliminando, setEliminando] = useState(false)
@@ -27,6 +26,7 @@ export const DetailsGallery=()=>{
     const [photoId, setphotoId] = useState()
     const [showFormModal, setShowFormModal] = useState(false)
     const [initIndex, setInitIndex] = useState(0)
+    const [loading, setLoading] = useState(true)
 
     useEffect(() => {
         const updateColumns = () => {
@@ -111,7 +111,6 @@ export const DetailsGallery=()=>{
            photos={photosGallery}
            onClose={() => setShowPhoto(false)}
            initIndex={initIndex}
-           back={back}
         />
     } 
     <div className='sm:ml-14 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto'>
@@ -180,7 +179,9 @@ export const DetailsGallery=()=>{
                 (photosGallery.length>0 && 
                     photosGallery.map((photo,i)=>(
                         <div key={i} className='w-full h-40 rounded-2xl relative'>
-                            <img src={back+photo.file} className='hover:cursor-pointer size-full object-cover max-h-40 rounded-2xl' onClick={()=>{ setInitIndex(i);setShowPhoto(true)}}/>
+                            {loading&& <Loader/>}
+                            <img src={photo.file} className={`over:cursor-pointer size-full object-cover max-h-40 rounded-2xl ${loading ? 'invisible' : 'visible'}`} 
+                            onClick={()=>{ setInitIndex(i);setShowPhoto(true)}}  onLoad={() => setLoading(false)}/>
                             <button className='absolute top-0 right-0 bg-gray-700/70 rounded-s-lg rounded-se-2xl rounded-ee-lg' 
                             onClick={()=>{setphotoId(photo.id); setEliminarTodas(false); setModal(true)}}>
                             <Icons.Trash className='size-8 p-2 text-red-500' /></button>
@@ -253,7 +254,7 @@ const FormModal = ({ close, title, id }) => {
     )
  }
 
- const PhotosModal = ({ onClose, initIndex, photos,back }) => {
+export const PhotosModal = ({ onClose, initIndex, photos, supervision }) => {
     const [selectedImg, setSelectedImg] = useState(initIndex)
     const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
     const [isSmall,setIsSmall]=useState(false);
@@ -305,7 +306,8 @@ const FormModal = ({ close, title, id }) => {
           <div className='absolute size-full left-0 top-0' onClick={onClose}></div>
           <div className='py-10 px-14 max-sm:px-2 size-full total-center'>
              <div className='relative w-full h-auto p-1  md:w-auto md:h-full'>
-                <Image src={back+photos[selectedImg].file} alt="" />
+                {supervision ? <Image src={photos[selectedImg]} alt="" />:
+                <Image src={photos[selectedImg].file} alt="" />}
              </div>
           </div>
  
