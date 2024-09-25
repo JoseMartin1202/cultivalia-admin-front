@@ -19,7 +19,9 @@ const usePropertie=(propertieId)=>{
     }
 
     const addPredio = async(values) =>{
-        console.log(values)
+        if(values.galeria=="ninguna"){
+            values.galeria=null;
+        }
         const res= await myAxios.post(`predio/`,values);
         return res.data
     }

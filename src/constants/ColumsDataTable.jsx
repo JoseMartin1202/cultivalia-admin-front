@@ -1,7 +1,7 @@
 import EstadoView from "../components/estado";
 
 const ColumnsDataHome= [
-    { label: "Supervisión", attribute:"entidad", search:true},
+    { label: "Supervisión", attribute:"mov", search:true},
     { label: "Descripción", attribute: "supervisar", search:true},
     { label: "Estado", attribute: "estado",Component: EstadoView },
     { label: "Fecha", attribute: "fechaRegistro" } 
