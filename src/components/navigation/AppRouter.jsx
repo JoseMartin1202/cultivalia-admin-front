@@ -2,7 +2,6 @@ import { React, useEffect, useState } from 'react'
 import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import AppBar from './AppBar'
 import HomeScreen from '../../screens/Home/HomeScreen'
-import Contract from '../../screens/Contratos/Contract'
 import Login from '../../screens/Auth/Login'
 import Properties from '../../screens/Predios/Properties'
 import Gallery from '../../screens/Galeria/Gallery'
@@ -14,19 +13,18 @@ import useSession from '../../Server/Session/SessionProvider'
 
 export const appRoutes={
     SuperAdmin: [
-        { exact: true, path: '*', element: <Navigate to="/supervisiones" /> },
         { path: '/supervisiones', element: <HomeScreen/> },
         { path: '/predios', element: <Properties/> },
         { path: '/galeria', element: <Gallery/> },
         { path: '/precios', element: <Prices/> },
-        { path: '/contratos', element: <Contract/> },
         { path: '/ofertas', element: <Offers/> },
         { path: '/detallesSupervision/:supervisionId', element: <DetailsSupervisions/> },
         { path: '/detallesGaleria/:galleryId', element: <DetailsGallery/> },
+        { path: '*', element: <Navigate to="/supervisiones" /> },
     ],
     auth: [
-        { exact: true, path: '*', element: <Navigate to="/login" /> },
         { path: '/login', element: <Login/> },
+        { path: '*', element: <Navigate to="/login" /> },
     ]
 }
 

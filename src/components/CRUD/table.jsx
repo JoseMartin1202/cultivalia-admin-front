@@ -1,4 +1,4 @@
-import React,{useEffect, useState } from 'react'
+import React,{useEffect, useMemo, useState } from 'react'
 import { Icons } from '../../constants/Icons';
 import { useNavigate } from 'react-router-dom';
 import '../../index.css'
@@ -9,7 +9,7 @@ import { useFormik } from 'formik';
 import { useApp } from '../../context/AppContext';
 import GenericModal from '../modals/GenericModal';
 import PropertiesForm from '../forms/ProperitesForm';
-import { emptyGalería, emptyOffer, emptyPredio, emptyPrice } from '../../constants/functions';
+import { emptyGaleria, emptyOffer, emptyPredio, emptyPrice } from '../../constants/functions';
 import usePropertie from '../../Server/Properties/PropertieProvider';
 import * as Yup from 'yup';
 import GalleryForm from '../forms/GalleryForm';
@@ -54,6 +54,7 @@ const CRUD=({
     const [necesary, setNecesary] = useState(true);
     const [yearsGroup, setyearsGroup] = useState();
     const [colsGroup, setcolsGroup] = useState();
+    const closeModal = () => setModal(false);
 
     const formik = useFormik({
         initialValues: {
@@ -65,84 +66,109 @@ const CRUD=({
 
     const EditViewModal = ({ Form, item, close,title,option}) => {
         const { updatePropertie, propertieAdd } = usePropertie(item.id);
-        const { galerryAdd } = useGalleries();
-        const { offerAdd } = useOffer(item.id);
-        const { priceAdd } = usePrice();
+        const { galerryAdd } = option === 'Galerias' ? useGalleries() : {};
+        const { offerAdd } = option === 'Ofertas' ? useOffer() : {};
+        const { priceAdd } = option === 'Precios' ? usePrice() : {};
         
+        const validationSchema = useMemo(() => {
+            return Yup.object()
+              .shape(
+                Object.keys(item).reduce((schema, key) => {
+                  schema[key] = Yup.mixed().required('Obligatorio');
+                  return schema;
+                }, {})
+              )
+              .concat(
+                option === "Predios"
+                  ? Yup.object().shape({
+                      plantasDisponibles: Yup.number().test(
+                        'is-less-than-plantasTotales',
+                        'No disponible',
+                        function (value) {
+                          const { plantasTotales } = this.parent;
+                          return value <= plantasTotales;
+                        }
+                      ),
+                      plantasTotales: Yup.number()
+                        .required('Obligatorio')
+                        .test('is-more-than-0', 'Obligatorio', function (value) {
+                          return value > 0;
+                        }),
+                      hectareas: Yup.number()
+                        .required('Obligatorio')
+                        .test('is-more-than-0', 'Obligatorio', function (value) {
+                          return value > 0;
+                        }),
+                      photo_cover: Yup.string().nullable(),
+                    })
+                  : option === "Ofertas"
+                  ? Yup.object().shape({
+                      plantas_totales_directa: Yup.number().when('tipo', {
+                        is: 'Directa',
+                        then: (schema) =>
+                          schema
+                            .required('El campo es obligatorio')
+                            .test(
+                              'is-less-than-disponibles',
+                              'No disponible',
+                              function (value) {
+                                const { plantas_disponibles_directa } = this.parent;
+                                return value <= plantas_disponibles_directa && value > 0;
+                              }
+                            ),
+                        otherwise: (schema) => schema.notRequired(),
+                      }),
+                      plantas_totales_indirecta: Yup.number().when('tipo', {
+                        is: 'Indirecta',
+                        then: (schema) =>
+                          schema
+                            .required('El campo es obligatorio')
+                            .test(
+                              'is-less-than-disponibles',
+                              'No disponible',
+                              function (value) {
+                                const { plantas_disponibles_indirecta } = this.parent;
+                                return value <= plantas_disponibles_indirecta && value > 0;
+                              }
+                            ),
+                        otherwise: (schema) => schema.notRequired(),
+                      }),
+                      plantas_disponibles_indirecta: Yup.number().when('tipo', (tipo, schema) => {
+                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+                      }),
+                      precio_reventa: Yup.number().when('tipo', (tipo, schema) => {
+                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+                      }),
+                      predio_indirecta: Yup.string().when('tipo', (tipo, schema) => {
+                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+                      }),
+                      predio_directa: Yup.string().when('tipo', (tipo, schema) => {
+                        return tipo == 'Directa' ? schema.required('Requerido') : schema.notRequired();
+                      }),
+                      distribucion: Yup.string().when('tipo', (tipo, schema) => {
+                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+                      }),
+                      vendedor: Yup.string().when('tipo', (tipo, schema) => {
+                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+                      }),
+                    })
+                  : option === "Precios"
+                  ? Yup.object().shape({
+                      precio: Yup.number().test(
+                        'is-greater-than-0',
+                        'No válido',
+                        function (value) {
+                          return value > 0;
+                        }
+                      ),
+                    })
+                  : Yup.object({})
+              );
+          }, [item, option]);
+
         const formik = useFormik({
             initialValues: item,
-            validationSchema : Yup.object().shape(
-            Object.keys(item).reduce((schema, key) => {
-                schema[key] = Yup.mixed().required('Obligatorio');
-                return schema;
-            }, {})
-            ).concat(
-                option === "Predios" ? Yup.object().shape({
-                    plantasDisponibles: Yup.number()
-                        .test(
-                            'is-less-than-plantasTotales',//nombre prueba
-                            'No disponible',//mensaje de error
-                            function (value) {
-                                const { plantasTotales } = this.parent;
-                                return value <= plantasTotales;
-                            }
-                        ),
-                    plantasTotales: Yup.number().required('Obligatorio')
-                        .test(
-                            'is-more-that-0',//nombre prueba
-                            'Obligatorio',//mensaje de error
-                            function (value) {
-                                return value > 0;
-                            }
-                        ),
-                    hectareas: Yup.number().required('Obligatorio')
-                    .test(
-                        'is-more-that-0',//nombre prueba
-                        'Obligatorio',//mensaje de error
-                        function (value) {
-                            return value > 0;
-                        }
-                    ),
-                }) : 
-                option === "Ofertas" ? Yup.object().shape({
-                    plantas_totales: Yup.number()
-                    .test(
-                        'is-less-than-disponibles',//nombre prueba
-                        'No disponible',//mensaje de error
-                        function (value) {
-                            const { plantas_disponibles } = this.parent;
-                            return value <= plantas_disponibles && value>0;
-                        }
-                    ),
-                    precio_reventa: Yup.number()
-                    .when('tipo', (tipo, schema) => {
-                        if (tipo == "Indirecta") {
-                            return schema
-                            .required('Requerido')
-                            .test(
-                                'disponibles',
-                                'No disponible',
-                                function (value) {
-                                    console.log("entra")
-                                    const { plantas_disponibles } = this.parent;
-                                    return value <= plantas_disponibles && value > 0;
-                                }
-                            );
-                        }
-                        return schema.notRequired();
-                    }),
-                }) : 
-                option === "Precios" ?  Yup.object().shape({
-                    precio: Yup.number()
-                    .test(
-                        'is-less-0',//nombre prueba
-                        'No valido',//mensaje de error
-                        function (value) {
-                            return value>0;
-                        }
-                    ),
-                }) : Yup.object({})
-            ),
+            validationSchema : validationSchema,
             onSubmit: async (values) => {
                 if(option=="Predios"){
                     if(item.id){//saber si se seleccionó o es nuevo
@@ -164,7 +190,10 @@ const CRUD=({
                 close()
            }
         })
-     
+        
+        console.log(formik.values)
+        
+        const actions = useMemo(() => [{ label: "Guardar", onClick: formik.handleSubmit }], [formik.handleSubmit]);
         return (
             <>
             {prices ?
@@ -172,13 +201,13 @@ const CRUD=({
                 title={title}
                 close={close}
                 content={<Form formik={formik}/>}
-                actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}/>
+                actions={actions}/>
                 :
                 <GenericModal
                 title={title}
                 close={close}
                 content={<Form formik={formik}/>}
-                actions={[{ label: "Guardar", onClick: formik.handleSubmit}]}
+                actions={actions}
                 necesary={necesary}//Si se ocupa el Abscroll
                 center={option=="Galerias"}/>
             }</>
@@ -200,14 +229,14 @@ const CRUD=({
     if(offers){
         setEditForm(() => OfferForm);
         setoptionForm("Ofertas")
-        setNecesary(false)
+        setNecesary(true)
     }
     if(prices){
         setEditForm(() => PricesForm);
         setoptionForm("Precios")
         setNecesary(false)
     }
-    }, [predios,galleries,offers]);
+    }, [predios,galleries,offers,prices]);
 
     useEffect(() => {
         let newElements = data ? [...data] : []; 
@@ -254,7 +283,7 @@ const CRUD=({
                     if(col.attribute==="anio"){
                         newItem[col.attribute]= newItem[col.attribute].anio
                     }else if(col.attribute==="galeria"){
-                        newItem[col.attribute]= newItem[col.attribute]?.titulo
+                        newItem[col.attribute]= newItem[col.attribute]?.titulo ? newItem[col.attribute].titulo:"---"
                     }
                 })
                 return newItem
@@ -280,7 +309,6 @@ const CRUD=({
                     if(col.attribute==="fecha_creacion"){
                         newItem[col.attribute]= newItem[col.attribute].split('T')[0]
                     }else if(col.attribute==="predio"){
-                        console.log( newItem[col.attribute])
                         newItem[col.attribute]= newItem["predio_data"].nombre
                     }else if(col.attribute==="precio_planta"){
                         newItem[col.attribute]="$ "+newItem[col.attribute]
@@ -318,7 +346,7 @@ const CRUD=({
                 })
                 return newItem
             })
-
+            newElements.sort((a, b) => b.anio - a.anio);
             // Gruping by years
             newElements.forEach(p => {
                 let yCopy = { ...p };
@@ -339,6 +367,7 @@ const CRUD=({
             })
             setcolsGroup(newCols.splice(1,1))
             setyearsGroup(years)
+            
         }
 
         if(!prices){
@@ -361,7 +390,7 @@ const CRUD=({
                      <InputSearch formik={formik}/>
                      <button onClick={()=>{
                         if(predios) setSelectedItem(emptyPredio)
-                        if(galleries) setSelectedItem(emptyGalería)
+                        if(galleries) setSelectedItem(emptyGaleria)  
                         setAgregar(true)
                         setModal(true)
                      }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
@@ -374,7 +403,7 @@ const CRUD=({
                         <button onClick={()=>{
                             setSelectedItem(emptyOffer)
                             setAgregar(true)
-                            setModal(true)
+                            setModal(true) 
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
                     }
                     {searchFilter &&
@@ -400,14 +429,15 @@ const CRUD=({
                     <EditViewModal
                     item={selectedItem}
                     Form={editForm}
-                    close={()=>setModal(false)}
+                    close={closeModal}
                     title={
                         predios ? !agregar ? "Predio: "+selectedItem.nombre : "Nuevo Predio":
                         galleries ? "Nueva Galería":
                         offers ? 'Nueva Oferta':
                         prices && "Nuevo precio" 
                     }
-                    option={optionForm}/>
+                    option={optionForm}
+                    open={modal}/>
                 }
                 {estatusdata==='pending' ? <Loader/>: 
                 estatusdata==='success' ?  
@@ -463,6 +493,8 @@ const CRUD=({
                     {supervision && <p>Total de supervisiones: {elements.length}</p>}
                     {predios && <p>Total de predios: {elements.length}</p>}
                     {galleries && <p>Total de galerias: {elements.length}</p>}
+                    {offers && <p>Total de ofertas: {elements.length}</p>}
+                    {prices && <p>Total de precios: {elements.length}</p>}
                     </div>
                 </div>
                 </>

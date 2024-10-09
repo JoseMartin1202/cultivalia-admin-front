@@ -13,7 +13,9 @@ const usePropertie=(propertieId)=>{
     }*/
 
     const updatePartial = async(values) =>{
-        console.log(values)
+        if(values.galeria=="ninguna"){
+            values.galeria=null;
+        }
         const res = await myAxios.patch(`predio/${propertieId}/`, values)
         return res.data
     }

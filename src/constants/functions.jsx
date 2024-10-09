@@ -34,20 +34,25 @@ export const emptyPredio =()=>{
    }
 }
 
-export const emptyGalería =()=>{
+export const emptyGaleria =()=>{
    return {
       titulo:''
    }
 }
 
-export const emptyOffer =()=>{
+export const emptyOffer =()=>{ 
    return {
-      tipo:'',
-      plantas_totales:'',
-      plantas_disponibles:'',
+      tipo:'Directa',
+      plantas_totales_directa:'',
+      plantas_totales_indirecta:'',
+      plantas_disponibles_directa:'',
+      plantas_disponibles_indirecta:'',
       precio_reventa:'',
-      predio:'',
-      is_visible:true,
+      predio_directa:'',
+      distribucion:'',
+      predio_indirecta:'',
+      is_visible_directa:true,
+      is_visible_indirecta:true,
       vendedor:''
    }
 }
@@ -59,4 +64,31 @@ export const emptyPrice =()=>{
       isCurrent:true,
       isJimated:false,
    }
+}
+
+export function formatDateLong({ data }) {
+   let value = ""
+   if (data === null) return value
+
+   value = new Intl.DateTimeFormat('es-ES', {
+      dateStyle: 'long',
+      hourCycle: 'h12',
+      timeStyle: 'short',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+
+   }).format(new Date(data));
+
+   return value
+}
+
+export function formatDateMedium({ data }) {
+   let value = ""
+   if (data === null) return value
+
+   value = new Intl.DateTimeFormat('es-ES', {
+      dateStyle: 'medium',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+   }).format(new Date(data));
+
+   return value
 }

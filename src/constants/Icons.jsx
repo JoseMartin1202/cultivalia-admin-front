@@ -15,6 +15,10 @@ import {
 } from "react-icons/gi";
 
 import {
+    AiOutlineFileUnknown  as unknown
+} from "react-icons/ai";
+
+import {
     LuFolderOpen as Empty
 } from "react-icons/lu";
 
@@ -104,5 +108,6 @@ export const Icons={
     EmptyImage,
     OfferIndirect,
     Complete,
-    jimated
+    jimated,
+    unknown
 }
