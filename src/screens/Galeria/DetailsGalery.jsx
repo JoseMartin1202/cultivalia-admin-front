@@ -256,8 +256,6 @@ const FormModal = ({ close, title, id }) => {
 
 export const PhotosModal = ({ onClose, initIndex, photos, supervision }) => {
     const [selectedImg, setSelectedImg] = useState(initIndex)
-    const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
-    const [isSmall,setIsSmall]=useState(false);
  
     const handleNextImg = () => {
        setSelectedImg(p => {
@@ -290,28 +288,17 @@ export const PhotosModal = ({ onClose, initIndex, photos, supervision }) => {
           document.removeEventListener('keydown', handleKeyDown)
        }
     }, [])
-    
-    useEffect(() => {
-      if (isSmallScreen) {
-         setIsSmall(true);
-      }else{
-        setIsSmall(false);
-      }
-    }, [isSmallScreen]);
- 
 
     return (
        <div className='absolute z-10 bg-neutral-900/90 size-full total-center'>
  
           <div className='absolute size-full left-0 top-0' onClick={onClose}></div>
           <div className='py-10 px-14 max-sm:px-2 size-full total-center'>
-             <div className='relative w-full h-auto p-1  md:w-auto md:h-full'>
-                {supervision ? <Image src={photos[selectedImg]} alt="" />:
+                {supervision ? <Image src={photos[selectedImg]} alt=""/>:
                 <Image src={photos[selectedImg].file} alt="" />}
-             </div>
           </div>
- 
-          <button
+        {photos.length>1 && <>
+            <button
              onClick={handlePrevImg}
              className='absolute top-0 left-0 h-full outline-none w-14 total-center'>
              <Icons.Left className='text-blue-200 size-11 max-sm:size-8' />
@@ -321,6 +308,9 @@ export const PhotosModal = ({ onClose, initIndex, photos, supervision }) => {
              className='absolute top-0 right-0 h-full outline-none w-14 total-center'>
              <Icons.Right className='text-blue-200 size-11 max-sm:size-8' />
           </button>
+        
+        </>}
+          
  
        </div>
     )

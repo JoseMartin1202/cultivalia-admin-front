@@ -18,8 +18,8 @@ const ModalElimiar = ({
       className={`rounded-2xl flex flex-col bg-white h-fit w-fit`}>
         <div id="modalHeader" className='relative flex w-full h-12 shadow-md total-center bg-slate-300 rounded-ss-2xl rounded-se-2xl'>
           <p className='text-xl font-bold'> {title} </p>
-          <button className='rounded-2xl absolute right-1 size-8 total-center hover:bg-slate-200 active:opacity-70 active:duration-0' onClick={close}>
-            <Icons.Refused size="22px" className='text-[#E04646]' />
+          <button className='rounded-2xl absolute right-1 size-8 total-center hover:bg-slate-200 active:opacity-70 active:duration-0' onClick={close} disabled={loading}>
+            <Icons.Refused size="22px" className={`text-[#E04646]  ${loading && 'cursor-not-allowed text-[#a7a7a7]'}`} />
           </button>
         </div>
         <div className='emerge p-4'>{content}</div>

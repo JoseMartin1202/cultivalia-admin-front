@@ -13,7 +13,7 @@ export const AppProvider = ({ children }) => {
 
     const [filterStateSupervisions, setFilterStateSupervisions] = useState('Pendiente');
     const [filterStateOffers, setFilterStateOffers] = useState('');
-    const [filterStatePrices, setFilterStatePrices] = useState('');
+    const [filterStatePrices, setFilterStatePrices] = useState(true);
     const notify = (message, error = false) => {
         let options = {
             position: "bottom-right",

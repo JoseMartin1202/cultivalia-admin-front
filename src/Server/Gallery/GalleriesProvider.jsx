@@ -1,11 +1,13 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext";
 import { useApp } from '../../context/AppContext';
+import useSession from '../Session/SessionProvider';
 
 const useGalleries=()=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
+    const { session } = useSession();
 
     /**Functions */
     const getGalleries = async () => {
@@ -22,6 +24,7 @@ const useGalleries=()=>{
     const GalleriesQuery= useQuery({
         queryKey:['galerias'],
         queryFn:getGalleries,
+        enabled: !!session
     })
 
     const addGallleryMutator = useMutation({
