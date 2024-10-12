@@ -1,14 +1,110 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Icons } from '../../constants/Icons'
 import InputForm from '../inputs/inputForm'
 import useGalleries from '../../Server/Gallery/GalleriesProvider'
 import useYears from '../../Server/Year/YearsProvider'
+import FileInput from '../inputs/FileInput'
+import Loader from '../Loader'
+import { useFormik } from 'formik'
+import usePropertie from '../../Server/Properties/PropertieProvider'
+import * as Yup from 'yup';
 
-const PropertiesForm = ({formik}) => {
-
+const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
     const { galleries, galleriesStatus }= useGalleries()
     const { years, yearsStatus }= useYears()
-    
+    const [loading, setLoading] = useState(true)
+    const [previewImage, setPreviewImage] = useState(null);
+    const {propertieAdd,propertieAddStatus,updatePropertie,updatePropertieStatus } = usePropertie(item?.id);
+
+    const initialValues = item ? {
+        nombre: item.nombre ,
+        anio: item.anio ,
+        galeria: item.galeria ,
+        latitud: item.latitud ,
+        longitud: item.longitud ,
+        plantasTotales: item.plantasTotales ,
+        plantasDisponibles: item.plantasDisponibles ,
+        hectareas: item.hectareas ,
+        photo_cover: item.photo_cover 
+    }:{
+        nombre:'',
+        anio: '',
+        galeria: '',
+        latitud: '',
+        longitud: '',
+        plantasTotales: '',
+        plantasDisponibles:  '',
+        hectareas: '',
+        photo_cover: ''
+    };    
+
+    const formik = useFormik({
+        initialValues: initialValues,
+        validationSchema: Yup.object().shape({
+            plantasDisponibles: Yup.number().test(
+                'is-less-than-plantasTotales',
+                'No disponible',
+                function (value) {
+                const { plantasTotales } = this.parent;
+                return value <= plantasTotales;
+                }
+            ),
+            plantasTotales: Yup.number()
+                .required('Obligatorio')
+                .test('is-more-than-0', 'Obligatorio', function (value) {
+                return value > 0;
+                }),
+            hectareas: Yup.number()
+                .required('Obligatorio')
+                .test('is-more-than-0', 'Obligatorio', function (value) {
+                return value > 0;
+                }),
+            photo_cover: Yup.string().nullable(),
+            galeria: Yup.string().notRequired(),
+            nombre: Yup.string().required('Obligatorio'),
+            latitud: Yup.number().required('Obligatorio'),
+            longitud: Yup.number().required('Obligatorio')
+        }),
+        onSubmit: async (values) => {
+            setIsSubmitting(true) // Aquí establecemos que se está enviando el formulario
+            if (item?.id) {
+                delete values.id
+                updatePropertie(values)
+            } else {
+                propertieAdd(values)
+            }
+        }
+    })
+
+    // Monitorear el estado de la mutación para cerrar el modal
+    useEffect(() => {
+        if (propertieAddStatus === 'success' || updatePropertieStatus === 'success') {
+            setIsSubmitting(false)
+            close();
+        }
+    }, [propertieAddStatus, updatePropertieStatus]);
+
+    useEffect(() => {
+        if (formik.values.photo_cover) {
+            // Verifica si es un objeto File
+            if (formik.values.photo_cover instanceof File) {
+            // Usar URL.createObjectURL para crear una URL del archivo
+            const objectUrl = URL.createObjectURL(formik.values.photo_cover);
+            setPreviewImage(objectUrl);
+        
+            // Liberar la URL cuando el componente se desmonte o cuando el archivo cambie
+            return () => {
+                URL.revokeObjectURL(objectUrl);
+            };
+            } else if (typeof formik.values.photo_cover === 'string') {
+            // Si es una URL, úsala directamente
+            setPreviewImage(formik.values.photo_cover);
+            }
+        } else {
+            setPreviewImage(null);
+        }
+    }, [formik.values.photo_cover]);
+
     useEffect(() => {
        if (yearsStatus === "success" && galleriesStatus === "success") {
             const yearSelected= years.find(y => y.anio == formik.values.anio);
@@ -27,8 +123,33 @@ const PropertiesForm = ({formik}) => {
     }, [yearsStatus, galleriesStatus, galleries, years]);
 
     return (
-    <div className='p-6 flex flex-col w-full gap-3'>
-        <div className='flex flex-row w-full gap-3 max-sm:flex-col'>
+    <form ref={formRef} onSubmit={formik.handleSubmit} className='sm:relative p-4 flex flex-col w-full gap-3'>
+          {console.log( formRef)}
+        {propertieAddStatus === 'pending' || updatePropertieStatus === 'pending' ?
+            <Loader/>
+        :
+        <>
+        {console.log(formik.values.photo_cover)}
+         <div className='flex sm:flex-row w-full gap-3 flex-col'>
+            <div className='flex-grow flex-col'>
+                <p className='font-bold'>Portada:</p>
+                <FileInput id="photo_cover" name="photo_cover" formik={formik} />
+                    {formik.values.photo_cover=='' || formik.values.photo_cover==null ?'':
+                    previewImage ? 
+                    <div className='w-full h-40 rounded-2xl'>{loading && <Loader/>}
+                    <img src={previewImage} 
+                    className={`over:cursor-pointer size-full object-cover max-h-40 rounded-2xl ${loading ? 'invisible' : 'visible'}`}
+                    onLoad={() => setLoading(false)}/></div>
+                    :
+                    <div className='w-full h-40 rounded-2xl'>{loading && <Loader/>}
+                    <img src={formik.values.photo_cover} 
+                    className={`over:cursor-pointer size-full object-cover max-h-40 rounded-2xl ${loading ? 'invisible' : 'visible'}`}
+                    onLoad={() => setLoading(false)}/></div>
+                    }
+                
+            </div>
+        </div>
+        <div className='flex sm:flex-row w-full gap-3 flex-col'>
             <div className='flex-grow flex-col'>
                 <p className='font-bold'>Nombre:</p>
                 <InputForm formik={formik} id="nombre" name="nombre"/>
@@ -107,7 +228,8 @@ const PropertiesForm = ({formik}) => {
                 </div>
             </div>
         </div>
-    </div>
+        </>}
+    </form>
   )
 }
 

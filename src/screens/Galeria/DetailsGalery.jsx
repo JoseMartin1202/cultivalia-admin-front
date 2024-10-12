@@ -17,7 +17,7 @@ export const DetailsGallery=()=>{
     const containerRef = useRef(null);
     const navigate =useNavigate();
     const { galleryId } = useParams();
-    const {deletePhotosStatus,dropPhotoStatus,deletePhotos,dropPhoto, photosGallery, photosGalleryStatus}= useGallery(galleryId)
+    const {galeryName,deletePhotosStatus,dropPhotoStatus,deletePhotos,dropPhoto, photosGallery, photosGalleryStatus}= useGallery(galleryId)
     const [eliminarTodas, setEliminarTodas] = useState(false)
     const [modal, setModal] = useState(false)
     const [eliminando, setEliminando] = useState(false)
@@ -197,6 +197,9 @@ export const DetailsGallery=()=>{
             <button className='h-full' onClick={()=>{navigate(-1)}}><Icons.ArrowBack className='size-10 text-[#6B9DFF] hover:text-[#81aafe]'/></button>
             <div className='bg-[#E2E8F0] w-fit p-2 font-bold text-md rounded-xl'>
                     {<p>Fotos: {photosGallery?.length}</p>}
+            </div>
+            <div className='bg-[#E2E8F0] w-fit p-2 font-bold text-md rounded-xl'>
+                    {<p>Galería: {galeryName?.titulo}</p>}
             </div>
             <button className='ms-auto hover:bg-red-300 max-sm:text-base text-lg font-bold bg-red-400 rounded-full py-1 px-3' onClick={()=>{setEliminarTodas(true); setModal(true)}}>Eliminar todas</button>
         </div>

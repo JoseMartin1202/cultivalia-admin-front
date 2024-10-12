@@ -12,6 +12,11 @@ const useGallery=(galeryId)=>{
         return data.data;
     }
 
+    const getGalery = async () => {
+        const data=await myAxios.get(`galeria/${galeryId}/`);
+        return data.data;
+    }
+
     const addPhoto = async (item) => {
         const formData = new FormData()
         Object.keys(item).forEach(key => {
@@ -43,6 +48,11 @@ const useGallery=(galeryId)=>{
     const PhotosGalleryQuery= useQuery({
         queryKey:['fotosGaleria',galeryId],
         queryFn:getPhotos,
+    })
+
+    const GaleryQuery= useQuery({
+        queryKey:['galeriaName',galeryId],
+        queryFn:getGalery,
     })
 
     const AddPhotoMutator = useMutation({
@@ -82,6 +92,11 @@ const useGallery=(galeryId)=>{
     } = PhotosGalleryQuery
 
     const {
+        data:galeryName,
+        status:galeryNameStatus,
+    } = GaleryQuery
+
+    const {
         mutate:AddPhoto,
         status:AddPhotoStatus,
     } = AddPhotoMutator
@@ -104,7 +119,8 @@ const useGallery=(galeryId)=>{
         deletePhotos,
         deletePhotosStatus,
         AddPhoto,
-        AddPhotoStatus
+        AddPhotoStatus,
+        galeryName
     })
 }
 

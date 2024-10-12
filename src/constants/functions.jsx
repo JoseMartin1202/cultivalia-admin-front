@@ -21,19 +21,6 @@ export const getErrorMessage = (error) => {
     return "Ocurrió un error, valida que la contraseña sea mayor a 6 caracteres"
 }
 
-export const emptyPredio =()=>{
-   return {
-      nombre:'',
-      anio:'',
-      galeria:'',
-      latitud:'',
-      longitud:'',
-      plantasTotales:'',
-      plantasDisponibles:'',
-      hectareas:''
-   }
-}
-
 export const emptyGaleria =()=>{
    return {
       titulo:''
@@ -54,15 +41,6 @@ export const emptyOffer =()=>{
       is_visible_directa:true,
       is_visible_indirecta:true,
       vendedor:''
-   }
-}
-
-export const emptyPrice =()=>{
-   return {
-      precio:'',
-      anio:'',
-      isCurrent:true,
-      isJimated:false,
    }
 }
 

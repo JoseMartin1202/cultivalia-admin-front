@@ -1,4 +1,4 @@
-import React,{useEffect, useMemo, useState } from 'react'
+import React,{useEffect, useMemo, useRef, useState } from 'react'
 import { Icons } from '../../constants/Icons';
 import { useNavigate } from 'react-router-dom';
 import '../../index.css'
@@ -9,9 +9,6 @@ import { useFormik } from 'formik';
 import { useApp } from '../../context/AppContext';
 import GenericModal from '../modals/GenericModal';
 import PropertiesForm from '../forms/ProperitesForm';
-import { emptyGaleria, emptyOffer, emptyPredio, emptyPrice } from '../../constants/functions';
-import usePropertie from '../../Server/Properties/PropertieProvider';
-import * as Yup from 'yup';
 import GalleryForm from '../forms/GalleryForm';
 import useGalleries from '../../Server/Gallery/GalleriesProvider';
 import AbsScroll from '../AbsScroll';
@@ -47,7 +44,7 @@ const CRUD=({
         filterStateSupervisions, filterStateOffers,filterStatePrices,
         setFilterStateSupervisions, setFilterStateOffers,setFilterStatePrices } = useApp();
     const [modal, setModal] = useState(false);
-    const [selectedItem, setSelectedItem] = useState(null);
+    const [selectedItem, setSelectedItem] = useState('');
     const [editForm, setEditForm] = useState(null)
     const [agregar, setAgregar] = useState(false)
     const [optionForm, setoptionForm] = useState()
@@ -65,42 +62,10 @@ const CRUD=({
     })
 
     const EditViewModal = ({ Form, item, close,title,option}) => {
-        const { updatePropertie, propertieAdd } = usePropertie(item.id);
-        const { galerryAdd } = option === 'Galerias' ? useGalleries() : {};
-        const { offerAdd } = option === 'Ofertas' ? useOffer() : {};
+        const formRef = useRef(null);
+        /*
         const { priceAdd } = option === 'Precios' ? usePrice() : {};
         
-        const validationSchema = useMemo(() => {
-            return Yup.object()
-              .shape(
-                Object.keys(item).reduce((schema, key) => {
-                  schema[key] = Yup.mixed().required('Obligatorio');
-                  return schema;
-                }, {})
-              )
-              .concat(
-                option === "Predios"
-                  ? Yup.object().shape({
-                      plantasDisponibles: Yup.number().test(
-                        'is-less-than-plantasTotales',
-                        'No disponible',
-                        function (value) {
-                          const { plantasTotales } = this.parent;
-                          return value <= plantasTotales;
-                        }
-                      ),
-                      plantasTotales: Yup.number()
-                        .required('Obligatorio')
-                        .test('is-more-than-0', 'Obligatorio', function (value) {
-                          return value > 0;
-                        }),
-                      hectareas: Yup.number()
-                        .required('Obligatorio')
-                        .test('is-more-than-0', 'Obligatorio', function (value) {
-                          return value > 0;
-                        }),
-                      photo_cover: Yup.string().nullable(),
-                    })
                   : option === "Ofertas"
                   ? Yup.object().shape({
                       plantas_totales_directa: Yup.number().when('tipo', {
@@ -166,52 +131,31 @@ const CRUD=({
               );
           }, [item, option]);
 
-        const formik = useFormik({
-            initialValues: item,
-            validationSchema : validationSchema,
-            onSubmit: async (values) => {
-                if(option=="Predios"){
-                    if(item.id){//saber si se seleccionó o es nuevo
-                        delete values.id
-                        updatePropertie(values)
-                    }else{
-                        propertieAdd(values)
-                    }
-                }
-                if(option=="Galerias"){
-                    galerryAdd(values)
-                }
-                if(option=="Ofertas"){
-                    offerAdd(values)
-                }
-                if(option=="Precios"){
-                    priceAdd(values)
-                }
-                close()
            }
-        })
-        
-        console.log(formik.values)
-        
-        const actions = useMemo(() => [{ label: "Guardar", onClick: formik.handleSubmit }], [formik.handleSubmit]);
+        })*/
+        const [isSubmitting, setIsSubmitting] = useState(false) 
+        const actions = useMemo(() => [
+            { label: "Guardar", onClick: () => formRef.current?.requestSubmit() } // Dispara el submit del formulario
+        ], []);
+
         return (
             <>
             {prices ?
                 <ModalElimiar
                 title={title}
                 close={close}
-                content={<Form formik={formik}/>}
+                content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting}/>}
                 actions={actions}/>
                 :
                 <GenericModal
                 title={title}
                 close={close}
-                content={<Form formik={formik}/>}
+                content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting}/>}
                 actions={actions}
+                loading={isSubmitting}
                 necesary={necesary}//Si se ocupa el Abscroll
                 center={option=="Galerias"}/>
             }</>
-           
         )
      }
 
@@ -389,8 +333,7 @@ const CRUD=({
                      <div className='flex flex-row w-full gap-2'>
                      <InputSearch formik={formik}/>
                      <button onClick={()=>{
-                        if(predios) setSelectedItem(emptyPredio)
-                        if(galleries) setSelectedItem(emptyGaleria)  
+                        setSelectedItem(null)  
                         setAgregar(true)
                         setModal(true)
                      }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
@@ -418,7 +361,6 @@ const CRUD=({
                             <div className='flex flex-row gap-1 w-full'>
                                 <Switch formik={formik}/>
                                 <button onClick={()=>{
-                                    setSelectedItem(emptyPrice)
                                     setAgregar(true)
                                     setModal(true)
                                 }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>

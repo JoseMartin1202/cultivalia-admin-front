@@ -1,10 +1,11 @@
 import React, { useRef } from 'react'
 import Loader from './Loader'
+import '../index.css'
 
-const AbsScroll = ({
+const AbsScrollModal = ({
     vertical = false,
     horizontal = false,
-    loading,
+    loading=false,
     children,
     onBottomReached,
     setBottom,
@@ -38,9 +39,9 @@ const AbsScroll = ({
                     if (onBottomReached || setBottom)
                         handleScroll
                 }}
-                className={`relative w-full h-full ${vertical ? 'overflow-y-auto' : 'overflow-y-hidden'} ${horizontal ? 'overflow-x-auto' : 'overflow-x-hidden'}`}>
+                className={`relative w-full h-full sm:h-fit ${vertical ? 'overflow-y-auto' : 'overflow-y-hidden'} ${horizontal ? 'overflow-x-auto' : 'overflow-x-hidden'}`}>
                 {loading ? <Loader /> :
-                    <div className={'absolute top-0 w-full'}>
+                    <div className={'max-sm:absolute top-0 w-full sm:h-auto emerge'}>
                         {children}
                     </div>
                 }
@@ -49,4 +50,4 @@ const AbsScroll = ({
     )
 }
 
-export default AbsScroll
+export default AbsScrollModal
