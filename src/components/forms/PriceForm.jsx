@@ -2,9 +2,43 @@ import React, { useEffect, useState } from 'react'
 import InputForm from '../inputs/inputForm'
 import useYears from '../../Server/Year/YearsProvider';
 import { Icons } from '../../constants/Icons';
+import { useFormik } from 'formik'
+import * as Yup from 'yup';
+import usePrice from '../../Server/Prices/PriceProvider';
 
-const PricesForm = ({ formik }) => {
+const PricesForm = ({close,formRef, setIsSubmitting}) => {
     const { years, yearsStatus } = useYears()
+    const { priceAdd, priceAddStatus } =usePrice() 
+
+    useEffect(() => {
+        if (priceAddStatus === 'success') {
+            setIsSubmitting(false)
+            close();
+        }
+    }, [priceAddStatus]);
+
+    const formik = useFormik({
+        initialValues: {
+            precio: '',
+            anio:'',
+            isJimated:false,
+            isCurrent:true
+        },
+        validationSchema: Yup.object().shape({
+            precio: Yup.number().test(
+                'is-greater-than-0',
+                'No válido',
+                function (value) {
+                  return value > 0;
+                }
+            ),
+            anio: Yup.string().required('Obligatorio'),
+            isJimated: Yup.boolean().required('Obligatorio')
+        }),
+        onSubmit: async (values) => {
+            priceAdd(values)
+        }
+    })
 
     useEffect(() => {
         if (yearsStatus === "success") {
@@ -16,12 +50,14 @@ const PricesForm = ({ formik }) => {
             }
         }
     }, [yearsStatus, years]);
+
     return (
-        <div className='p-2 flex flex-col w-full items-center gap-3'>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className='p-2 flex flex-col w-full items-center gap-3'>
             <div className='flex flex-col w-full'>
                 <p className='font-bold'>Precio:</p>
                 <InputForm formik={formik} id="precio" name="precio" number={true} />
             </div>
+            {console.log( formRef)}
             <div className='flex flex-col w-full'>
                 <p className='font-bold'>Año:</p>
                 <div className='relative w-full min-w-fit'>
@@ -62,7 +98,7 @@ const PricesForm = ({ formik }) => {
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     )
 }
 

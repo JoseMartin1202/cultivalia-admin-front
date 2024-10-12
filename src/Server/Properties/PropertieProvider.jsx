@@ -16,7 +16,17 @@ const usePropertie=(propertieId)=>{
         if(values.galeria=="ninguna"){
             values.galeria=null;
         }
-        const res = await myAxios.patch(`predio/${propertieId}/`, values)
+        if(typeof values.photo_cover === 'string' ){
+            delete values.photo_cover;
+        }else  if(values.photo_cover === null ){
+            values.photo_cover='';
+        }
+        const formData = new FormData()
+        Object.keys(values).forEach(key => {
+            if (values[key] === null || values[key] === undefined) { return; }
+                formData.append(key, values[key]);
+        })
+        const res = await myAxios.patch(`predio/${propertieId}/`, formData)
         return res.data
     }
 
@@ -24,7 +34,13 @@ const usePropertie=(propertieId)=>{
         if(values.galeria=="ninguna"){
             values.galeria=null;
         }
-        const res= await myAxios.post(`predio/`,values);
+        const formData = new FormData()
+        Object.keys(values).forEach(key => {
+            if (values[key] === null || values[key] === undefined) { return; }
+                formData.append(key, values[key]);
+        })
+
+        const res= await myAxios.post(`predio/`,formData);
         return res.data
     }
 
@@ -37,9 +53,9 @@ const usePropertie=(propertieId)=>{
     const PropertieMutator = useMutation({
         mutationFn: updatePartial,
         onSuccess: () => {
-            queryClient.invalidateQueries(['predios']) 
-            notify('Predio actualizado con exito')
-        },
+             queryClient.invalidateQueries(['predios']) 
+             notify('Predio actualizado con exito')
+         },
         onError: (e) => notify(getErrorMessage(e), true),
         enabled: !!propertieId
     })
@@ -49,7 +65,7 @@ const usePropertie=(propertieId)=>{
         onSuccess: () => {
             queryClient.invalidateQueries(['predios']) 
             notify('Predio añadido con éxito');
-        },
+         },
         onError: (e) => notify(getErrorMessage(e), true)
     });
 
@@ -73,7 +89,7 @@ const usePropertie=(propertieId)=>{
         updatePropertie, 
         updatePropertieStatus,
         propertieAdd,
-        propertieAddStatus
+        propertieAddStatus,
     })
     
 }
