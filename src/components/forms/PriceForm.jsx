@@ -5,6 +5,7 @@ import { Icons } from '../../constants/Icons';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import usePrice from '../../Server/Prices/PriceProvider';
+import CustomSelect from '../CustomSelect';
 
 const PricesForm = ({close,formRef, setIsSubmitting}) => {
     const { years, yearsStatus } = useYears()
@@ -51,6 +52,11 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
         }
     }, [yearsStatus, years]);
 
+    const anios = years?.map(y => ({
+        value: y.id,
+        label: y.anio
+    }));
+
     return (
         <form ref={formRef} onSubmit={formik.handleSubmit} className='p-2 flex flex-col w-full items-center gap-3'>
             <div className='flex flex-col w-full'>
@@ -60,25 +66,11 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
             {console.log( formRef)}
             <div className='flex flex-col w-full'>
                 <p className='font-bold'>Año:</p>
-                <div className='relative w-full min-w-fit'>
-                    <select
-                        className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                        onChange={formik.handleChange}
-                        id="anio"
-                        name="anio"
-                        value={formik.values.anio}
-                    >
-                        {
-                            yearsStatus === 'success' && years?.length > 0 && (
-                                <>{years.map((y, i) => (
-                                    <option key={i} value={y.id}>{y.anio}</option>
-                                ))}</>
-                            )}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                        <Icons.ArrowDown className='size-[80%]' />
-                    </div>
-                </div>
+                <CustomSelect
+                    options={anios}
+                    value={formik.values.anio}
+                    onChange={(val) => formik.setFieldValue('anio', val)}
+                />  
             </div>
             <div className='flex flex-col w-full'>
                 <p className='font-bold'>Es jimada:</p>

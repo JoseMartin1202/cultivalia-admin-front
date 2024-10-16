@@ -8,6 +8,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import { getErrorMessage, valueFromId } from '../../constants/functions';
 import { PhotosModal } from '../Galeria/DetailsGalery';
+import AbsScroll from '../../components/AbsScroll';
 
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
@@ -17,10 +18,18 @@ export const DetailsSupervisions = () => {
     const [bgOption, setbgOption] = useState('');
     const [initIndex, setInitIndex] = useState(0)
     const [loading, setLoading] = useState(true)
-
+    const [comments, setcomments] = useState([]);
+    const [bouncingIndex, setBouncingIndex] = useState(null); // Estado para rastrear el índice que está rebotando
     const supervisionData = []
     const ImagenesData=[]
-
+    const allComents=[
+        "Pago verificado y aprobado",
+        "Todo en orden, aprobado sin observaciones",
+        "Datos faltantes",
+        "Pago no coincide con el monto esperado",
+        "Inconsistencia de datos",
+        "niice"
+    ]
    
     if(supervision?.movimiento?.tipo_movimiento === 'Beneficiario' || supervision?.movimiento?.tipo_movimiento === 'Inversor'){
         ImagenesData.push( 
@@ -59,7 +68,7 @@ export const DetailsSupervisions = () => {
             { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
             { label: 'Monto', value: supervision?.movimiento?.data?.monto },
             { label: 'Método', value: supervision?.movimiento?.data?.metodo },
-            { label: 'Comentarios', value: supervision?.movimiento?.data?.comentarios},
+            //{ label: 'Comentarios', value: supervision?.movimiento?.data?.comentarios},
             { label: 'Inversor', value: `${supervision?.movimiento?.data?.inversor.nombre} ${supervision?.movimiento?.data?.inversor.apellidos}`},
             { label: 'Fecha de la venta', value: supervision?.movimiento?.data?.venta.fecha.split('T')[0] },
             { label: 'Monto de la venta', value: supervision?.movimiento?.data?.venta.monto },
@@ -71,10 +80,16 @@ export const DetailsSupervisions = () => {
         initialValues: {
             comentaios: '',
             estado: '',
+            options:''
         },
         validationSchema: Yup.object().shape({
-          comentaios: Yup.string().required('Requerido'),
-          estado: Yup.string().required('Requerido')
+            comentaios: Yup.lazy(() => {
+                return comments.length === 0
+                    ? Yup.string().required('Escribe o escoge un comentario')
+                    : Yup.string().notRequired();
+            }),
+            estado: Yup.string().required('Requerido'),
+            options: Yup.string().notRequired()
         }),
         onSubmit: async (values) => {
           try {
@@ -85,12 +100,28 @@ export const DetailsSupervisions = () => {
         }
     })
 
+    const error = valueFromId("comentaios", formik.errors)
+    const touched = valueFromId("comentaios", formik.touched)
+    const showError = error && (touched || formik.submitCount > 0);
+
     useEffect(() => {
         if (supervision) {
-            formik.setValues({
-                comentaios: supervision.comentaios,
-                estado: supervision.estado
-            });
+            if(supervision.options){
+                let commentsList = supervision.options?.split('/');
+                setcomments(commentsList)
+                formik.setValues({
+                    comentaios: supervision.comentaios,
+                    estado: supervision.estado,
+                    options:commentsList
+                });
+            }else{
+                formik.setValues({
+                    comentaios: supervision.comentaios,
+                    estado: supervision.estado,
+                    options: ''
+                });
+            }
+
         }
     }, [supervision]);
 
@@ -98,9 +129,22 @@ export const DetailsSupervisions = () => {
         formik.handleChange(e)
     }
 
-    const error = valueFromId("comentaios", formik.errors)
-    const touched = valueFromId("comentaios", formik.touched)
-    const showError = error && (touched || formik.submitCount > 0);
+    const handleAddComment = (comment,index) => {
+        let newComments;
+        if (!comments.includes(comment)) {
+            newComments = [...comments, comment];
+        } else {
+            newComments = comments.filter(c => c !== comment);
+        }
+        setcomments(newComments);
+        formik.setFieldValue('options',newComments.join('/'))
+        setBouncingIndex(index);
+
+        // Elimina la animación después de 500ms
+        setTimeout(() => {
+          setBouncingIndex(null);
+        }, 500);
+    }
 
     useEffect(() => {
         if (formik.values.estado === 'Validada') {
@@ -112,6 +156,11 @@ export const DetailsSupervisions = () => {
         }
     }, [formik.values.estado]);
 
+    useEffect(() => {
+        console.log(comments)
+        console.log(formik.values)
+        formik.validateForm();  // Cada vez que comments cambia, forzamos la revalidación
+    }, [comments]);
 
     if (supervisionStatus === 'loading' || !supervision) {
         return <Loader />;
@@ -132,27 +181,44 @@ export const DetailsSupervisions = () => {
                 <div className='flex flex-col w-1/2 gap-4 h-full max-md:flex-row max-md:w-full max-md:h-1/2'>
                     <div className='flex flex-col flex-1 max-md:max-w-[50%]'>
                         <p className='font-bold text-lg'>Descripción:</p>
-                        <div className='size-full shadow-lg shadow-black/30 bg-white rounded-2xl p-2 overflow-y-auto'>
+                        <div className='size-full shadow-md shadow-black/30 bg-white rounded-2xl p-2 overflow-y-auto'>
                             <span>{supervision?.supervisar}</span>
                         </div>
                     </div>
                     <div className='flex flex-col flex-1'>
                         <p htmlFor="comments" className='font-bold text-lg'>Comentarios:</p>
-                        <textarea
-                            id="comentaios"
-                            name="comentaios"
-                            value={formik?.values.comentaios || ''}
-                            onChange={handleChange}
-                            className='p-2 w-full h-full resize-none border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 overflow-y-auto'
-                            placeholder="Escribe tus comentarios aquí..."
-                        />
-                         {showError &&
-                        <div className='h-4 pt-4'>
-                            <p className='font-normal text-lg flex items-center gap-1 h-full italic text-red-500 '>
+                        {showError &&
+                        <div className=''>
+                            <p className='font-normal text-sm flex items-center gap-1 h-full italic text-red-500 '>
                                 <Icons.Alert size="14px" />
                                 {error}
                             </p>
                         </div>}
+                        <div className='flex flex-col lg:flex-row size-full gap-3'>
+                            <div className='flex w-full h-[70%] lg:h-full lg:w-[70%]'>
+                                <AbsScroll vertical>
+                                    <ul className='grid grid-row gap-2 w-full px-3 py-1' > 
+                                        {allComents.map((c,i)=>(  
+                                            <li className={`${comments?.includes(c) ? 'bg-[#6B9DFF] text-white':'bg-white'} py-2 px-3 gap-1 flex flex-row rounded-xl  items-center cursor-pointer select-none shadow-md shadow-black/30 ${bouncingIndex === i ? 'bounce' : ''}`} 
+                                            onClick={()=>handleAddComment(c,i)}>
+                                                {comments?.includes(c) ?  <Icons.Accepted className='size-4 text-white min-w-4'/>: <Icons.point className='size-4 text-black min-w-4'/>}
+                                                <span>{c}</span>
+                                            </li>
+                                        ))}
+                                        
+                                    </ul>
+                                </AbsScroll>
+                            </div>
+                            <div className='flex sm:flex-1 sm:flex-col'>
+                                <textarea
+                                id="comentaios"
+                                name="comentaios"
+                                value={formik?.values.comentaios || ''}
+                                onChange={handleChange}
+                                className='p-2 w-full h-full resize-none border bg-white border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 overflow-y-auto'
+                                placeholder="Escribe otros comentarios aquí..."/>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <div className='relative w-1/2 shadow-lg shadow-black/30 bg-white rounded-2xl max-md:w-full max-md:h-1/2 overflow-y-auto'>

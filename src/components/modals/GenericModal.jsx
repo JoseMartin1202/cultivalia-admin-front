@@ -48,7 +48,6 @@ const GenericModal = ({
               </button>
             )
           }
-          {console.log(loading)}
         </div>
       </div>
     </div>

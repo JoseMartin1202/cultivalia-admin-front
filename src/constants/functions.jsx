@@ -21,29 +21,6 @@ export const getErrorMessage = (error) => {
     return "Ocurrió un error, valida que la contraseña sea mayor a 6 caracteres"
 }
 
-export const emptyGaleria =()=>{
-   return {
-      titulo:''
-   }
-}
-
-export const emptyOffer =()=>{ 
-   return {
-      tipo:'Directa',
-      plantas_totales_directa:'',
-      plantas_totales_indirecta:'',
-      plantas_disponibles_directa:'',
-      plantas_disponibles_indirecta:'',
-      precio_reventa:'',
-      predio_directa:'',
-      distribucion:'',
-      predio_indirecta:'',
-      is_visible_directa:true,
-      is_visible_indirecta:true,
-      vendedor:''
-   }
-}
-
 export function formatDateLong({ data }) {
    let value = ""
    if (data === null) return value

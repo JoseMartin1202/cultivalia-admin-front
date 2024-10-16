@@ -17,11 +17,7 @@ const useSupervision=(supervisionId)=>{
     }
 
     const updatePartial = async(values) =>{
-        let formData = new FormData()
-        Object.keys(values).forEach(key => {
-            if (values[key] !== null && values[key] !== '') formData.append(key, values[key])
-        })
-        const res = await myAxios.patch(`supervision/${supervisionId}/`, formData)
+        const res = await myAxios.patch(`supervision/${supervisionId}/`, values)
         return res.data
     }
 
@@ -37,13 +33,14 @@ const useSupervision=(supervisionId)=>{
         onSuccess: (newSupervision) => {
             queryClient.setQueryData(['supervisiones'], 
                 (oldSupervisions)=> oldSupervisions.map(s=>s.id===newSupervision.id ? 
-                    { ...s, comentaios: newSupervision.comentaios, estado: newSupervision.estado } :s)
+                    { ...s, comentaios: newSupervision.comentaios, estado: newSupervision.estado, options:newSupervision.options } :s)
             )
             queryClient.setQueryData(['supervision',newSupervision.id], 
                 (oldSupervision) => ({
                     ...oldSupervision, 
                     comentaios: newSupervision.comentaios, 
-                    estado: newSupervision.estado
+                    estado: newSupervision.estado,
+                    options: newSupervision.options
                 })
             )
             navigate(-1)

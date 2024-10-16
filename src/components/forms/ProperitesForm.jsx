@@ -8,6 +8,8 @@ import Loader from '../Loader'
 import { useFormik } from 'formik'
 import usePropertie from '../../Server/Properties/PropertieProvider'
 import * as Yup from 'yup';
+import CustomSelect from '../CustomSelect'
+
 
 const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
     const { galleries, galleriesStatus }= useGalleries()
@@ -122,6 +124,16 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
        }
     }, [yearsStatus, galleriesStatus, galleries, years]);
 
+    const anios = years?.map(y => ({
+        value: y.id,
+        label: y.anio
+    }));
+    
+    const galerias = galleries?.map(g => ({
+        value: g.id,
+        label: g.titulo
+    }));
+
     return (
     <form ref={formRef} onSubmit={formik.handleSubmit} className='sm:relative p-4 flex flex-col w-full gap-3'>
           {console.log( formRef)}
@@ -156,25 +168,11 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
             </div>
             <div className='flex flex-col sm:w-32'>
                 <p className='font-bold'>Año:</p>
-                <div className='relative w-full min-w-fit'>
-                    <select
-                        className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                        onChange={formik.handleChange}
-                        id="anio"
-                        name="anio"
-                        value={formik.values.anio} 
-                    >
-                        { 
-                        yearsStatus==='success' && years?.length>0 && (
-                            <>{years.map((y,i)=>(
-                                <option  key={i} value={y.id}>{y.anio}</option>
-                            ))}</>
-                        )}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                        <Icons.ArrowDown className='size-[80%]' />
-                    </div>
-                </div>
+                <CustomSelect
+                    options={anios}
+                    value={formik.values.anio}
+                    onChange={(val) => formik.setFieldValue('anio', val)}
+                />  
             </div>
         </div>
         <div className='flex flex-row w-full gap-3 max-sm:flex-col'>
@@ -194,28 +192,12 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
         <div className='flex flex-row w-full gap-3 max-sm:flex-col'>
             <div className='flex flex-col w-1/2 max-sm:w-full'>
                 <p className='font-bold'>Galeria:</p>
-                <div className='relative w-full min-w-fit'>
-                    <select
-                        className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                        id="galeria"
-                        name="galeria"
-                        onChange={formik.handleChange}
-                        value={formik.values.galeria}
-                    >
-                        { 
-                        galleriesStatus==='success' && galleries?.length>0 && (
-                            <>
-                            <option value={'ninguna'}>Ninguna</option>
-                            {galleries.map((g,i)=>(
-                                <option key={i} value={g.id}>{g.titulo}</option>
-                            ))} 
-                            </>
-                        )}
-                    </select>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                        <Icons.ArrowDown className='size-[80%]' />
-                    </div>
-                </div>
+                <CustomSelect
+                    options={galerias}
+                    value={formik.values.galeria}
+                    onChange={(val) => formik.setFieldValue('galeria', val)}
+                    openUp={true}
+                />  
             </div>
             <div className='flex flex-row gap-3 w-full sm:w-1/2 max-sm:flex-col'>
                 <div className='flex-1 flex-col'>

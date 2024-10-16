@@ -1,21 +1,118 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import InputForm from '../inputs/inputForm'
 import { Icons } from '../../constants/Icons'
 import useProperties from '../../Server/Properties/PropertiesProvider';
 import useOffer from '../../Server/Offers/OfferProvider';
 import { formatDateLong, formatDateMedium } from '../../constants/functions';
 import Loader from '../Loader';
+import { useFormik } from 'formik'
+import * as Yup from 'yup';
+import CustomSelect from '../CustomSelect';
 
-const OfferForm = ({ formik }) => {
+const OfferForm = ({item,close,formRef, setIsSubmitting}) => {
+
+    const formik = useFormik({
+        initialValues: {
+            tipo:'Directa',
+            plantas_totales_directa:'',
+            plantas_totales_indirecta:'',
+            plantas_disponibles_directa:'',
+            plantas_disponibles_indirecta:'',
+            precio_reventa:'',
+            predio_directa:'',
+            distribucion:'',
+            predio_indirecta:'',
+            is_visible_directa:true,
+            is_visible_indirecta:true,
+            vendedor:''
+        },
+        validationSchema: Yup.object().shape({
+            plantas_totales_directa: Yup.number().when('tipo', {
+              is: 'Directa',
+              then: (schema) =>
+                schema
+                  .required('El campo es obligatorio')
+                  .test(
+                    'is-less-than-disponibles',
+                    'No disponible',
+                    function (value) {
+                      const { plantas_disponibles_directa } = this.parent;
+                      return value <= plantas_disponibles_directa && value > 0;
+                    }
+                  ),
+              otherwise: (schema) => schema.notRequired(),
+            }),
+            plantas_totales_indirecta: Yup.number().when('tipo', {
+              is: 'Indirecta',
+              then: (schema) =>
+                schema
+                  .required('El campo es obligatorio')
+                  .test(
+                    'is-less-than-disponibles',
+                    'No disponible',
+                    function (value) {
+                      const { plantas_disponibles_indirecta } = this.parent;
+                      return value <= plantas_disponibles_indirecta && value > 0;
+                    }
+                  ),
+              otherwise: (schema) => schema.notRequired(),
+            }),
+            plantas_disponibles_indirecta: Yup.number().when('tipo', (tipo, schema) => {
+              return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+            }),
+            precio_reventa: Yup.number().when('tipo', (tipo, schema) => {
+              return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+            }),
+            predio_indirecta: Yup.string().when('tipo', (tipo, schema) => {
+              return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+            }),
+            predio_directa: Yup.string().when('tipo', (tipo, schema) => {
+              return tipo == 'Directa' ? schema.required('Requerido') : schema.notRequired();
+            }),
+            distribucion: Yup.string().when('tipo', (tipo, schema) => {
+              return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+            }),
+            vendedor: Yup.string().when('tipo', (tipo, schema) => {
+              return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+            }),
+        }),
+        onSubmit: async (values) => {
+           offerAdd(values)
+        }
+    })
+
     const { properties, propertiesStatus } = useProperties();
-    const { vendedores, vendedoresStatus, distribucionesInversor, distribucionesInversorStatus } = useOffer(formik.values.vendedor);
+    const { offerAdd,offerAddStatus, vendedores, vendedoresStatus, distribucionesInversor, distribucionesInversorStatus } = useOffer(formik.values.vendedor);
     const [telefono, setTelefono] = useState('');
     const [fechaDist, setfechaDist] = useState('');
+
+    const predios = properties?.map(p => ({
+        value: p.id,
+        label: p.nombre
+    }));
+
+    const vendedorOptions = vendedores?.map(v => ({
+        value: v.id,
+        label: v.nombre
+    }));
+
+    const estadoOptions = [{value:true, label: "Visible"},{value:false, label: "No visible"}]
+
+    const distribuciones = distribucionesInversor?.map(d => ({
+        value: d.id,
+        label: d.predio.nombre}
+    ));
+
+    useEffect(() => {
+        if (offerAddStatus === 'success') {
+            setIsSubmitting(false)
+            close();
+        }
+    }, [offerAddStatus]);
 
     useEffect(() => {
         if (propertiesStatus === "success") {
             const selectedProperty = properties.find(p => p.id == formik.values.predio_directa);
-            console.log(properties)
             if (selectedProperty) {
                 formik.setFieldValue('plantas_disponibles_directa', selectedProperty.plantasDisponibles);
             } else {
@@ -73,11 +170,8 @@ const OfferForm = ({ formik }) => {
         }
     }, [distribucionesInversor,distribucionesInversorStatus, formik.values.vendedor]);
 
-
-    console.log('value',formik.values.plantas_disponibles_directa)
-
     return (
-        <div className='p-6 flex flex-col w-full items-center gap-4'>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 ${formik.values.tipo=="Indirecta" ? 'h-fit':'h-[19rem]'} flex flex-col w-full items-center gap-4`}>
             <div className='flex flex-row w-full sm:items-center sm:gap-3 max-sm:flex-col'>
                 <p className='font-bold min-w-fit'>Tipo de oferta:</p>
                 <div className='relative w-full min-w-fit'>
@@ -100,27 +194,11 @@ const OfferForm = ({ formik }) => {
                 <>
                     <div className='flex flex-col w-full sm:flex-row sm:items-center sm:gap-3'>
                         <p className='font-bold'>Predio:</p>
-                        <div className='relative w-full min-w-fit'>
-                            <select
-                                className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                                onChange={formik.handleChange}
-                                id="predio_directa"
-                                name="predio_directa"
-                                value={formik.values.predio_directa}
-                            >
-                                {
-                                    propertiesStatus === 'success' && properties?.length > 0 && (
-                                        <>
-                                            {properties.map((p, i) => (
-                                                <option key={i} value={p.id}>{p.nombre}</option>
-                                            ))}
-                                        </>
-                                    )}
-                            </select>
-                            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                                <Icons.ArrowDown className='size-[80%]' />
-                            </div>
-                        </div>
+                        <CustomSelect
+                            options={predios}
+                            value={formik.values.predio_directa}
+                            onChange={(val) => formik.setFieldValue('predio_directa', val)}
+                        />
                     </div>
                     <div className='w-full flex flex-col gap-3'>
                         <div className='flex sm:flex-row w-full gap-3 flex-col'>
@@ -158,27 +236,11 @@ const OfferForm = ({ formik }) => {
                     <div className='flex flex-row gap-3'>
                         <div className='flex flex-col w-full'>
                             <p className='font-bold'>Vendedor/Inversor:</p>
-                            <div className='relative w-full min-w-fit'>
-                                <select
-                                    className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                                    onChange={formik.handleChange}
-                                    id="vendedor"
-                                    name="vendedor"
-                                    value={formik.values.vendedor}
-                                >
-                                    {
-                                        vendedoresStatus === 'success' && vendedores?.length > 0 && (
-                                            <>
-                                                {vendedores.map((v, i) => (
-                                                    <option key={i} value={v.id}>{v.nombre + " " + v.apellidos}</option>
-                                                ))}
-                                            </>
-                                        )}
-                                </select>
-                                <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                                    <Icons.ArrowDown className='size-[80%]' />
-                                </div>
-                            </div>
+                            <CustomSelect
+                            options={vendedorOptions}
+                            value={formik.values.vendedor}
+                            onChange={(val) => formik.setFieldValue('vendedor', val)}
+                            />
                         </div>
                         <div className='flex flex-col justify-center border-gray-300 border-2 items-center px-2 rounded-[10px]'>
                             <p className='font-bold'>Teléfono:</p>
@@ -190,22 +252,11 @@ const OfferForm = ({ formik }) => {
                             <div className='flex flex-col w-full md:flex-row sm:items-center gap-3 '>
                                 <div className='flex flex-col sm:flex-row w-full sm:flex-1 sm:items-center sm:gap-3 '>
                                     <p className='font-bold'>Distribucion:</p>
-                                    <div className='relative w-full sm:flex-1'>
-                                        <select
-                                            className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                                            onChange={formik.handleChange}
-                                            id="distribucion"
-                                            name="distribucion"
-                                            value={formik.values.distribucion}
-                                        >
-                                            {distribucionesInversor.map((d, i) => (
-                                                <option key={i} value={d.id}>{i + 1}. {d.predio.nombre}, {d.tipo}</option>))
-                                            }
-                                        </select>
-                                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                                            <Icons.ArrowDown className='size-[80%]' />
-                                        </div>
-                                    </div>
+                                    <CustomSelect
+                                        options={distribuciones}
+                                        value={formik.values.distribucion}
+                                        onChange={(val) => formik.setFieldValue('distribucion', val)}
+                                    />   
                                 </div>
                                 <div className='flex max-md:w-full flex-col justify-center border-gray-300 border-2 items-center px-2 rounded-[10px]'>
                                     <p className='font-bold'>Fecha Distribución:</p>
@@ -223,40 +274,30 @@ const OfferForm = ({ formik }) => {
                                 </div>
                                 <div className='flex flex-col flex-1'>
                                     <p className='font-bold'>Precio reventa:</p>
-                                    <InputForm formik={formik} id="precio_reventa" name="precio_reventa" number={true} preventSigns={true} />
+                                    <InputForm formik={formik} id="precio_reventa" name="precio_reventa" number={true} />
                                 </div>
                             </div>
                             <div className='flex flex-col flex-1'>
                                 <p className='font-bold'>Estatus:</p>
-                                <div className='relative w-full min-w-fit'>
-                                    <select
-                                        className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                                        onChange={formik.handleChange}
-                                        id="is_visible_indirecta"
-                                        name="is_visible_indirecta"
-                                        value={formik.values.is_visible_indirecta}
-                                    >
-                                        <option value={true}>Visible</option>
-                                        <option value={false}>No visible</option>
-                                    </select>
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                                        <Icons.ArrowDown className='size-[80%]' />
-                                    </div>
-                                </div>
+                                <CustomSelect
+                                    options={estadoOptions}
+                                    value={formik.values.is_visible_indirecta}
+                                    onChange={(val) => formik.setFieldValue('is_visible_indirecta', val)}
+                                    openUp={true}
+                                />   
                             </div></>
                     ) :
                         distribucionesInversorStatus === 'pending' ?
                             <Loader />
                             :
-                            <div className='size-full total-center flex flex-col sm:flex-row gap-3 text-center'>
+                            <div className='size-full py-4 total-center flex flex-col gap-3 text-center'>
                                 <Icons.unknown className='size-16 text-orange-300'/>
-                                <p className='text-[20px] '>¡Uuups. El inversor no puede <br/> ofertar plantas!</p>
+                                <p className='text-[20px] '>¡Uuups. El inversor no cuenta <br/> con distribuciones para ofertar plantas!</p>
                             </div>
                     }
                 </div>
             }
-
-        </div>
+        </form>
     )
 }
 

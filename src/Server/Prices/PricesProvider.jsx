@@ -8,7 +8,7 @@ const usePrices=()=>{
 
     /**Functions */
     const getPrices = async () =>{
-        const res=await myAxios.get("/precioplanta/")
+        const res=await myAxios.get("precioplanta/")
         return res.data
     }
 
