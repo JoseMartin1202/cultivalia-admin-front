@@ -19,6 +19,7 @@ import PricesForm from '../forms/PriceForm';
 import usePrice from '../../Server/Prices/PriceProvider';
 import ModalElimiar from '../modals/ModalEliminar';
 import GroupTable from './tableGroup';
+import AnioForm from '../forms/AnioForm';
 
 const CRUD=({
     columns, 
@@ -47,11 +48,22 @@ const CRUD=({
     const [selectedItem, setSelectedItem] = useState('');
     const [editForm, setEditForm] = useState(null)
     const [agregar, setAgregar] = useState(false)
+    const [anio, setanio] = useState(false)
+    const [price, seprice] = useState(false)
     const [optionForm, setoptionForm] = useState()
     const [necesary, setNecesary] = useState(true);
     const [yearsGroup, setyearsGroup] = useState();
     const [colsGroup, setcolsGroup] = useState();
-    const closeModal = () => setModal(false);
+    const closeModal = () => {
+        if (prices) {
+            if (anio) {
+              setanio(false)
+            }
+            setModal(false)
+        }else{
+            setModal(false)
+        }
+    };
 
     const formik = useFormik({
         initialValues: {
@@ -63,76 +75,6 @@ const CRUD=({
 
     const EditViewModal = ({ Form, item, close,title,option}) => {
         const formRef = useRef(null);
-        /*
-        const { priceAdd } = option === 'Precios' ? usePrice() : {};
-        
-                  : option === "Ofertas"
-                  ? Yup.object().shape({
-                      plantas_totales_directa: Yup.number().when('tipo', {
-                        is: 'Directa',
-                        then: (schema) =>
-                          schema
-                            .required('El campo es obligatorio')
-                            .test(
-                              'is-less-than-disponibles',
-                              'No disponible',
-                              function (value) {
-                                const { plantas_disponibles_directa } = this.parent;
-                                return value <= plantas_disponibles_directa && value > 0;
-                              }
-                            ),
-                        otherwise: (schema) => schema.notRequired(),
-                      }),
-                      plantas_totales_indirecta: Yup.number().when('tipo', {
-                        is: 'Indirecta',
-                        then: (schema) =>
-                          schema
-                            .required('El campo es obligatorio')
-                            .test(
-                              'is-less-than-disponibles',
-                              'No disponible',
-                              function (value) {
-                                const { plantas_disponibles_indirecta } = this.parent;
-                                return value <= plantas_disponibles_indirecta && value > 0;
-                              }
-                            ),
-                        otherwise: (schema) => schema.notRequired(),
-                      }),
-                      plantas_disponibles_indirecta: Yup.number().when('tipo', (tipo, schema) => {
-                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
-                      }),
-                      precio_reventa: Yup.number().when('tipo', (tipo, schema) => {
-                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
-                      }),
-                      predio_indirecta: Yup.string().when('tipo', (tipo, schema) => {
-                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
-                      }),
-                      predio_directa: Yup.string().when('tipo', (tipo, schema) => {
-                        return tipo == 'Directa' ? schema.required('Requerido') : schema.notRequired();
-                      }),
-                      distribucion: Yup.string().when('tipo', (tipo, schema) => {
-                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
-                      }),
-                      vendedor: Yup.string().when('tipo', (tipo, schema) => {
-                        return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
-                      }),
-                    })
-                  : option === "Precios"
-                  ? Yup.object().shape({
-                      precio: Yup.number().test(
-                        'is-greater-than-0',
-                        'No válido',
-                        function (value) {
-                          return value > 0;
-                        }
-                      ),
-                    })
-                  : Yup.object({})
-              );
-          }, [item, option]);
-
-           }
-        })*/
         const [isSubmitting, setIsSubmitting] = useState(false) 
         const actions = useMemo(() => [
             { label: "Guardar", onClick: () => formRef.current?.requestSubmit() } // Dispara el submit del formulario
@@ -153,7 +95,6 @@ const CRUD=({
                 content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting}/>}
                 actions={actions}
                 loading={isSubmitting}
-                necesary={necesary}//Si se ocupa el Abscroll
                 center={option=="Galerias"}/>
             }</>
         )
@@ -163,24 +104,25 @@ const CRUD=({
     if (predios) {
         setEditForm(() => PropertiesForm);
         setoptionForm("Predios")
-        setNecesary(true)
     }
     if(galleries){
         setEditForm(() => GalleryForm);
         setoptionForm("Galerias")
-        setNecesary(false)
     }
     if(offers){
         setEditForm(() => OfferForm);
         setoptionForm("Ofertas")
-        setNecesary(true)
     }
     if(prices){
-        setEditForm(() => PricesForm);
-        setoptionForm("Precios")
-        setNecesary(false)
+        if(anio){
+            setEditForm(() => AnioForm);
+            setoptionForm("Anios")
+        }else{
+            setEditForm(() => PricesForm);
+            setoptionForm("Precios")
+        }
     }
-    }, [predios,galleries,offers,prices]);
+    }, [predios,galleries,offers,prices,anio]);
 
     useEffect(() => {
         let newElements = data ? [...data] : []; 
@@ -344,26 +286,39 @@ const CRUD=({
                         offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
                         undefined}
                         <button onClick={()=>{
-                            setSelectedItem(emptyOffer)
+                            setSelectedItem(null)
                             setAgregar(true)
                             setModal(true) 
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
                     }
                     {searchFilter &&
-                        <><InputSearch formik={formik}/>
+                        <div className='flex flex-col sm:flex-row w-full gap-3'>
+                        <div className='flex-1 flex'><InputSearch formik={formik}/></div>
                         {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
                         offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
-                        undefined}</>
+                        undefined}</div>
                     }
                     {switchFilterAdd &&
-                        <div className='flex flex-row gap-3 w-full'>
-                            <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
-                            <div className='flex flex-row gap-1 w-full'>
-                                <Switch formik={formik}/>
-                                <button onClick={()=>{
-                                    setAgregar(true)
-                                    setModal(true)
-                                }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>
+                        <div className='w-full flex md:flex-row flex-col md:items-center gap-2 box-border'>
+                            <div className='flex flex-row flex-1 gap-3 w-full box-border'>
+                                <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
+                                <Switch formik={formik} />
+                                <button onClick={() => {
+                                    setAgregar(true);
+                                    setModal(true);
+                                }}>
+                                    <Icons.Add className='size-11 text-[#6B9DFF]' />
+                                </button>
+                            </div>  
+                            <button 
+                                className='bg-[#FFD34B] w-full sm:size-fit p-2 rounded-xl font-bold ms-0' 
+                                onClick={() => {
+                                    setanio(true);
+                                    setAgregar(true);
+                                    setModal(true);
+                                }}>
+                                Agregar año
+                            </button>
                         </div>}
                 </div>
             </div>
@@ -376,7 +331,8 @@ const CRUD=({
                         predios ? !agregar ? "Predio: "+selectedItem.nombre : "Nuevo Predio":
                         galleries ? "Nueva Galería":
                         offers ? 'Nueva Oferta':
-                        prices && "Nuevo precio" 
+                        prices && !anio ? "Nuevo precio":
+                        "Nuevo año" 
                     }
                     option={optionForm}
                     open={modal}/>

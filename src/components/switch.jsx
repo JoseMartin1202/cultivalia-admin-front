@@ -10,7 +10,7 @@ const Switch = ({formik}) => {
     };
 
     return (
-        <div className='flex flex-row relative items-center w-fit border-2 border-[#696969] py-1 pe-2 bg-white rounded-2xl' >
+        <div className='flex w-fit flex-row relative items-center border-2 border-[#696969] py-1 pe-2 bg-white rounded-2xl' >
             <p className='font-[Roboto] px-2 text-center'>Agrupar por año</p>
             <button
             onClick={toggleSwitch}

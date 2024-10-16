@@ -77,6 +77,19 @@
   animation: emerge 0.2s ease-out;
 }
 
+@keyframes bounce-scale {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.05); /* Aumenta el tamaño del elemento en un 10% */
+  }
+}
+
+.bounce {
+  animation: bounce-scale 0.2s ease;
+}
+
 @keyframes emerge {
   0% {
     opacity: 0;

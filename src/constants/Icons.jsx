@@ -69,6 +69,10 @@ import {
 } from "react-icons/hi2";
 
 import {
+    TbPointFilled as point
+} from "react-icons/tb";
+
+import {
     MdOutlineFileUpload as Upload,
     MdImageNotSupported as EmptyImage
 } from "react-icons/md";
@@ -109,5 +113,6 @@ export const Icons={
     OfferIndirect,
     Complete,
     jimated,
-    unknown
+    unknown,
+    point
 }
