@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Icons } from '../constants/Icons';
 
-const CustomSelect = ({ options, value, onChange, openUp=false }) => {
+const CustomSelect = ({ options, value, onChange, openUp=false,estadoS='' }) => {
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef(null);
   
@@ -33,9 +33,9 @@ const CustomSelect = ({ options, value, onChange, openUp=false }) => {
     return (
       <div className="relative w-full" ref={selectRef}>
         <div
-          className={`px-4 py-2 border-gray-300 border-2 rounded-[10px] focus:outline-none ${
+          className={`px-4 py-2 border-gray-300 border-2 rounded-[10px] focus:outline-none  ${
             isOpen ? 'ring-2 ring-indigo-400 border-indigo-500 cursor-pointer' : ''
-          }`}
+          } ${estadoS}`}
           onClick={() => setIsOpen(!isOpen)}
           style={{ userSelect: 'none' }}
         >
@@ -49,7 +49,7 @@ const CustomSelect = ({ options, value, onChange, openUp=false }) => {
         {isOpen && (
           <ul
             className={`absolute w-full max-h-40 rounded-[10px] overflow-y-auto bg-white border border-gray-300 z-10 ${
-              openUp ? 'bottom-full mb-2' : 'mt-1'
+              openUp ? 'bottom-full mb-1' : 'mt-1'
             }`}
             style={{ userSelect: 'none' }}
           >

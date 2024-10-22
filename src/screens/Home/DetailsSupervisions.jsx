@@ -9,6 +9,7 @@ import * as Yup from 'yup';
 import { getErrorMessage, valueFromId } from '../../constants/functions';
 import { PhotosModal } from '../Galeria/DetailsGalery';
 import AbsScroll from '../../components/AbsScroll';
+import CustomSelect from '../../components/CustomSelect';
 
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
@@ -30,6 +31,8 @@ export const DetailsSupervisions = () => {
         "Inconsistencia de datos",
         "niice"
     ]
+
+    const estados = [{value:'Pendiente',label:'Pendiente'},{value:'Validada',label:'Validada'},{value:'Rechazada',label:'Rechazada'}]
    
     if(supervision?.movimiento?.tipo_movimiento === 'Beneficiario' || supervision?.movimiento?.tipo_movimiento === 'Inversor'){
         ImagenesData.push( 
@@ -251,23 +254,13 @@ export const DetailsSupervisions = () => {
             <div className='w-full h-[40px] min-h-[40px] flex flex-row gap-4 items-center max-sm:flex-col'>
                 <div className='flex flex-row w-full sm:w-[40%] items-center gap-2'>
                     <p className='font-bold text-lg'>Estado:</p>
-                    <div className='relative w-full min-w-fit'>
-                        <select
-                            id="estado"
-                            name="estado"
-                            value={formik?.values.estado}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                            className={`size-full py-2 appearance-none block border-gray-300 border-[1px] px-4 rounded focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 ${bgOption}`}
-                        >
-                            <option className='bg-white' value="Pendiente">Pendiente</option>
-                            <option className='bg-white' value="Validada">Validada</option>
-                            <option className='bg-white' value="Rechazada" >Rechazada</option>
-                        </select>
-                        <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                            <Icons.ArrowUp className='size-[80%]' />
-                        </div>
-                    </div>
+                    <CustomSelect
+                        options={estados}
+                        value={formik.values.estado}
+                        onChange={(val) => formik.setFieldValue('estado', val)}
+                        openUp={true}
+                        estadoS={bgOption}
+                    />  
                 </div>
                 <div className='flex flex-row size-full sm:w-[60%] gap-4'>
                     <button className='bg-[#FFD34B] h-full flex-1 max-sm:py-2 rounded-2xl text-xl flex total-center font-bold' type='submit'>Guardar</button>
