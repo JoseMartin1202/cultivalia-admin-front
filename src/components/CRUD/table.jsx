@@ -20,6 +20,7 @@ import usePrice from '../../Server/Prices/PriceProvider';
 import ModalElimiar from '../modals/ModalEliminar';
 import GroupTable from './tableGroup';
 import AnioForm from '../forms/AnioForm';
+import { formatDateLong } from '../../constants/functions';
 
 const CRUD=({
     columns, 
@@ -218,9 +219,7 @@ const CRUD=({
             newElements= newElements.map((item)=>{
                 const newItem = { ...item };
                 columns.forEach((col)=>{
-                    if(col.attribute==="fechaRegistro"){
-                        newItem[col.attribute]= newItem[col.attribute].split('T')[0]
-                    }else if(col.attribute==="isCurrent"){
+                    if(col.attribute==="isCurrent"){
                         newItem[col.attribute] ? newItem[col.attribute]= "actual": newItem[col.attribute]= "NoActual"
                     }else if(col.attribute==="isJimated"){
                             newItem[col.attribute] ? newItem[col.attribute]= "jimada": newItem[col.attribute]= "NoJimada"
@@ -232,7 +231,17 @@ const CRUD=({
                 })
                 return newItem
             })
-            newElements.sort((a, b) => b.anio - a.anio);
+            newElements.sort((a, b) => {
+                // Primero, ordenar por año en orden descendente
+                if (b.anio !== a.anio) {
+                    return b.anio - a.anio; // Ordenar por año de forma descendente
+                } else {
+                    // Si los años son iguales, ordenar por fechaRegistro en orden descendente
+                    let dateA = new Date(a.fechaRegistro);
+                    let dateB = new Date(b.fechaRegistro);
+                    return dateB - dateA; // Ordenar por fecha en orden descendente
+                }
+            });
             // Gruping by years
             newElements.forEach(p => {
                 let yCopy = { ...p };
@@ -249,11 +258,38 @@ const CRUD=({
                     delete yCopy.id;
                     delete yCopy.anio;
                     anio.precios.push(yCopy)
+
+                    anio.precios.sort((a, b) => {
+                        let dateA = new Date(a.fechaRegistro); // Convertir cadena de fecha en objeto Date
+                        let dateB = new Date(b.fechaRegistro);
+                        return dateB - dateA;
+                    });
                 }
             })
+          
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="fechaRegistro"){
+                        newItem[col.attribute]= formatDateLong({data:newItem[col.attribute]})
+                    }
+                })
+                return newItem
+            })
+
+            years = years.map(year => {
+                const formattedYear = { ...year };
+                formattedYear.precios = year.precios.map(precio => {
+                    const formattedPrecio = { ...precio };
+                    formattedPrecio.fechaRegistro = formatDateLong({ data: precio.fechaRegistro });
+                    return formattedPrecio;
+                });
+                return formattedYear;
+            });
+            
             setcolsGroup(newCols.splice(1,1))
             setyearsGroup(years)
-            
+            console.log(years)
         }
 
         if(!prices){
@@ -311,7 +347,7 @@ const CRUD=({
                                 </button>
                             </div>  
                             <button 
-                                className='bg-[#FFD34B] w-full sm:size-fit p-2 rounded-xl font-bold ms-0' 
+                                className='bg-[#FFD34B] size-fit p-2 rounded-xl font-bold' 
                                 onClick={() => {
                                     setanio(true);
                                     setAgregar(true);
