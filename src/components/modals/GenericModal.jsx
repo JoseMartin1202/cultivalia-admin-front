@@ -3,7 +3,6 @@ import { Icons } from '../../constants/Icons'
 import AbsScroll from '../AbsScroll'
 import { useMediaQuery } from 'react-responsive';
 import '../../index.css';
-import AbsScrollModal from '../AbsScrollModal';
 
 const GenericModal = ({
   title = "",
@@ -11,32 +10,22 @@ const GenericModal = ({
   content = "",
   actions = [],
   loading,
-  necesary=true,
-  center
 }) => {
-  const isSmallScreen = useMediaQuery({ query: '(max-width: 640px)' });
-  const [isSmall,setIsSmall]=useState(false);
-  
-  useEffect(() => {
-    if (isSmallScreen) {
-       setIsSmall(true);
-    }else{
-      setIsSmall(false);
-    }
-  }, [isSmallScreen]);
 
   return (
-    <div id="modalBackground" className={`absolute z-40 size-full left-0 top-0 bg-neutral-900/70 flex justify-center ${center? 'items-center':'items-end'} sm:items-center`}>
+    <div id="modalBackground" className={`fixed z-40 inset-0 bg-neutral-900/70 flex justify-center items-end sm:items-center`}>
       <div id="modalBox"
-      className={`rounded-2xl flex flex-col w-full bg-white max-sm:h-[95%] sm:h-fit sm:w-4/5 lg:w-[70%]`}>
-        <div id="modalHeader" className='relative flex w-full h-12 shadow-md total-center bg-slate-300 rounded-ss-2xl rounded-se-2xl'>
+      className={`rounded-2xl flex flex-col w-full bg-white max-h-[90%] sm:w-fit`}>
+        <div id="modalHeader" className='relative flex-none w-full h-12 shadow-md flex total-center bg-slate-300 rounded-ss-2xl rounded-se-2xl'>
           <p className='text-xl font-bold'> {title} </p>
           <button className='rounded-2xl absolute right-1 size-8 total-center hover:bg-slate-200 active:opacity-70 active:duration-0' onClick={close}>
             <Icons.Refused size="22px" className={`text-[#E04646]  ${loading && 'cursor-not-allowed text-[#a7a7a7]'}`} />
           </button>
         </div> 
-        <AbsScrollModal vertical>{content}</AbsScrollModal>
-        <div className='flex flex-row-reverse gap-1 p-1'>
+        <div className="flex-1 overflow-y-auto emerge">
+          {content}
+        </div> 
+        <div className='flex-none flex flex-row-reverse gap-1 p-1'>
           {
             actions.map((action, index) =>
               <button type="button" key={index}

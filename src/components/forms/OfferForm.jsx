@@ -9,7 +9,7 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import CustomSelect from '../CustomSelect';
 
-const OfferForm = ({item,close,formRef, setIsSubmitting}) => {
+const OfferForm = ({close,formRef, setIsSubmitting}) => {
 
     const formik = useFormik({
         initialValues: {
@@ -93,7 +93,7 @@ const OfferForm = ({item,close,formRef, setIsSubmitting}) => {
 
     const vendedorOptions = vendedores?.map(v => ({
         value: v.id,
-        label: v.nombre
+        label: v.nombre +" "+v.apellidos
     }));
 
     const estadoOptions = [{value:true, label: "Visible"},{value:false, label: "No visible"}]
@@ -171,7 +171,7 @@ const OfferForm = ({item,close,formRef, setIsSubmitting}) => {
     }, [distribucionesInversor,distribucionesInversorStatus, formik.values.vendedor]);
 
     return (
-        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 ${formik.values.tipo=="Indirecta" ? 'h-fit':'h-[19rem]'} flex flex-col w-full items-center gap-4`}>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 ${formik.values.tipo=='Directa' ? 'h-[19rem]':'h-fit'} flex flex-col w-full items-center gap-4`}>
             <div className='flex flex-row w-full sm:items-center sm:gap-3 max-sm:flex-col'>
                 <p className='font-bold min-w-fit'>Tipo de oferta:</p>
                 <div className='relative w-full min-w-fit'>
@@ -212,21 +212,11 @@ const OfferForm = ({item,close,formRef, setIsSubmitting}) => {
                             </div>
                             <div className='flex flex-col flex-1'>
                                 <p className='font-bold'>Estatus:</p>
-                                <div className='relative w-full min-w-fit'>
-                                    <select
-                                        className={`size-full py-2 appearance-none block border-gray-300 border-2 px-4 rounded-[10px] focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500`}
-                                        onChange={formik.handleChange}
-                                        id="is_visible_directa"
-                                        name="is_visible_directa"
-                                        value={formik.values.is_visible_directa}
-                                    >
-                                        <option value={true}>Visible</option>
-                                        <option value={false}>No visible</option>
-                                    </select>
-                                    <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
-                                        <Icons.ArrowDown className='size-[80%]' />
-                                    </div>
-                                </div>
+                                <CustomSelect
+                                    options={estadoOptions}
+                                    value={formik.values.is_visible_directa}
+                                    onChange={(val) => formik.setFieldValue('is_visible_directa', val)}
+                                />   
                             </div>
                         </div>
                     </div>
@@ -290,7 +280,7 @@ const OfferForm = ({item,close,formRef, setIsSubmitting}) => {
                         distribucionesInversorStatus === 'pending' ?
                             <Loader />
                             :
-                            <div className='size-full py-4 total-center flex flex-col gap-3 text-center'>
+                            <div className='size-full total-center flex flex-col gap-3 text-center'>
                                 <Icons.unknown className='size-16 text-orange-300'/>
                                 <p className='text-[20px] '>¡Uuups. El inversor no cuenta <br/> con distribuciones para ofertar plantas!</p>
                             </div>

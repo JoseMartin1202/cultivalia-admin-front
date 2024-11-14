@@ -14,7 +14,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
     const { priceAdd, priceAddStatus,yearsExisting } =usePrice() 
     const [yearSelected, setyearSelected] = useState([]);
     const jimada = [{value:false,label:'No'},{value:true,label:'Si'}]
-    const forma = [{value:'Manual',label:'Manual'},{value:'Automatica',label:'Automatica'}]
+    const forma = [{value:'Manual',label:'Manual'},{value:'Automatica',label:'Automática'}]
     const manera = [{value:'Porcentaje',label:'Porcentaje'},{value:'Cantidad',label:'Cantidad'}]
     const [bouncingIndex, setBouncingIndex] = useState(null); 
     const [all, setAll] = useState(false); 
@@ -154,7 +154,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
 
 
     return (
-        <form ref={formRef} onSubmit={formik.handleSubmit} className='p-1 flex flex-col w-80 items-center gap-3'>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-col w-80 items-center gap-3'>
             <div className='flex flex-row items-center gap-3 w-full'>
                 <p className='font-bold'>Forma:</p>
                 <CustomSelect

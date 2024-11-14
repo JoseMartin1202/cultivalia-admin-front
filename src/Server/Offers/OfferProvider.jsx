@@ -2,16 +2,16 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext";
 import { useApp } from '../../context/AppContext';
 
-const useOffer=(inversorId)=>{
+const useOffer=(inversorId,offerId)=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
     
-    /*/**Functions 
-    const updatePartial = async(values) =>{
+    //Functions 
+    const updateVisibilidad = async(values) =>{
         const res = await myAxios.patch(`oferta/${offerId}/`, values)
         return res.data
-    }*/
+    }
 
     const addOffer = async(values) =>{
         let dataToSend = {};
@@ -60,15 +60,15 @@ const useOffer=(inversorId)=>{
         enabled: !!inversorId
     })
 
-    /*const OfferMutator = useMutation({
-        mutationFn: updatePartial,
+    const OfferVisibilityMutator = useMutation({
+        mutationFn: updateVisibilidad,
         onSuccess: () => {
             queryClient.invalidateQueries(['ofertas']) 
-            notify('Oferta actualizada con exito')
+            notify('Ahora la oferta es visible')
         },
         onError: (e) => notify(getErrorMessage(e), true),
         enabled: !!offerId 
-    })*/
+    })
 
     const OfferAddMutator = useMutation({
         mutationFn: addOffer,
@@ -89,10 +89,10 @@ const useOffer=(inversorId)=>{
         status:distribucionesInversorStatus
     }=DistribucionesInversor
 
-    /*const {
-        mutate:updateOffer,
-        status:updateOfferStatus
-    }=OfferMutator*/
+    const {
+        mutate:updateVisibilityOffer,
+        status:updateVisibilityOfferStatus
+    }=OfferVisibilityMutator
 
     const {
         mutate:offerAdd,
@@ -105,7 +105,9 @@ const useOffer=(inversorId)=>{
         offerAdd,
         offerAddStatus,
         distribucionesInversor,
-        distribucionesInversorStatus
+        distribucionesInversorStatus,
+        updateVisibilityOffer,
+        updateVisibilityOfferStatus
     })
 }
 

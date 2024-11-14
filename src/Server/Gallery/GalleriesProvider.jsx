@@ -3,7 +3,7 @@ import { useAxios } from "../../context/AxiosContext";
 import { useApp } from '../../context/AppContext';
 import useSession from '../Session/SessionProvider';
 
-const useGalleries=()=>{
+const useGalleries=(galleryId)=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
@@ -19,6 +19,12 @@ const useGalleries=()=>{
        const res= await myAxios.post('galeria/',values)
        return res.data
     }
+
+    const updateGallery = async (value) =>{
+        const res= await myAxios.put(`galeria/${galleryId}/`,value)
+        return res.data
+     }
+ 
 
     /**Querys */
     const GalleriesQuery= useQuery({
@@ -36,22 +42,37 @@ const useGalleries=()=>{
         onError: (e) => notify(getErrorMessage(e), true),
     })
 
+    const updateGallleryMutator = useMutation({
+        mutationFn: updateGallery,
+        onSuccess: () => {
+            queryClient.invalidateQueries(['galeria',galleryId]) 
+            notify('Galería actualizada con exito')
+        },
+        onError: (e) => notify(getErrorMessage(e), true)
+    })
+
     const {
         data:galleries,
         status:galleriesStatus,
     } = GalleriesQuery
 
-    
     const {
         mutate:galerryAdd,
         status:galerryAddStatus,
     } = addGallleryMutator
 
+    const {
+        mutate:galerryUpdate,
+        status:galerryUpdateStatus,
+    } = updateGallleryMutator
+
     return ({
         galleries,
         galleriesStatus,
         galerryAdd,
-        galerryAddStatus
+        galerryAddStatus,
+        galerryUpdate,
+        galerryUpdateStatus
     })
 }
 

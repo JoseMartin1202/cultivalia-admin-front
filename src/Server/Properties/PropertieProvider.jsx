@@ -14,8 +14,9 @@ const usePropertie=(propertieId)=>{
 
     const updatePartial = async(values) =>{
         if(values.galeria=="ninguna"){
-            values.galeria=null;
+            values.galeria='';
         }
+        console.log(values.galeria)
         if(typeof values.photo_cover === 'string' ){
             delete values.photo_cover;
         }else  if(values.photo_cover === null ){
