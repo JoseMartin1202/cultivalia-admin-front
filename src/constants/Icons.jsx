@@ -4,6 +4,7 @@ import {
     FaCircleCheck as Accepted,
     FaCircleXmark as Refused,
     FaCircleUser as User, 
+    FaEye as Eye
 } from "react-icons/fa6";
 
 import {
@@ -43,7 +44,8 @@ import {
     FaRegTimesCircle as Clear,
     FaAngleRight as Right,
     FaAngleLeft as Left,
-    FaCalendarCheck as Complete
+    FaCalendarCheck as Complete,
+    FaArrowLeft as LeftArrow
 } from "react-icons/fa";
 
 import {
@@ -74,7 +76,8 @@ import {
 
 import {
     MdOutlineFileUpload as Upload,
-    MdImageNotSupported as EmptyImage
+    MdImageNotSupported as EmptyImage,
+    MdFolderOff  as ContractNull
 } from "react-icons/md";
 
 export const Icons={
@@ -114,5 +117,8 @@ export const Icons={
     Complete,
     jimated,
     unknown,
-    point
+    point,
+    LeftArrow,
+    ContractNull,
+    Eye
 }

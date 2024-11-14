@@ -34,7 +34,7 @@ const InputForm = ({ id, formik, onChangeExtra, message, password,number,prevent
                 onKeyDown={handleKeyDown}
                 type={`${password ? 'password': number ? 'number':'text'}`}
                 min={number ? "0" : undefined} 
-                step={number ? "1" : undefined}
+                step={number ? "any" : undefined}
                 className=' w-full rounded-[10px] border-2 p-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 focus:outline-none'
                 placeholder={message}/>
             </div>

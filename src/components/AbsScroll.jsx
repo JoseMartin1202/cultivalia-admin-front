@@ -11,6 +11,7 @@ const AbsScroll = ({
     className,
     id,
     setScroll,
+    centerColumn=false
 }) => {
 
     const pageRef = useRef(null)
@@ -40,7 +41,7 @@ const AbsScroll = ({
                 }}
                 className={`relative w-full h-full ${vertical ? 'overflow-y-auto' : 'overflow-y-hidden'} ${horizontal ? 'overflow-x-auto' : 'overflow-x-hidden'}`}>
                 {loading ? <Loader /> :
-                    <div className={'absolute top-0 w-full'}>
+                    <div className={`absolute top-0 w-full ${centerColumn ? 'flex flex-col gap-4 items-center':''}`}>
                         {children}
                     </div>
                 }

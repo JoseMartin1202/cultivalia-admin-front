@@ -4,15 +4,15 @@ import useGalleries from '../../Server/Gallery/GalleriesProvider'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 
-const GalleryForm = ({close,formRef, setIsSubmitting}) => {
-    const { galerryAdd,galerryAddStatus } = useGalleries() 
+const GalleryForm = ({close,formRef, setIsSubmitting,gallery=null}) => {
+    const { galerryAdd,galerryUpdate,galerryAddStatus,galerryUpdateStatus } = useGalleries(gallery) 
 
     useEffect(() => {
-        if (galerryAddStatus === 'success') {
+        if (galerryAddStatus === 'success' || galerryUpdateStatus === 'success') {
             setIsSubmitting(false)
             close();
         }
-    }, [galerryAddStatus]);
+    }, [galerryAddStatus,galerryUpdateStatus]);
 
     const formik = useFormik({
         initialValues: {titulo: ''},
@@ -20,14 +20,17 @@ const GalleryForm = ({close,formRef, setIsSubmitting}) => {
           titulo: Yup.string().required('Obligatorio')
         }),
         onSubmit: async (values) => {
-            galerryAdd(values)
+            if(gallery){
+                galerryUpdate(values)
+            }else{
+                galerryAdd(values)
+            }
         }
     })
 
     return (
     <form ref={formRef} onSubmit={formik.handleSubmit} className='p-6 flex flex-row max-sm:flex-col w-full items-center sm:gap-3'>
         <p className='font-bold'>Titulo:</p>
-        {console.log(formRef)}
         <InputForm formik={formik} id="titulo" name="titulo"/>
     </form>
   )

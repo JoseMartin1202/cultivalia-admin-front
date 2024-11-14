@@ -129,19 +129,22 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
         label: y.anio
     }));
     
-    const galerias = galleries?.map(g => ({
-        value: g.id,
-        label: g.titulo
-    }));
+    const galerias = [
+        { value: 'ninguna', label: 'Ninguna' },
+        ...(galleries?.map(g => ({
+            value: g.id,
+            label: g.titulo
+        })) || [])
+    ];
+    
 
     return (
-    <form ref={formRef} onSubmit={formik.handleSubmit} className='sm:relative p-4 flex flex-col w-full gap-3'>
+    <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-col gap-3'>
           {console.log( formRef)}
         {propertieAddStatus === 'pending' || updatePropertieStatus === 'pending' ?
             <Loader/>
         :
         <>
-        {console.log(formik.values.photo_cover)}
          <div className='flex sm:flex-row w-full gap-3 flex-col'>
             <div className='flex-grow flex-col'>
                 <p className='font-bold'>Portada:</p>

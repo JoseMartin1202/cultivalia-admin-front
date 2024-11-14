@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import '../../index.css'
 import { Icons } from '../../constants/Icons';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -10,11 +10,12 @@ import GenericModal from '../../components/modals/GenericModal';
 import FileInput from '../../components/inputs/FileInput';
 import * as Yup from 'yup';
 import Image from '../../components/Image';
-import { useMediaQuery } from 'react-responsive';
+import GalleryForm from '../../components/forms/GalleryForm';
 
 export const DetailsGallery=()=>{
 
     const containerRef = useRef(null);
+    const formRef = useRef(null);
     const navigate =useNavigate();
     const { galleryId } = useParams();
     const {galeryName,deletePhotosStatus,dropPhotoStatus,deletePhotos,dropPhoto, photosGallery, photosGalleryStatus}= useGallery(galleryId)
@@ -25,8 +26,13 @@ export const DetailsGallery=()=>{
     const [btnmodal, setBtnModal] = useState(false)
     const [photoId, setphotoId] = useState()
     const [showFormModal, setShowFormModal] = useState(false)
+    const [showEditNameGallery, setShowEditNameGallery] = useState(false)
     const [initIndex, setInitIndex] = useState(0)
     const [loading, setLoading] = useState(true)
+    const actions = useMemo(() => [
+        { label: "Guardar", onClick: () => formRef.current?.requestSubmit() } // Dispara el submit del formulario
+    ], []);
+    const [isSubmitting, setIsSubmitting] = useState(false) 
 
     useEffect(() => {
         const updateColumns = () => {
@@ -113,40 +119,50 @@ export const DetailsGallery=()=>{
            initIndex={initIndex}
         />
     } 
-    <div className='sm:ml-14 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto'>
+   
+    <div className='sm:ml-14 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto font-[Roboto]'>
+        {showEditNameGallery && 
+            <GenericModal
+            title={"Actualizar nombre de galería"}
+            close={()=>setShowEditNameGallery(false)}
+            content={<GalleryForm formRef={formRef} close={()=>setShowEditNameGallery(false)} setIsSubmitting={setIsSubmitting} gallery={galleryId}/>}
+            actions={actions}
+            loading={isSubmitting}
+            center={true}/>
+        }
         { modal && 
             <ModalElimiar
                 title={eliminarTodas ? "Eliminar todas":"Eliminar foto"}
                 close={()=>setModal(false)}
                 content={
-                        <div className='total-center text-xl'>
-                            <div className=' flex-col total-center text-center gap-3'>
-                                {console.log(deletePhotosStatus)}
-                                {
-                                eliminando ? 
+                    <div className='total-center text-xl'>
+                        <div className=' flex-col total-center text-center gap-3'>
+                            {console.log(deletePhotosStatus)}
+                            {
+                            eliminando ? 
+                            <>
+                            <Loader />
+                            {dropPhotoStatus==='pending' &&  <p>Eliminando...</p>}
+                            {deletePhotosStatus==='pending' &&  <p>Eliminando...</p>}
+                            </>:
+                            eliminarTodas ?
+                            <>{photosGalleryStatus ==='success' && photosGallery.length>0 ?
                                 <>
-                                <Loader />
-                                {dropPhotoStatus==='pending' &&  <p>Eliminando...</p>}
-                                {deletePhotosStatus==='pending' &&  <p>Eliminando...</p>}
+                                <p>¿Estás seguro que deseas eliminar todas las fotos?</p>
+                                <Icons.Alert className='size-24 text-red-400'/>
                                 </>:
-                                eliminarTodas ?
-                                <>{photosGalleryStatus ==='success' && photosGallery.length>0 ?
-                                    <>
-                                    <p>¿Estás seguro que deseas eliminar todas las fotos?</p>
-                                    <Icons.Alert className='size-24 text-red-400'/>
-                                    </>:
-                                    <>
-                                    <p>No hay fotos por eliminar</p>
-                                    <Icons.Empty className='size-24 text-orange-300'/>
-                                    </>
-                                }</>:<> {photosGalleryStatus ==='success' && photosGallery.length>0 &&
-                                    <div className='flex flex-col total-center gap-3'>
-                                    <p>¿Estás seguro que deseas eliminar esta foto?</p>
-                                    <Icons.Alert className='size-24 text-red-400'/>
-                                    </div>
-                                }</>}
-                            </div>
-                        </div> 
+                                <>
+                                <p>No hay fotos por eliminar</p>
+                                <Icons.Empty className='size-24 text-orange-300'/>
+                                </>
+                            }</>:<> {photosGalleryStatus ==='success' && photosGallery.length>0 &&
+                                <div className='flex flex-col total-center gap-3'>
+                                <p>¿Estás seguro que deseas eliminar esta foto?</p>
+                                <Icons.Alert className='size-24 text-red-400'/>
+                                </div>
+                            }</>}
+                        </div>
+                    </div> 
                 }
                 loading={btnmodal}
                 actions={[{ label: "Aceptar", onClick: ()=> {
@@ -171,7 +187,7 @@ export const DetailsGallery=()=>{
                id={galleryId}
                close={()=>setShowFormModal(false)}
             />
-         }
+        }
         <div className='w-full h-full bg-white shadow-lg  rounded-2xl overflow-y-auto p-2'>
             <div ref={containerRef} className='w-full h-fit grid gap-4'>
                 {photosGalleryStatus ==='pending' ? <Loader/>: 
@@ -198,9 +214,10 @@ export const DetailsGallery=()=>{
             <div className='bg-[#E2E8F0] w-fit p-2 font-bold text-md rounded-xl'>
                     {<p>Fotos: {photosGallery?.length}</p>}
             </div>
-            <div className='bg-[#E2E8F0] w-fit p-2 font-bold text-md rounded-xl'>
-                    {<p>Galería: {galeryName?.titulo}</p>}
-            </div>
+            <button className='bg-[#FFD34B] w-fit p-2 font-bold text-md rounded-xl flex flex-row items-center gap-3' onClick={()=>{setShowEditNameGallery(true)}}>
+                <p>Galería: {galeryName?.titulo}</p>
+                <Icons.Edit className='size-5'/>
+            </button>
             <button className='ms-auto hover:bg-red-300 max-sm:text-base text-lg font-bold bg-red-400 rounded-full py-1 px-3' onClick={()=>{setEliminarTodas(true); setModal(true)}}>Eliminar todas</button>
         </div>
     </div>

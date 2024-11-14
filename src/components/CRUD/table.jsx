@@ -10,17 +10,15 @@ import { useApp } from '../../context/AppContext';
 import GenericModal from '../modals/GenericModal';
 import PropertiesForm from '../forms/ProperitesForm';
 import GalleryForm from '../forms/GalleryForm';
-import useGalleries from '../../Server/Gallery/GalleriesProvider';
 import AbsScroll from '../AbsScroll';
 import OfferForm from '../forms/OfferForm';
-import useOffer from '../../Server/Offers/OfferProvider';
 import Switch from '../switch';
 import PricesForm from '../forms/PriceForm';
-import usePrice from '../../Server/Prices/PriceProvider';
 import ModalElimiar from '../modals/ModalEliminar';
 import GroupTable from './tableGroup';
 import AnioForm from '../forms/AnioForm';
 import { formatDateLong } from '../../constants/functions';
+import EditVisibilityForm from '../forms/EditVisibility';
 
 const CRUD=({
     columns, 
@@ -49,21 +47,19 @@ const CRUD=({
     const [selectedItem, setSelectedItem] = useState('');
     const [editForm, setEditForm] = useState(null)
     const [agregar, setAgregar] = useState(false)
+    const [editarVisibilidad, seteditarVisibilidad] = useState(false)
     const [anio, setanio] = useState(false)
-    const [price, seprice] = useState(false)
     const [optionForm, setoptionForm] = useState()
-    const [necesary, setNecesary] = useState(true);
     const [yearsGroup, setyearsGroup] = useState();
     const [colsGroup, setcolsGroup] = useState();
     const closeModal = () => {
-        if (prices) {
-            if (anio) {
-              setanio(false)
-            }
-            setModal(false)
-        }else{
-            setModal(false)
+        if(prices){
+            setanio(false)
         }
+        if(offers){
+            seteditarVisibilidad(false)
+        }
+        setModal(false)
     };
 
     const formik = useFormik({
@@ -78,25 +74,19 @@ const CRUD=({
         const formRef = useRef(null);
         const [isSubmitting, setIsSubmitting] = useState(false) 
         const actions = useMemo(() => [
-            { label: "Guardar", onClick: () => formRef.current?.requestSubmit() } // Dispara el submit del formulario
+            { label:editarVisibilidad ?"Aceptar": "Guardar", onClick: () => formRef.current?.requestSubmit() } // Dispara el submit del formulario
         ], []);
 
         return (
             <>
-            {prices ?
-                <ModalElimiar
-                title={title}
-                close={close}
-                content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting}/>}
-                actions={actions}/>
-                :
+            {
                 <GenericModal
                 title={title}
                 close={close}
                 content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting}/>}
                 actions={actions}
                 loading={isSubmitting}
-                center={option=="Galerias"}/>
+                />
             }</>
         )
      }
@@ -107,23 +97,10 @@ const CRUD=({
         setoptionForm("Predios")
     }
     if(galleries){
-        setEditForm(() => GalleryForm);
+        setEditForm(() => GalleryForm)
         setoptionForm("Galerias")
     }
-    if(offers){
-        setEditForm(() => OfferForm);
-        setoptionForm("Ofertas")
-    }
-    if(prices){
-        if(anio){
-            setEditForm(() => AnioForm);
-            setoptionForm("Anios")
-        }else{
-            setEditForm(() => PricesForm);
-            setoptionForm("Precios")
-        }
-    }
-    }, [predios,galleries,offers,prices,anio]);
+    }, [predios,galleries]);
 
     useEffect(() => {
         let newElements = data ? [...data] : []; 
@@ -150,10 +127,16 @@ const CRUD=({
                         ? newItem[col.attribute].substring(0, 50) + "..."
                         : newItem[col.attribute];
                     }else if(col.attribute === "mov"){
-                        if(newItem["movimiento"].tipo_movimiento==="PagoEntrante"){
-                            newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" por "+newItem["movimiento"].data.metodo
+                        if(newItem["movimiento"]){
+                            if(newItem["movimiento"].tipo_movimiento==="PagoEntrante"){
+                                newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" por "+newItem["movimiento"].data.metodo
+                            }else  if(newItem["movimiento"].tipo_movimiento==="Contrato"){
+                                newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" de "+newItem["movimiento"].data.inversor.nombre
+                            }else{//Beneficiario
+                                newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" "+newItem["movimiento"].data.nombre+" "+newItem["movimiento"].data.apellidos
+                            }
                         }else{
-                            newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" "+newItem["movimiento"].data.nombre
+                            newItem[col.attribute]= "Registro no encontrado o borrado"
                         }
                     }else if(col.attribute === "fechaRegistro"){
                         newItem[col.attribute]= newItem[col.attribute].split('T')[0]
@@ -175,6 +158,22 @@ const CRUD=({
                 })
                 return newItem
             })
+
+            newElements.sort((a, b) => {
+                const regex = /^[A-Za-z]/;
+            
+                const aStartsWithLetter = regex.test(a.nombre);
+                const bStartsWithLetter = regex.test(b.nombre);
+            
+                if (aStartsWithLetter && !bStartsWithLetter) {
+                    return -1; // a va antes que b
+                }
+                if (!aStartsWithLetter && bStartsWithLetter) {
+                    return 1; // b va antes que a
+                }
+                // Si ambos comienzan con letra o ambos con número, usa localeCompare
+                return a.nombre.localeCompare(b.nombre);
+            });
         }
 
         if(galleries){
@@ -198,7 +197,7 @@ const CRUD=({
                     }else if(col.attribute==="predio"){
                         newItem[col.attribute]= newItem["predio_data"].nombre
                     }else if(col.attribute==="precio_planta"){
-                        newItem[col.attribute]="$ "+newItem[col.attribute]
+                        newItem[col.attribute]="$"+newItem[col.attribute]
                     }else if(col.attribute==="is_visible"){
                         if(newItem[col.attribute])
                             newItem[col.attribute]="Visible"
@@ -206,7 +205,7 @@ const CRUD=({
                             newItem[col.attribute]="No visible"
                     }else if(col.attribute==="precio_reventa"){
                         if(newItem[col.attribute])
-                            newItem[col.attribute]="$ "+newItem[col.attribute]
+                            newItem[col.attribute]="$"+newItem[col.attribute]
                         else
                             newItem[col.attribute]="- - -"
                     }
@@ -226,7 +225,7 @@ const CRUD=({
                     }else if(col.attribute==="anio"){
                         newItem[col.attribute]= newItem[col.attribute].anio
                     }else if(col.attribute==="precio"){
-                        newItem[col.attribute]= "$ "+newItem[col.attribute]
+                        newItem[col.attribute]= "$"+newItem[col.attribute]
                     }
                 })
                 return newItem
@@ -323,7 +322,8 @@ const CRUD=({
                         undefined}
                         <button onClick={()=>{
                             setSelectedItem(null)
-                            setAgregar(true)
+                            setEditForm(() => OfferForm);
+                            setoptionForm("Ofertas")
                             setModal(true) 
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
                     }
@@ -340,7 +340,8 @@ const CRUD=({
                                 <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
                                 <Switch formik={formik} />
                                 <button onClick={() => {
-                                    setAgregar(true);
+                                    setEditForm(() => PricesForm);
+                                    setoptionForm("Precios")
                                     setModal(true);
                                 }}>
                                     <Icons.Add className='size-11 text-[#6B9DFF]' />
@@ -349,8 +350,9 @@ const CRUD=({
                             <button 
                                 className='bg-[#FFD34B] size-fit p-2 rounded-xl font-bold' 
                                 onClick={() => {
+                                    setEditForm(() => AnioForm)
+                                    setoptionForm("Anios")
                                     setanio(true);
-                                    setAgregar(true);
                                     setModal(true);
                                 }}>
                                 Agregar año
@@ -366,7 +368,8 @@ const CRUD=({
                     title={
                         predios ? !agregar ? "Predio: "+selectedItem.nombre : "Nuevo Predio":
                         galleries ? "Nueva Galería":
-                        offers ? 'Nueva Oferta':
+                        offers && !editarVisibilidad ? 'Nueva Oferta': 
+                        offers && editarVisibilidad ? 'Editar estatus':
                         prices && !anio ? "Nuevo precio":
                         "Nuevo año" 
                     }
@@ -382,7 +385,7 @@ const CRUD=({
                     <thead className='sticky top-0 z-5'>
                         <tr>
                             {supervision ? columns.map((col, i) =>(
-                                <th className={`h-[35px] bg-[#E2E8F0]  ${supervision && i!=1 ? 'w-1/5' : 'w-2/5'}`} key={`TH_${i}`}>
+                                <th className={`h-[35px] bg-[#E2E8F0]  ${ i==0 ? 'w-[25%]' : i==1 ? 'w-[35%]':'w-1/5'}`} key={`TH_${i}`}>
                                     <p>{col.label}</p>
                                 </th>
                             )):
@@ -401,7 +404,7 @@ const CRUD=({
                     <tbody>
                         {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
                         elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className={`${galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
+                            <tr key={`TR_${i}`} className={`${offers && item.is_visible=='No visible' && item.estado!='Finalizada' || galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
                                 navigate(`/${path}/${item.id}`);
                                 } else {
@@ -409,6 +412,12 @@ const CRUD=({
                                     if(predios){
                                         setAgregar(false)
                                         setModal(true);
+                                    }
+                                    if(offers  && item.is_visible=='No visible' && item.estado!='Finalizada'){
+                                        setEditForm(() => EditVisibilityForm);
+                                        setoptionForm("Ofertas")
+                                        seteditarVisibilidad(true)
+                                        setModal(true)
                                     }
                                 }
                             }}>

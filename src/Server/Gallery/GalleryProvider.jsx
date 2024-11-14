@@ -51,7 +51,7 @@ const useGallery=(galeryId)=>{
     })
 
     const GaleryQuery= useQuery({
-        queryKey:['galeriaName',galeryId],
+        queryKey:['galeria',galeryId],
         queryFn:getGalery,
     })
 

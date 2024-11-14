@@ -14,7 +14,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
             <AppProvider>
                 <AxiosProvider>
                     <Router/>
-                    <ReactQueryDevtools initialIsOpen={false} />
+                     {/* <ReactQueryDevtools initialIsOpen={false} /> */}
                 </AxiosProvider>
             </AppProvider>
         </QueryProvider>
