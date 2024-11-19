@@ -77,7 +77,8 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
             }),
         }),
         onSubmit: async (values) => {
-           offerAdd(values)
+            setIsSubmitting(true) 
+            offerAdd(values)
         }
     })
 
@@ -171,7 +172,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
     }, [distribucionesInversor,distribucionesInversorStatus, formik.values.vendedor]);
 
     return (
-        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 ${formik.values.tipo=='Directa' ? 'h-[19rem]':'h-fit'} flex flex-col w-full items-center gap-4`}>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 ${formik.values.tipo=='Directa' ? 'sm:h-[19rem]':''} flex flex-col items-center gap-4`}>
             <div className='flex flex-row w-full sm:items-center sm:gap-3 max-sm:flex-col'>
                 <p className='font-bold min-w-fit'>Tipo de oferta:</p>
                 <div className='relative w-full min-w-fit'>

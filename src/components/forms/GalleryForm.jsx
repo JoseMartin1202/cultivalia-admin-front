@@ -20,6 +20,7 @@ const GalleryForm = ({close,formRef, setIsSubmitting,gallery=null}) => {
           titulo: Yup.string().required('Obligatorio')
         }),
         onSubmit: async (values) => {
+            setIsSubmitting(true) 
             if(gallery){
                 galerryUpdate(values)
             }else{
@@ -29,7 +30,7 @@ const GalleryForm = ({close,formRef, setIsSubmitting,gallery=null}) => {
     })
 
     return (
-    <form ref={formRef} onSubmit={formik.handleSubmit} className='p-6 flex flex-row max-sm:flex-col w-full items-center sm:gap-3'>
+    <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-row max-sm:flex-col sm:w-96 items-center sm:gap-3'>
         <p className='font-bold'>Titulo:</p>
         <InputForm formik={formik} id="titulo" name="titulo"/>
     </form>

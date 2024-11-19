@@ -158,7 +158,7 @@ const CRUD=({
                 })
                 return newItem
             })
-
+            //ordenar por nombre
             newElements.sort((a, b) => {
                 const regex = /^[A-Za-z]/;
             
@@ -369,7 +369,7 @@ const CRUD=({
                         predios ? !agregar ? "Predio: "+selectedItem.nombre : "Nuevo Predio":
                         galleries ? "Nueva Galería":
                         offers && !editarVisibilidad ? 'Nueva Oferta': 
-                        offers && editarVisibilidad ? 'Editar estatus':
+                        offers && editarVisibilidad ?  (selectedItem.is_visible=='Visible' ? 'Cancelar oferta':'Editar estatus'):
                         prices && !anio ? "Nuevo precio":
                         "Nuevo año" 
                     }
@@ -404,7 +404,7 @@ const CRUD=({
                     <tbody>
                         {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
                         elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className={`${offers && item.is_visible=='No visible' && item.estado!='Finalizada' || galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
+                            <tr key={`TR_${i}`} className={`${offers && item.estado!='Finalizada' || galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
                                 navigate(`/${path}/${item.id}`);
                                 } else {
@@ -413,7 +413,7 @@ const CRUD=({
                                         setAgregar(false)
                                         setModal(true);
                                     }
-                                    if(offers  && item.is_visible=='No visible' && item.estado!='Finalizada'){
+                                    if(offers && item.estado!='Finalizada'){
                                         setEditForm(() => EditVisibilityForm);
                                         setoptionForm("Ofertas")
                                         seteditarVisibilidad(true)

@@ -15,7 +15,7 @@ const GenericModal = ({
   return (
     <div id="modalBackground" className={`fixed z-40 inset-0 bg-neutral-900/70 flex justify-center items-end sm:items-center`}>
       <div id="modalBox"
-      className={`rounded-2xl flex flex-col w-full bg-white max-h-[90%] sm:w-fit`}>
+      className={`rounded-2xl flex flex-col w-full bg-white max-h-[90%] sm:max-w-[90%] sm:w-fit`}>
         <div id="modalHeader" className='relative flex-none w-full h-12 shadow-md flex total-center bg-slate-300 rounded-ss-2xl rounded-se-2xl'>
           <p className='text-xl font-bold'> {title} </p>
           <button className='rounded-2xl absolute right-1 size-8 total-center hover:bg-slate-200 active:opacity-70 active:duration-0' onClick={close}>

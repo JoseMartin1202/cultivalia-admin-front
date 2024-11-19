@@ -140,7 +140,6 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
 
     return (
     <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-col gap-3'>
-          {console.log( formRef)}
         {propertieAddStatus === 'pending' || updatePropertieStatus === 'pending' ?
             <Loader/>
         :

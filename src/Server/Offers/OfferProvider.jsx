@@ -9,6 +9,7 @@ const useOffer=(inversorId,offerId)=>{
     
     //Functions 
     const updateVisibilidad = async(values) =>{
+        console.log(values)
         const res = await myAxios.patch(`oferta/${offerId}/`, values)
         return res.data
     }
@@ -64,7 +65,7 @@ const useOffer=(inversorId,offerId)=>{
         mutationFn: updateVisibilidad,
         onSuccess: () => {
             queryClient.invalidateQueries(['ofertas']) 
-            notify('Ahora la oferta es visible')
+            notify('Oferta modificada exitosamente')
         },
         onError: (e) => notify(getErrorMessage(e), true),
         enabled: !!offerId 
