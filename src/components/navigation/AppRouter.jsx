@@ -1,5 +1,5 @@
-import { React, useEffect, useState } from 'react'
-import { Navigate, Route, Routes, useLocation } from 'react-router-dom'
+import React from 'react'
+import { Navigate, Route, Routes } from 'react-router-dom'
 import AppBar from './AppBar'
 import HomeScreen from '../../screens/Home/HomeScreen'
 import Login from '../../screens/Auth/Login'
@@ -11,42 +11,34 @@ import DetailsSupervisions from '../../screens/Home/DetailsSupervisions'
 import DetailsGallery from '../../screens/Galeria/DetailsGalery'
 import useSession from '../../Server/Session/SessionProvider'
 
-export const appRoutes={
-    SuperAdmin: [
-        { path: '/supervisiones', element: <HomeScreen/> },
-        { path: '/predios', element: <Properties/> },
-        { path: '/galeria', element: <Gallery/> },
-        { path: '/precios', element: <Prices/> },
-        { path: '/ofertas', element: <Offers/> },
-        { path: '/detallesSupervision/:supervisionId', element: <DetailsSupervisions/> },
-        { path: '/detallesGaleria/:galleryId', element: <DetailsGallery/> },
-        { path: '*', element: <Navigate to="/supervisiones" /> },
-    ],
-    auth: [
-        { path: '/login', element: <Login/> },
-        { path: '*', element: <Navigate to="/login" /> },
-    ]
-}
-
 const Router = () => {
-    const { session } = useSession()
-    const [routes, setRoutes] = useState([])
+    const { session, sessionStatus } = useSession()
+    if (sessionStatus === 'success' && session) {
+        return (
+            <>
+                <AppBar />
+                <Routes>
+                    <Route path="/supervisiones" element={<HomeScreen />} />
+                    <Route path="/predios" element={<Properties />} />
+                    <Route path="/galeria" element={<Gallery />} />
+                    <Route path="/precios" element={<Prices />} />
+                    <Route path="/ofertas" element={<Offers />} />
+                    <Route path="/detallesSupervision/:supervisionId" element={<DetailsSupervisions />} />
+                    <Route path="/detallesGaleria/:galleryId" element={<DetailsGallery />} />
+                </Routes>
+            </>
+        )
+    }
 
-    useEffect(() => {
-        let routes = session ? appRoutes[session.user_type] : appRoutes.auth
-        setRoutes(routes)
-    }, [session])
-    
-    return (
-        <>
-            <AppBar />
+    if(sessionStatus === 'success' && !session){
+        return (
             <Routes>
-                {routes?.map((r, i) =>
-                    <Route key={`r_${i}`} {...r} />
-                )}
+                <Route path="/login" element={<Login />} />
+                <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
-        </>
-    )
+        )
+    }
+    
 }
 
 export default Router

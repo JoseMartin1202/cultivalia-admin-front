@@ -20,12 +20,13 @@ const AnioForm = ({close,formRef, setIsSubmitting}) => {
           anio: Yup.string().required('Obligatorio')
         }),
         onSubmit: async (values) => {
+            setIsSubmitting(true) 
             anioAdd(values)
         }
     })
 
     return (
-    <form ref={formRef} onSubmit={formik.handleSubmit} className='p-2 flex flex-row max-sm:flex-col w-full items-center sm:gap-3'>
+    <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-row max-sm:flex-col w-full items-center sm:gap-3'>
         <p className='font-bold'>Año:</p>
         <InputForm formik={formik} id="anio" name="anio" number={true} preventSigns={true}/>
     </form>

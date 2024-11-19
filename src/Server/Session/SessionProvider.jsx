@@ -16,8 +16,7 @@ const useSession = () => {
 
   const getSession = async () => {
     const session = JSON.parse(localStorage.getItem('auth'));
-    if (!session) throw new Error('No session found')
-    return session
+    return session || null;
   }
 
   const postLogin = async (values) => {
@@ -41,7 +40,8 @@ const useSession = () => {
 
   const SessionQuery = useQuery({
     queryKey: ['session'],
-    queryFn: getSession
+    queryFn: getSession,
+    retry: false
   })
 
   /** Mutations */
@@ -91,13 +91,16 @@ const useSession = () => {
   } = LoginMutator
 
   const {
-    mutate: logout
+    mutate: logout,
+    status: logoutStatus,
   } = LogoutMutator
 
   return ({
     session,
     login,
-    logout
+    logout,
+    sessionStatus,
+    logoutStatus
   })
 }
 

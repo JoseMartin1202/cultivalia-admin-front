@@ -12,7 +12,7 @@ export const useApp = () => {
 export const AppProvider = ({ children }) => {
 
     const [filterStateSupervisions, setFilterStateSupervisions] = useState('Pendiente');
-    const [filterStateOffers, setFilterStateOffers] = useState('');
+    const [filterStateOffers, setFilterStateOffers] = useState(true);
     const [filterStatePrices, setFilterStatePrices] = useState(true);
     const notify = (message, error = false) => {
         let options = {

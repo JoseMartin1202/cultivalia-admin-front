@@ -85,8 +85,8 @@ export const AppBar = () => {
                 onClick={()=>{
                     setIsHover(false)
                     setFilterStateSupervisions('Pendiente')
-                    setFilterStateOffers('')
-                    setFilterStatePrices('')
+                    setFilterStateOffers(true)
+                    setFilterStatePrices(true)
                     logout()}}>
                     <Icons.LogOut className='size-8'/>
                     {isSmall &&<span>Salir</span>}
