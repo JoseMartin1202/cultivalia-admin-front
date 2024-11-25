@@ -52,20 +52,20 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
                 }
             ),
             plantasTotales: Yup.number()
-                .required('Obligatorio')
-                .test('is-more-than-0', 'Obligatorio', function (value) {
+                .required('Requerido')
+                .test('is-more-than-0', 'Requerido', function (value) {
                 return value > 0;
                 }),
             hectareas: Yup.number()
-                .required('Obligatorio')
-                .test('is-more-than-0', 'Obligatorio', function (value) {
+                .required('Requerido')
+                .test('is-more-than-0', 'Requerido', function (value) {
                 return value > 0;
                 }),
             photo_cover: Yup.string().nullable(),
             galeria: Yup.string().notRequired(),
-            nombre: Yup.string().required('Obligatorio'),
-            latitud: Yup.number().required('Obligatorio'),
-            longitud: Yup.number().required('Obligatorio')
+            nombre: Yup.string().required('Requerido'),
+            latitud: Yup.number().required('Requerido'),
+            longitud: Yup.number().required('Requerido')
         }),
         onSubmit: async (values) => {
             setIsSubmitting(true) // Aquí establecemos que se está enviando el formulario

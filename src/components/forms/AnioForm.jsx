@@ -17,7 +17,7 @@ const AnioForm = ({close,formRef, setIsSubmitting}) => {
     const formik = useFormik({
         initialValues: {anio: ''},
         validationSchema: Yup.object().shape({
-          anio: Yup.string().required('Obligatorio')
+          anio: Yup.string().required('Requerido')
         }),
         onSubmit: async (values) => {
             setIsSubmitting(true) 

@@ -17,7 +17,7 @@ const GalleryForm = ({close,formRef, setIsSubmitting,gallery=null}) => {
     const formik = useFormik({
         initialValues: {titulo: ''},
         validationSchema: Yup.object().shape({
-          titulo: Yup.string().required('Obligatorio')
+          titulo: Yup.string().required('Requerido')
         }),
         onSubmit: async (values) => {
             setIsSubmitting(true) 

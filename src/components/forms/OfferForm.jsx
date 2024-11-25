@@ -24,6 +24,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
             predio_indirecta:'',
             is_visible_directa:true,
             is_visible_indirecta:true,
+            descuento_porcentaje:0,
             vendedor:''
         },
         validationSchema: Yup.object().shape({
@@ -31,7 +32,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
               is: 'Directa',
               then: (schema) =>
                 schema
-                  .required('El campo es obligatorio')
+                  .required('Requerido')
                   .test(
                     'is-less-than-disponibles',
                     'No disponible',
@@ -46,7 +47,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
               is: 'Indirecta',
               then: (schema) =>
                 schema
-                  .required('El campo es obligatorio')
+                  .required('Requerido')
                   .test(
                     'is-less-than-disponibles',
                     'No disponible',
@@ -75,6 +76,13 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
             vendedor: Yup.string().when('tipo', (tipo, schema) => {
               return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
             }),
+            descuento_porcentaje: Yup.number().required("Requerido").test(
+                'is-less-100',
+                'No valido',
+                function (value) {
+                  return value < 101 && value>=0;
+                }
+              ),
         }),
         onSubmit: async (values) => {
             setIsSubmitting(true) 
@@ -172,7 +180,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
     }, [distribucionesInversor,distribucionesInversorStatus, formik.values.vendedor]);
 
     return (
-        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 ${formik.values.tipo=='Directa' ? 'sm:h-[19rem]':''} flex flex-col items-center gap-4`}>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 flex flex-col items-center gap-4`}>
             <div className='flex flex-row w-full sm:items-center sm:gap-3 max-sm:flex-col'>
                 <p className='font-bold min-w-fit'>Tipo de oferta:</p>
                 <div className='relative w-full min-w-fit'>
@@ -202,8 +210,8 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                         />
                     </div>
                     <div className='w-full flex flex-col gap-3'>
-                        <div className='flex sm:flex-row w-full gap-3 flex-col'>
-                            <div className='font-bold text-[#279E54] flex flex-col sm:w-fit justify-center shadow-md shadow-black/30 border-gray-300 border-2 items-center px-2 rounded-[10px] max-sm:py-2'>
+                        <div className='flex sm:flex-row w-full flex-col gap-3'>
+                            <div className='font-bold text-[#279E54] flex flex-1 flex-col justify-center shadow-md shadow-black/30 border-gray-300 border-2 items-center rounded-[10px] max-sm:py-2'>
                                 <p>Plantas Disponibles:</p>
                                 <p className='text-lg'>{formik.values.plantas_disponibles_directa}</p>
                             </div>
@@ -211,6 +219,8 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                                 <p className='font-bold'>Plantas a ofertar:</p>
                                 <InputForm formik={formik} id="plantas_totales_directa" name="plantas_totales_directa" number={true} preventSigns={true} />
                             </div>
+                        </div>
+                        <div className='flex sm:flex-row w-full flex-col gap-3'>
                             <div className='flex flex-col flex-1'>
                                 <p className='font-bold'>Estatus:</p>
                                 <CustomSelect
@@ -218,6 +228,10 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                                     value={formik.values.is_visible_directa}
                                     onChange={(val) => formik.setFieldValue('is_visible_directa', val)}
                                 />   
+                            </div>
+                            <div className='flex flex-col flex-1'>
+                                <p className='font-bold'>Descuento (%):</p>
+                                <InputForm formik={formik} id="descuento_porcentaje" name="descuento_porcentaje" number={true} preventSigns={true} descuento={true} />
                             </div>
                         </div>
                     </div>
@@ -268,15 +282,22 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                                     <InputForm formik={formik} id="precio_reventa" name="precio_reventa" number={true} />
                                 </div>
                             </div>
-                            <div className='flex flex-col flex-1'>
-                                <p className='font-bold'>Estatus:</p>
-                                <CustomSelect
-                                    options={estadoOptions}
-                                    value={formik.values.is_visible_indirecta}
-                                    onChange={(val) => formik.setFieldValue('is_visible_indirecta', val)}
-                                    openUp={true}
-                                />   
-                            </div></>
+                            <div className='flex sm:flex-row w-full flex-col gap-3'>
+                                <div className='flex flex-col flex-1'>
+                                    <p className='font-bold'>Estatus:</p>
+                                    <CustomSelect
+                                        options={estadoOptions}
+                                        value={formik.values.is_visible_indirecta}
+                                        onChange={(val) => formik.setFieldValue('is_visible_indirecta', val)}
+                                        openUp={true}
+                                    />   
+                                </div>
+                                <div className='flex flex-col flex-1'>
+                                    <p className='font-bold'>Descuento (%):</p>
+                                    <InputForm formik={formik} id="descuento_porcentaje" name="descuento_porcentaje" number={true} preventSigns={true} descuento={true}/>
+                                </div>
+                            </div>
+                            </>
                     ) :
                         distribucionesInversorStatus === 'pending' ?
                             <Loader />

@@ -23,6 +23,7 @@ const useOffer=(inversorId,offerId)=>{
                 plantas_disponibles: values.plantas_disponibles_directa,
                 plantas_totales: values.plantas_totales_directa,
                 predio: values.predio_directa,
+                descuento_porcentaje: values.descuento_porcentaje
             };
         }else{
             dataToSend = {
@@ -33,6 +34,7 @@ const useOffer=(inversorId,offerId)=>{
                 predio: values.predio_indirecta,
                 precio_reventa: values.precio_reventa,
                 distribucion: values.distribucion,
+                descuento_porcentaje: values.descuento_porcentaje
             };
         }
         const res= await myAxios.post(`oferta/`,dataToSend);
