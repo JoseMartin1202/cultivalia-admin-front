@@ -2,7 +2,7 @@ import React from 'react'
 import { Icons } from '../../constants/Icons';
 import { valueFromId } from '../../constants/functions';
 
-const InputForm = ({ id, formik, onChangeExtra, message, password,number,preventSigns}) => {
+const InputForm = ({ id, formik, onChangeExtra, message, password,number,preventSigns,descuento}) => {
 
     const handleChange = (e) => {
         formik.handleChange(e)
@@ -28,7 +28,7 @@ const InputForm = ({ id, formik, onChangeExtra, message, password,number,prevent
                 <input 
                 id={id}
                 name={id}
-                value={formik?.values[id] || ''}
+                value={descuento ? (formik?.values[id] ?? ''):(formik?.values[id] || '')}
                 onChange={handleChange}
                 onBlur={handleBlur}
                 onKeyDown={handleKeyDown}

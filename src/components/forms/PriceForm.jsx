@@ -43,7 +43,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
                 is: 'Manual',
                 then: (schema) =>
                   schema
-                    .required('El campo es obligatorio')
+                    .required('Requerido')
                     .test(
                     'is-greater-than-0',
                     'No válido',
@@ -64,7 +64,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
                 is: (manera, forma) =>forma === 'Automatica' && manera === 'Porcentaje' ,
                 then: (schema) =>
                   schema
-                    .required('Obligatorio')
+                    .required('Requerido')
                     .test(
                     'is-less-than-100-and-more-that-0',
                     'No válido',
@@ -78,7 +78,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
                 is: (manera, forma) =>forma === 'Automatica' && manera === 'Cantidad',
                 then: (schema) =>
                   schema
-                    .required('Obligatorio')
+                    .required('Requerido')
                     .test(
                     'is-greater-than-0',
                     'No válido',
