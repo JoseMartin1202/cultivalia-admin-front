@@ -81,7 +81,40 @@ export const AppBar = () => {
                      {isSmall &&<span>Ofertas</span>}
                      {isHover && !isSmall &&<span>Ofertas</span>}
                 </NavLink>
-                <button className='sm:mt-auto max-sm:ms-auto sm:w-full flex flex-row items-center gap-2 p-3 hover:bg-[#73d79b] hover:text-white ' 
+                <NavLink
+                to="/ventas"
+                className={({ isActive }) =>
+                    `sm:w-full flex flex-row items-center gap-2 p-3 ${
+                    isActive ? 'bg-[#c3edd3] text-[#279E54]' : 'hover:bg-[#73d79b] hover:text-white'
+                    }`
+                }>
+                    <Icons.Sales className='size-8'/>
+                     {isSmall &&<span>Ventas</span>}
+                     {isHover && !isSmall &&<span>Ventas</span>}
+                </NavLink>
+                <NavLink
+                to="/inversores"
+                className={({ isActive }) =>
+                    `sm:w-full flex flex-row items-center gap-2 p-3 ${
+                    isActive ? 'bg-[#c3edd3] text-[#279E54]' : 'hover:bg-[#73d79b] hover:text-white'
+                    }`
+                }>
+                    <Icons.Investor className='size-8'/>
+                     {isSmall &&<span>Inversores</span>}
+                     {isHover && !isSmall &&<span>Inversores</span>}
+                </NavLink>
+                <NavLink
+                to="/asesores"
+                className={({ isActive }) =>
+                    `sm:w-full flex flex-row items-center gap-2 p-3 ${
+                    isActive ? 'bg-[#c3edd3] text-[#279E54]' : 'hover:bg-[#73d79b] hover:text-white'
+                    }`
+                }>
+                    <Icons.Advisor className='size-8'/>
+                     {isSmall &&<span>Asesores</span>}
+                     {isHover && !isSmall &&<span>Asesores</span>}
+                </NavLink>
+                <button className='sm:mt-auto sm:w-full flex flex-row items-center gap-2 p-3 hover:bg-[#73d79b] hover:text-white ' 
                 onClick={()=>{
                     setIsHover(false)
                     setFilterStateSupervisions('Pendiente')

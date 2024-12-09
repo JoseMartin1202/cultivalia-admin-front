@@ -10,6 +10,9 @@ import Offers from '../../screens/Ofertas/Offers'
 import DetailsSupervisions from '../../screens/Home/DetailsSupervisions'
 import DetailsGallery from '../../screens/Galeria/DetailsGalery'
 import useSession from '../../Server/Session/SessionProvider'
+import Sales from '../../screens/Ventas/Sales'
+import Investors from '../../screens/Inversores/Investors'
+import Advisors from '../../screens/Asesores/advisors'
 
 const Router = () => {
     const { session, sessionStatus } = useSession()
@@ -25,6 +28,10 @@ const Router = () => {
                     <Route path="/ofertas" element={<Offers />} />
                     <Route path="/detallesSupervision/:supervisionId" element={<DetailsSupervisions />} />
                     <Route path="/detallesGaleria/:galleryId" element={<DetailsGallery />} />
+                    <Route path="/ventas" element={<Sales />} />
+                    <Route path="/inversores" element={<Investors />} />
+                    <Route path="/asesores" element={<Advisors />} />
+                    <Route path="*" element={<Navigate to="/supervisiones" replace />} />
                 </Routes>
             </>
         )

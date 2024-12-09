@@ -164,7 +164,6 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
                     onChange={(val) => formik.setFieldValue('forma', val)}
                 />  
             </div>
-            {console.log(formik.errors)}
             {formik.values.forma==='Manual' ?
             <><div className='flex flex-col w-full'>
                     <p className='font-bold'>Precio:</p>

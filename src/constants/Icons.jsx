@@ -4,7 +4,8 @@ import {
     FaCircleCheck as Accepted,
     FaCircleXmark as Refused,
     FaCircleUser as User, 
-    FaEye as Eye
+    FaEye as Eye,
+    FaCartShopping as Sales
 } from "react-icons/fa6";
 
 import {
@@ -14,6 +15,10 @@ import {
 import {
     GiAgave as jimated  
 } from "react-icons/gi";
+
+import {
+    TiCancel  as Cancel  
+} from "react-icons/ti";
 
 import {
     AiOutlineFileUnknown  as unknown
@@ -45,7 +50,9 @@ import {
     FaAngleRight as Right,
     FaAngleLeft as Left,
     FaCalendarCheck as Complete,
-    FaArrowLeft as LeftArrow
+    FaArrowLeft as LeftArrow,
+    FaUserTie as Investor,
+    FaHandshake as Advisor
 } from "react-icons/fa";
 
 import {
@@ -59,7 +66,8 @@ import {
     IoIosAddCircle as Add,
     IoMdAdd as AddGallery,
     IoIosArrowUp as ArrowUp,
-    IoIosArrowDown as ArrowDown
+    IoIosArrowDown as ArrowDown,
+    //IoMdCart as Sales
 } from "react-icons/io";
 
 import { 
@@ -120,5 +128,9 @@ export const Icons={
     point,
     LeftArrow,
     ContractNull,
-    Eye
+    Eye,
+    Sales,
+    Cancel,
+    Investor,
+    Advisor
 }

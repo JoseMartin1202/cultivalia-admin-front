@@ -5,7 +5,7 @@ import LogoCult from '../assets/cultivaliaLogo.png';
 const EstadoView = ({state}) => {
     
     switch (state) {
-        case "Validada":
+        case "Validada": case "Si":
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
@@ -13,7 +13,7 @@ const EstadoView = ({state}) => {
                 </span>
             );
 
-        case "Rechazada":
+        case "Rechazada": case "No":
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
@@ -95,6 +95,14 @@ const EstadoView = ({state}) => {
                 </span>
             );
 
+        case "Cancelada":
+            return(
+                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
+                    {state}
+                    <Icons.Cancel className='text-orange-400 size-6'/>
+                </span>
+            );
+
         default://Finalizada
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
@@ -102,7 +110,6 @@ const EstadoView = ({state}) => {
                     <Icons.Complete className='text-[#279E54] size-6'/>
                 </span>
             );
-            break;
     }
 }
 

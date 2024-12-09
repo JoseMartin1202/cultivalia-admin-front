@@ -8,7 +8,7 @@ const useOffers=()=>{
 
     /**Functions */
     const getOffers = async () =>{
-        const res=await myAxios.get("/oferta/list_offers")
+        const res=await myAxios.get("/oferta/list_offers/")
         return res.data
     }
 

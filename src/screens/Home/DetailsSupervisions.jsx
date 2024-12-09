@@ -6,7 +6,7 @@ import Loader from '../../components/Loader';
 import useSupervision from '../../Server/Supervisions/SupervisionProvider';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
-import { getErrorMessage, valueFromId } from '../../constants/functions';
+import { formatDateLong, getErrorMessage, valueFromId } from '../../constants/functions';
 import { PhotosModal } from '../Galeria/DetailsGalery';
 import AbsScroll from '../../components/AbsScroll';
 import CustomSelect from '../../components/CustomSelect';
@@ -44,19 +44,20 @@ export const DetailsSupervisions = () => {
     }    
 
     if (supervision?.movimiento?.tipo_movimiento === 'Inversor') {
+        const data=supervision?.movimiento?.data || {};
         supervisionData.push(
-            { label: 'Nombre completo', value: `${supervision?.movimiento?.data?.nombre} ${supervision?.movimiento?.data?.apellidos}` },
-            { label: 'Teléfono', value: supervision?.movimiento?.data?.telefono }, 
-            { label: 'Fecha de nacimiento', value: supervision?.movimiento?.data?.fechaNacimiento },
-            { label: 'Sexo', value: supervision?.movimiento?.data?.sexo =="M" ? "Masculino":"Femenino"},
-            { label: 'Nacionalidad', value: supervision?.movimiento?.data?.nacionalidad },
-            { label: 'Dirección', value: supervision?.movimiento?.data?.direccion },
-            { label: 'Colonia', value: supervision?.movimiento?.data?.colonia },
-            { label: 'Código postal', value: supervision?.movimiento?.data?.codigoPostal },
-            { label: 'Ciudad', value: supervision?.movimiento?.data?.ciudad },
-            { label: 'Estado', value: supervision?.movimiento?.data?.estado !='[Please select]' ?supervision?.movimiento?.data?.parentesco :''},
-            { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
-            { label: 'Correo', value: supervision?.movimiento?.data?.correo },
+            { label: 'Nombre completo', value: `${data.nombre} ${data.apellidos}` },
+            { label: 'Teléfono', value: data.telefono ?? '---' }, 
+            { label: 'Fecha de nacimiento', value: data.fechaNacimiento ?? '---'},
+            { label: 'Sexo', value: data.sexo =="M" ? "Masculino":"Femenino"},
+            { label: 'CURP/DNI', value: data.curp ?? '---'},
+            { label: 'Nacionalidad', value: data.nacionalidad ?? '---'},
+            { label: 'Dirección', value: data.direccion ?? '---' },
+            { label: 'Colonia', value: data.colonia ?? '---'},
+            { label: 'Código postal', value: data.codigoPostal ?? '---'},
+            { label: 'Ciudad', value: data.ciudad ?? '---'},
+            { label: 'Estado', value: data.estado ?? '---'},
+            { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
     }else if (supervision?.movimiento?.tipo_movimiento === 'Beneficiario') {
         supervisionData.push(
@@ -64,17 +65,19 @@ export const DetailsSupervisions = () => {
             { label: 'Teléfono', value: supervision?.movimiento?.data?.telefono },
             { label: 'Sexo', value: supervision?.movimiento?.data?.sexo =="M" ? "Masculino":"Femenino"},
             { label: 'Correo', value: supervision?.movimiento?.data?.correo },
-            { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
+            { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
     }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
         supervisionData.push(
-            { label: 'Fecha de registro', value: supervision?.fechaRegistro?.split('T')[0] },
+            
             { label: 'Monto', value: supervision?.movimiento?.data?.monto },
             { label: 'Método', value: supervision?.movimiento?.data?.metodo },
-            //{ label: 'Comentarios', value: supervision?.movimiento?.data?.comentarios},
             { label: 'Inversor', value: `${supervision?.movimiento?.data?.inversor.nombre} ${supervision?.movimiento?.data?.inversor.apellidos}`},
             { label: 'Fecha de la venta', value: supervision?.movimiento?.data?.venta.fecha.split('T')[0] },
             { label: 'Monto de la venta', value: supervision?.movimiento?.data?.venta.monto },
+            { label: 'Comentarios', value: (supervision?.movimiento?.data?.comentarios && supervision?.movimiento?.data?.comentarios!='') ? 
+                supervision?.movimiento?.data?.comentarios:'--'},
+            { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
     }
 
@@ -160,8 +163,6 @@ export const DetailsSupervisions = () => {
     }, [formik.values.estado]);
 
     useEffect(() => {
-        console.log(comments)
-        console.log(formik.values)
         formik.validateForm();  // Cada vez que comments cambia, forzamos la revalidación
     }, [comments]);
 
@@ -225,7 +226,7 @@ export const DetailsSupervisions = () => {
                                 <AbsScroll vertical>
                                     <ul className='grid grid-row gap-2 w-full px-3 py-2'> 
                                         {allComents.map((c,i)=>(  
-                                            <li className={`${comments?.includes(c) ? 'bg-[#6B9DFF] text-white':'bg-white'} 
+                                            <li key={i} className={`${comments?.includes(c) ? 'bg-[#6B9DFF] text-white':'bg-white'} 
                                             py-2 px-3 gap-1 flex flex-row rounded-xl items-center select-none shadow-md
                                             shadow-black/30 ${bouncingIndex === i ? 'bounce' : ''} ${supervision.estado === 'Pendiente' ? 'cursor-pointer' : ''}`} 
                                             onClick={()=>{supervision.estado === 'Pendiente'&& handleAddComment(c,i)}}>
@@ -288,12 +289,12 @@ export const DetailsSupervisions = () => {
                                 <AbsScroll vertical centerColumn>
                                     { ImagenesData.map((item,i)=>(
                                         item ?
-                                        <>{loading&& <Loader/>}
+                                        <div key={i} className='flex justify-center'>{loading&& <Loader/>}
                                         <img className={`size-[95%] hover:cursor-pointer ${loading ? 'invisible' : 'visible'}`} src={item} 
                                         onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
-                                        onLoad={() => setLoading(false)}/></>: 
+                                        onLoad={() => setLoading(false)}/></div>: 
 
-                                        <div className=' size-[95%] total-center border-2 border-gray-300 rounded-lg'>
+                                        <div key={i} className=' size-[95%] total-center border-2 border-gray-300 rounded-lg'>
                                             <Icons.EmptyImage className='size-20 text-gray-500'/>
                                             <p>Sin imagen</p>
                                         </div>

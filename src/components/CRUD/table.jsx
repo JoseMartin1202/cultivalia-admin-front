@@ -19,6 +19,8 @@ import GroupTable from './tableGroup';
 import AnioForm from '../forms/AnioForm';
 import { formatDateLong } from '../../constants/functions';
 import EditVisibilityForm from '../forms/EditVisibility';
+import SalesCancelForm from '../forms/SalesCancelForm';
+import AdvisorForm from '../forms/AdvisorForm';
 
 const CRUD=({
     columns, 
@@ -26,7 +28,8 @@ const CRUD=({
     estatusdata, 
     supervision,
     predios,
-    prices, 
+    prices,
+    sales, 
     path,
     filter,
     dataFilter,
@@ -35,21 +38,24 @@ const CRUD=({
     searchAdd,
     searchFilterAdd,
     searchFilter,
-    switchFilterAdd
+    switchFilterAdd,
+    onlysearch,
+    investors,
+    advisors
     })=>{
 
     const navigate = useNavigate();
     const [elements, setElements] = useState();
     const { 
-        filterStateSupervisions, filterStateOffers,filterStatePrices,
-        setFilterStateSupervisions, setFilterStateOffers,setFilterStatePrices } = useApp();
+        filterStateSupervisions, filterStateOffers,filterStatePrices, filterStateSales,
+        setFilterStateSupervisions, setFilterStateOffers,setFilterStatePrices, setFilterStateSales } = useApp();
     const [modal, setModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState('');
     const [editForm, setEditForm] = useState(null)
     const [agregar, setAgregar] = useState(false)
     const [editarVisibilidad, seteditarVisibilidad] = useState(false)
     const [anio, setanio] = useState(false)
-    const [optionForm, setoptionForm] = useState()
+    const [cancelarVenta, setcancelarVenta] = useState(false)
     const [yearsGroup, setyearsGroup] = useState();
     const [colsGroup, setcolsGroup] = useState();
     const closeModal = () => {
@@ -65,12 +71,12 @@ const CRUD=({
     const formik = useFormik({
         initialValues: {
             searchText: '',
-            estado: supervision ? filterStateSupervisions :offers ? filterStateOffers:filterStatePrices ,
+            estado: supervision ? filterStateSupervisions :offers ? filterStateOffers: prices ? filterStatePrices: filterStateSales ,
             groupByYear: false
         }
     })
 
-    const EditViewModal = ({ Form, item, close,title,option}) => {
+    const EditViewModal = ({ Form, item, close,title}) => {
         const formRef = useRef(null);
         const [isSubmitting, setIsSubmitting] = useState(false) 
         const actions = useMemo(() => [
@@ -94,13 +100,14 @@ const CRUD=({
     useEffect(() => {
     if (predios) {
         setEditForm(() => PropertiesForm);
-        setoptionForm("Predios")
     }
     if(galleries){
         setEditForm(() => GalleryForm)
-        setoptionForm("Galerias")
     }
-    }, [predios,galleries]);
+    if(advisors){
+        setEditForm(() => AdvisorForm)
+    }
+    }, [predios,galleries,advisors]);
 
     useEffect(() => {
         let newElements = data ? [...data] : []; 
@@ -110,6 +117,7 @@ const CRUD=({
         if (supervision) setFilterStateSupervisions(formik.values.estado);
         if (offers) setFilterStateOffers(formik.values.estado);
         if (prices) setFilterStatePrices(formik.values.estado);
+        if (sales) setFilterStateSales(formik.values.estado);
 
         let searchText = formik?.values?.searchText?.toLowerCase()
         if (formik?.values?.estado!==undefined && formik?.values?.estado!=='' && filter) {
@@ -158,22 +166,6 @@ const CRUD=({
                 })
                 return newItem
             })
-            //ordenar por nombre
-            newElements.sort((a, b) => {
-                const regex = /^[A-Za-z]/;
-            
-                const aStartsWithLetter = regex.test(a.nombre);
-                const bStartsWithLetter = regex.test(b.nombre);
-            
-                if (aStartsWithLetter && !bStartsWithLetter) {
-                    return -1; // a va antes que b
-                }
-                if (!aStartsWithLetter && bStartsWithLetter) {
-                    return 1; // b va antes que a
-                }
-                // Si ambos comienzan con letra o ambos con número, usa localeCompare
-                return a.nombre.localeCompare(b.nombre);
-            });
         }
 
         if(galleries){
@@ -208,6 +200,8 @@ const CRUD=({
                             newItem[col.attribute]="$"+newItem[col.attribute]
                         else
                             newItem[col.attribute]="- - -"
+                    }else if(col.attribute==="descuento_porcentaje"){
+                        newItem[col.attribute]="%"+newItem[col.attribute]
                     }
                 })
                 return newItem
@@ -225,7 +219,7 @@ const CRUD=({
                     }else if(col.attribute==="anio"){
                         newItem[col.attribute]= newItem[col.attribute].anio
                     }else if(col.attribute==="precio"){
-                        newItem[col.attribute]= "$"+newItem[col.attribute]
+                        newItem[col.attribute]= Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
                     }
                 })
                 return newItem
@@ -291,6 +285,44 @@ const CRUD=({
             console.log(years)
         }
 
+        if(sales){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="fecha"){
+                        newItem[col.attribute]= formatDateLong({ data: newItem[col.attribute] })
+                    }else if(col.attribute==="comprador"){
+                        newItem[col.attribute]= newItem[col.attribute].nombre+" "+newItem[col.attribute].apellidos
+                    }else if(col.attribute==="codigoReferido"){
+                        newItem[col.attribute]= newItem[col.attribute] ? newItem[col.attribute]:"---"
+                    }else if(col.attribute==="monto"){
+                        newItem[col.attribute] = Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+                    }
+                })
+                return newItem
+            })
+        }
+
+        if(investors){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="completo"){
+                        newItem[col.attribute] ? newItem[col.attribute]= "Si": newItem[col.attribute]= "No"
+                    }else if(col.attribute==="asesor"){
+                        newItem[col.attribute] ? newItem[col.attribute]= newItem[col.attribute]: newItem[col.attribute]= "---"
+                    }else if(col.attribute==="nombre"){
+                        newItem[col.attribute]=newItem[col.attribute]+" "+newItem["apellidos"]
+                    }else if(col.attribute==="usuario"){
+                        newItem[col.attribute]=newItem[col.attribute].username
+                    }else if(col.attribute==="sexo"){
+                        newItem[col.attribute]== 'M' ? newItem[col.attribute]='Masculino': newItem[col.attribute]='Femenino'
+                    }
+                })
+                return newItem
+            })
+        }
+
         if(!prices){
             newElements = newElements.filter(item => {
                 return columns.some(col => {
@@ -306,6 +338,7 @@ const CRUD=({
         <div className='sm:ml-14 size-full flex flex-col bg-[#F1F5F9] p-2 font-[Roboto]'>
             <div className='w-full flex items-start mb-4'>
                 <div className={`flex flex-row gap-3 ${searchFilterAdd ? 'max-md:flex-col':'max-sm:flex-col items-center'} w-full`}>
+                    {onlysearch && <InputSearch formik={formik}/>}
                     {searchAdd && 
                      <div className='flex flex-row w-full gap-2'>
                      <InputSearch formik={formik}/>
@@ -323,7 +356,6 @@ const CRUD=({
                         <button onClick={()=>{
                             setSelectedItem(null)
                             setEditForm(() => OfferForm);
-                            setoptionForm("Ofertas")
                             setModal(true) 
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
                     }
@@ -332,7 +364,7 @@ const CRUD=({
                         <div className='flex-1 flex'><InputSearch formik={formik}/></div>
                         {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
                         offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
-                        undefined}</div>
+                        <Filter data={dataFilter} formik={formik} opt={filterStateSales} />}</div>
                     }
                     {switchFilterAdd &&
                         <div className='w-full flex md:flex-row flex-col md:items-center gap-2 box-border'>
@@ -341,7 +373,6 @@ const CRUD=({
                                 <Switch formik={formik} />
                                 <button onClick={() => {
                                     setEditForm(() => PricesForm);
-                                    setoptionForm("Precios")
                                     setModal(true);
                                 }}>
                                     <Icons.Add className='size-11 text-[#6B9DFF]' />
@@ -351,7 +382,6 @@ const CRUD=({
                                 className='bg-[#FFD34B] size-fit p-2 rounded-xl font-bold' 
                                 onClick={() => {
                                     setEditForm(() => AnioForm)
-                                    setoptionForm("Anios")
                                     setanio(true);
                                     setModal(true);
                                 }}>
@@ -370,10 +400,11 @@ const CRUD=({
                         galleries ? "Nueva Galería":
                         offers && !editarVisibilidad ? 'Nueva Oferta': 
                         offers && editarVisibilidad ?  (selectedItem.is_visible=='Visible' ? 'Cancelar oferta':'Editar estatus'):
+                        sales && cancelarVenta ? 'Cancelar venta':
+                        advisors ? !agregar ? "Asesor: "+selectedItem.nombre: "Nuevo Asesor":
                         prices && !anio ? "Nuevo precio":
                         "Nuevo año" 
                     }
-                    option={optionForm}
                     open={modal}/>
                 }
                 {estatusdata==='pending' ? <Loader/>: 
@@ -404,19 +435,28 @@ const CRUD=({
                     <tbody>
                         {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
                         elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className={`${offers && item.estado!='Finalizada' || galleries || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
+                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado!='Finalizada' || galleries || advisors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
                                 navigate(`/${path}/${item.id}`);
                                 } else {
                                 setSelectedItem(item);
+                                console.log(item)
                                     if(predios){
                                         setAgregar(false)
                                         setModal(true);
                                     }
                                     if(offers && item.estado!='Finalizada'){
                                         setEditForm(() => EditVisibilityForm);
-                                        setoptionForm("Ofertas")
                                         seteditarVisibilidad(true)
+                                        setModal(true)
+                                    }
+                                    if(sales && item.estado=='Pendiente'){
+                                        setEditForm(() => SalesCancelForm);
+                                        setcancelarVenta(true)
+                                        setModal(true)
+                                    }
+                                    if(advisors){
+                                        setAgregar(false)
                                         setModal(true)
                                     }
                                 }
@@ -438,6 +478,7 @@ const CRUD=({
                     {galleries && <p>Total de galerias: {elements.length}</p>}
                     {offers && <p>Total de ofertas: {elements.length}</p>}
                     {prices && <p>Total de precios: {elements.length}</p>}
+                    {sales && <p>Total de ventas: {elements.length}</p>}
                     </div>
                 </div>
                 </>
