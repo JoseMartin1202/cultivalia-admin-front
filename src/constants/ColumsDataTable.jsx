@@ -21,6 +21,7 @@ const ColumnsDataOfertas=[
   {label:"Plantas restantes", attribute:"plantas_restantes"},
   {label:"Precio por planta", attribute: "precio_planta"},
   {label:"Precio reventa",attribute: "precio_reventa"},
+  {label:"Descuento",attribute: "descuento_porcentaje"},
   {label:"Año", attribute: "anio_precio"},
   {label:"Estado",attribute: "estado", Component: EstadoView},
   {label:"Predio",attribute: "predio", search:true},
@@ -42,10 +43,40 @@ const ColumnsDataPrecios=[
   {label:"Precio actual", attribute:"isCurrent",Component: EstadoView}
 ];
 
+const ColumnsDataVentas=[
+  {label:"Monto", attribute:"monto",},
+  {label:"Tipo", attribute:"tipo"},
+  {label:"Estado", attribute:"estado",Component: EstadoView},
+  {label:"Comprador", attribute:"comprador",search:true},
+  {label:"Fecha registro", attribute:"fecha"},
+  {label:"Código referido", attribute:"codigoReferido"},
+];
+
+const ColumnsDataInversores=[
+  {label:"Inversor", attribute:"nombre",search:true},
+  {label:"Usuario", attribute:"usuario"},
+  {label:"Curp", attribute:"curp"},
+  {label:"Sexo", attribute:"sexo"},
+  {label:"Telefono", attribute:"telefono"},
+  {label:"Dirección", attribute:"direccion"},
+  {label:"Estado", attribute:"estado"},
+  {label:"Asesor", attribute:"asesor"},
+  {label:"Puede invertir", attribute:"completo",Component: EstadoView},
+];
+
+const ColumnsDataAsesores=[
+  {label:"Nombre", attribute:"nombre",search:true},
+  {label:"Apellidos", attribute:"apellidos",search:true},
+  {label:"Telefono", attribute:"telefono"}
+];
+
 export const Columns={
     ColumnsDataHome,
     ColumnsDataOfertas,
     ColumnsDataPredios,
     ColumnsDataGallery,
-    ColumnsDataPrecios
+    ColumnsDataPrecios,
+    ColumnsDataVentas,
+    ColumnsDataInversores,
+    ColumnsDataAsesores
 }

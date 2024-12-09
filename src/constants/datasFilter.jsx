@@ -19,8 +19,17 @@ const PricesFilterData = [
     { name: 'No actuales', value: false}
 ];
 
+const SalesFilterData = [
+  { name: 'Todas', value: '' },
+  { name: 'Pendientes', value: 'Pendiente' },
+  { name: 'Validadas', value: 'Validada' },
+  { name: 'Rechazadas', value: 'Rechazada' },
+  { name: 'Canceladas', value: 'Cancelada' },
+];
+
   export const Filters={
     HomeFilterData,
     OffersFilterData,
-    PricesFilterData
+    PricesFilterData,
+    SalesFilterData
   }

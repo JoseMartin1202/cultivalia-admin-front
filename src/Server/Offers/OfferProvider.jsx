@@ -9,7 +9,6 @@ const useOffer=(inversorId,offerId)=>{
     
     //Functions 
     const updateVisibilidad = async(values) =>{
-        console.log(values)
         const res = await myAxios.patch(`oferta/${offerId}/`, values)
         return res.data
     }

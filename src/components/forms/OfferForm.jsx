@@ -158,11 +158,11 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
         if (distribucionesInversorStatus === "success" && distribucionesInversor.length > 0) {
             let distribucion = distribucionesInversor.find(d => d.id == formik.values.distribucion);
             if (distribucion) {
-                updates.plantas_disponibles_indirecta = distribucion.totalPlantas;
+                updates.plantas_disponibles_indirecta = distribucion.disponiblesOfertar;
                 updates.predio_indirecta = distribucion.predio.id;
                 setfechaDist(formatDateMedium({ data: distribucion.fecha_registro }));
             } else {
-                updates.plantas_disponibles_indirecta = distribucionesInversor[0].totalPlantas;
+                updates.plantas_disponibles_indirecta = distribucionesInversor[0].disponiblesOfertar;
                 updates.distribucion = distribucionesInversor[0].id;
                 updates.predio_indirecta = distribucionesInversor[0].predio.id;
                 setfechaDist(formatDateMedium({ data: distribucionesInversor[0].fecha_registro }));
@@ -227,6 +227,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                                     options={estadoOptions}
                                     value={formik.values.is_visible_directa}
                                     onChange={(val) => formik.setFieldValue('is_visible_directa', val)}
+                                    openUp={true}
                                 />   
                             </div>
                             <div className='flex flex-col flex-1'>
