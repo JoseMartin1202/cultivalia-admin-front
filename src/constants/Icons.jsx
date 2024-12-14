@@ -34,7 +34,8 @@ import {
 
 import {
     PiPlantFill as Properties,
-    PiClockCountdownFill as Current
+    PiClockCountdownFill as Current,
+    PiCashRegisterFill as PagosS
 } from "react-icons/pi";
 
 import {
@@ -52,7 +53,8 @@ import {
     FaCalendarCheck as Complete,
     FaArrowLeft as LeftArrow,
     FaUserTie as Investor,
-    FaHandshake as Advisor
+    FaHandshake as Advisor,
+    FaRegQuestionCircle as Question
 } from "react-icons/fa";
 
 import {
@@ -132,5 +134,7 @@ export const Icons={
     Sales,
     Cancel,
     Investor,
-    Advisor
+    Advisor,
+    Question,
+    PagosS
 }

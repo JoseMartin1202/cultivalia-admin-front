@@ -21,6 +21,8 @@ import { formatDateLong } from '../../constants/functions';
 import EditVisibilityForm from '../forms/EditVisibility';
 import SalesCancelForm from '../forms/SalesCancelForm';
 import AdvisorForm from '../forms/AdvisorForm';
+import JimaForm from '../forms/JimasForm';
+import PagosSForm from '../forms/PagosSForm';
 
 const CRUD=({
     columns, 
@@ -41,7 +43,9 @@ const CRUD=({
     switchFilterAdd,
     onlysearch,
     investors,
-    advisors
+    advisors,
+    jimas,
+    pagosS
     })=>{
 
     const navigate = useNavigate();
@@ -79,9 +83,10 @@ const CRUD=({
     const EditViewModal = ({ Form, item, close,title}) => {
         const formRef = useRef(null);
         const [isSubmitting, setIsSubmitting] = useState(false) 
+        const [clicks, setclicks]=useState(0)
         const actions = useMemo(() => [
-            { label:editarVisibilidad ?"Aceptar": "Guardar", onClick: () => formRef.current?.requestSubmit() } // Dispara el submit del formulario
-        ], []);
+            { label:editarVisibilidad  ? "Aceptar": "Guardar", onClick: () => {clicks<=1 && setclicks(1);formRef.current?.requestSubmit()} } // Dispara el submit del formulario
+        ], [clicks]);
 
         return (
             <>
@@ -89,7 +94,7 @@ const CRUD=({
                 <GenericModal
                 title={title}
                 close={close}
-                content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting}/>}
+                content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting} clicks={clicks} setclicks={setclicks}/>}
                 actions={actions}
                 loading={isSubmitting}
                 />
@@ -107,7 +112,10 @@ const CRUD=({
     if(advisors){
         setEditForm(() => AdvisorForm)
     }
-    }, [predios,galleries,advisors]);
+    if(jimas){
+        setEditForm(() => JimaForm)
+    }
+    }, [predios,galleries,advisors,jimas]);
 
     useEffect(() => {
         let newElements = data ? [...data] : []; 
@@ -323,6 +331,36 @@ const CRUD=({
             })
         }
 
+        if(jimas){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="predio"){
+                        newItem[col.attribute] = newItem[col.attribute].nombre
+                    }else if(col.attribute==="fecha"){
+                        newItem[col.attribute] = formatDateLong({data: newItem[col.attribute]})
+                    }
+                })
+                return newItem
+            })
+        }
+
+        if(pagosS){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="inversor"){
+                        newItem[col.attribute] = newItem[col.attribute].nombre+" "+newItem[col.attribute].apellidos
+                    }else if(col.attribute==="fechaRegistro"){
+                        newItem[col.attribute] = formatDateLong({data:newItem[col.attribute]})
+                    }else  if(col.attribute==="monto"){
+                        newItem[col.attribute] = Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+                    }
+                })
+                return newItem
+            })
+        }
+
         if(!prices){
             newElements = newElements.filter(item => {
                 return columns.some(col => {
@@ -335,61 +373,62 @@ const CRUD=({
     }, [data,formik.values]);
 
     return(
-        <div className='sm:ml-14 size-full flex flex-col bg-[#F1F5F9] p-2 font-[Roboto]'>
-            <div className='w-full flex items-start mb-4'>
-                <div className={`flex flex-row gap-3 ${searchFilterAdd ? 'max-md:flex-col':'max-sm:flex-col items-center'} w-full`}>
-                    {onlysearch && <InputSearch formik={formik}/>}
-                    {searchAdd && 
-                     <div className='flex flex-row w-full gap-2'>
-                     <InputSearch formik={formik}/>
-                     <button onClick={()=>{
-                        setSelectedItem(null)  
-                        setAgregar(true)
-                        setModal(true)
-                     }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
-                    {searchFilterAdd &&
-                        <><InputSearch formik={formik}/>
-                        <div className='flex flex-row w-full sm:min-w-fit sm:max-w-fit gap-1'>
-                        {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
-                        offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
-                        undefined}
+        <div className='sm:ml-14 size-full flex flex-col bg-[#f6f6f6] pl-5 py-2 pe-4 sm:pe-3 font-[Roboto]'>
+            <div className='size-full flex flex-col bg-white px-2 py-1 rounded-xl shadow'>
+                <div className='w-full flex items-start mb-4'>
+                    <div className={`flex flex-row gap-3 ${searchFilterAdd ? 'max-md:flex-col':'max-sm:flex-col items-center'} w-full`}>
+                        {onlysearch && <InputSearch formik={formik}/>}
+                        {searchAdd && 
+                        <div className='flex flex-row w-full gap-2'>
+                        <InputSearch formik={formik}/>
                         <button onClick={()=>{
-                            setSelectedItem(null)
-                            setEditForm(() => OfferForm);
-                            setModal(true) 
-                        }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
-                    }
-                    {searchFilter &&
-                        <div className='flex flex-col sm:flex-row w-full gap-3'>
-                        <div className='flex-1 flex'><InputSearch formik={formik}/></div>
-                        {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
-                        offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
-                        <Filter data={dataFilter} formik={formik} opt={filterStateSales} />}</div>
-                    }
-                    {switchFilterAdd &&
-                        <div className='w-full flex md:flex-row flex-col md:items-center gap-2 box-border'>
-                            <div className='flex flex-row flex-1 gap-3 w-full box-border'>
-                                <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
-                                <Switch formik={formik} />
-                                <button onClick={() => {
-                                    setEditForm(() => PricesForm);
-                                    setModal(true);
-                                }}>
-                                    <Icons.Add className='size-11 text-[#6B9DFF]' />
+                            setSelectedItem(null)  
+                            setAgregar(true)
+                            setModal(true)
+                        }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
+                        {searchFilterAdd &&
+                            <><InputSearch formik={formik}/>
+                            <div className='flex flex-row w-full sm:min-w-fit sm:max-w-fit gap-1'>
+                            {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
+                            offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
+                            undefined}
+                            <button onClick={()=>{
+                                setSelectedItem(null)
+                                setEditForm(() => OfferForm);
+                                setModal(true) 
+                            }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
+                        }
+                        {searchFilter &&
+                            <div className='flex flex-col sm:flex-row w-full gap-3'>
+                            <div className='flex-1 flex'><InputSearch formik={formik}/></div>
+                            {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
+                            offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
+                            <Filter data={dataFilter} formik={formik} opt={filterStateSales} />}</div>
+                        }
+                        {switchFilterAdd &&
+                            <div className='w-full flex md:flex-row flex-col md:items-center gap-2 box-border'>
+                                <div className='flex flex-row flex-1 gap-3 w-full box-border'>
+                                    <Filter data={dataFilter} formik={formik} opt={filterStatePrices} />
+                                    <Switch formik={formik} />
+                                    <button onClick={() => {
+                                        setEditForm(() => PricesForm);
+                                        setModal(true);
+                                    }}>
+                                        <Icons.Add className='size-11 text-[#6B9DFF]' />
+                                    </button>
+                                </div>  
+                                <button 
+                                    className='bg-[#FFD34B] size-fit p-2 rounded-xl font-bold' 
+                                    onClick={() => {
+                                        setEditForm(() => AnioForm)
+                                        setanio(true);
+                                        setModal(true);
+                                    }}>
+                                    Agregar año
                                 </button>
-                            </div>  
-                            <button 
-                                className='bg-[#FFD34B] size-fit p-2 rounded-xl font-bold' 
-                                onClick={() => {
-                                    setEditForm(() => AnioForm)
-                                    setanio(true);
-                                    setModal(true);
-                                }}>
-                                Agregar año
-                            </button>
-                        </div>}
+                            </div>}
+                    </div>
                 </div>
-            </div>
                 {modal && 
                     <EditViewModal
                     item={selectedItem}
@@ -402,10 +441,13 @@ const CRUD=({
                         offers && editarVisibilidad ?  (selectedItem.is_visible=='Visible' ? 'Cancelar oferta':'Editar estatus'):
                         sales && cancelarVenta ? 'Cancelar venta':
                         advisors ? !agregar ? "Asesor: "+selectedItem.nombre: "Nuevo Asesor":
-                        prices && !anio ? "Nuevo precio":
-                        "Nuevo año" 
+                        prices && !anio ? "Nuevo precio": 
+                        prices &&  anio ? "Nuevo año":
+                        pagosS ? "Editar pago saliente":
+                        jimas && "Nueva jima" 
                     }
-                    open={modal}/>
+                    open={modal}
+                    pagosS={pagosS}/>
                 }
                 {estatusdata==='pending' ? <Loader/>: 
                 estatusdata==='success' ?  
@@ -435,12 +477,11 @@ const CRUD=({
                     <tbody>
                         {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
                         elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado!='Finalizada' || galleries || advisors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
+                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado!='Finalizada' || pagosS || galleries || advisors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
                                 navigate(`/${path}/${item.id}`);
                                 } else {
                                 setSelectedItem(item);
-                                console.log(item)
                                     if(predios){
                                         setAgregar(false)
                                         setModal(true);
@@ -459,6 +500,14 @@ const CRUD=({
                                         setAgregar(false)
                                         setModal(true)
                                     }
+                                    if(pagosS){
+                                        const newItem=data.find(i => i.id === item.id)
+                                        newItem.monto=item.monto
+                                        console.log(newItem)
+                                        setSelectedItem(newItem)
+                                        setEditForm(() => PagosSForm);
+                                        setModal(true)
+                                    }
                                 }
                             }}>
                                 {columns.map((col, j) => (
@@ -473,12 +522,17 @@ const CRUD=({
                 </AbsScroll>
                 <div className='mt-auto py-2'>
                     <div className='bg-[#E2E8F0] p-2 font-bold text-md rounded-xl w-fit'>
-                    {supervision && <p>Total de supervisiones: {elements.length}</p>}
-                    {predios && <p>Total de predios: {elements.length}</p>}
-                    {galleries && <p>Total de galerias: {elements.length}</p>}
-                    {offers && <p>Total de ofertas: {elements.length}</p>}
-                    {prices && <p>Total de precios: {elements.length}</p>}
-                    {sales && <p>Total de ventas: {elements.length}</p>}
+                    <p>Total de 
+                        {supervision ? ' supervisiones':
+                        predios ? ' predios':
+                        galleries ? ' galerías':
+                        offers ? ' ofertas':
+                        prices ? ' precios':
+                        sales ? ' ventas':
+                        investors ? ' inversores':
+                        advisors ? ' asesores':
+                        jimas && ' jimas'
+                        }: {elements.length}</p>
                     </div>
                 </div>
                 </>
@@ -487,7 +541,9 @@ const CRUD=({
                         <Icons.Empty className='size-12 text-orange-300'/>
                         <p className='text-[20px] '>¡Uuups. No se tiene elementos <br/>que coincidan con lo solicitado!</p>
                 </div>
-                ):<></>}   
+                ):
+                <></>}   
+            </div>
         </div>
     )
 }

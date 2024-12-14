@@ -204,11 +204,11 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
             <div className='flex flex-row gap-3 w-full sm:w-1/2 max-sm:flex-col'>
                 <div className='flex-1 flex-col'>
                     <p className='font-bold'>Longitud:</p>
-                    <InputForm formik={formik} id="longitud" name="longitud" number={true}/>
+                    <InputForm formik={formik} id="longitud" name="longitud" number={true} negative={true}/>
                 </div>
                 <div className='flex-1 flex-col'>
                     <p className='font-bold'>Latitud:</p>
-                    <InputForm formik={formik} id="latitud" name="longitud" number={true}/>
+                    <InputForm formik={formik} id="latitud" name="longitud" number={true} negative={true}/>
                 </div>
             </div>
         </div>

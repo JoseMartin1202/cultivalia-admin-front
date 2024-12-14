@@ -48,7 +48,7 @@ const CustomSelect = ({ options, value, onChange, openUp=false,estadoS='',habili
         </div>
         {isOpen && (
           <ul
-            className={`absolute w-full max-h-40 rounded-[10px] overflow-y-auto bg-white border border-gray-300 z-10 ${
+            className={`absolute w-full max-h-40 rounded-[10px] overflow-y-auto bg-white border border-gray-300 z-20 ${
               openUp ? 'bottom-full mb-1' : 'mt-1'
             }`}
             style={{ userSelect: 'none' }}

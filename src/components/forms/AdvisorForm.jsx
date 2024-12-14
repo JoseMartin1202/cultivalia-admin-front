@@ -17,9 +17,9 @@ const AdvisorForm = ({close,formRef, setIsSubmitting,item}) => {
 
     const formik = useFormik({
         initialValues: {
-            nombre: item?.nombre ? item.nombre:'',
-            apellidos: item?.apellidos ? item.apellidos:'',
-            telefono: item?.telefono ? item.telefono:''
+            nombre: item?.nombre ?? '',
+            apellidos: item?.apellidos ?? '',
+            telefono: item?.telefono ?? ''
         },
         validationSchema: Yup.object().shape({
             nombre: Yup.string().required('Requerido'),
