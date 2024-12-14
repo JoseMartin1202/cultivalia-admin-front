@@ -22,7 +22,7 @@ const GenericModal = ({
             <Icons.Refused size="22px" className={`text-[#E04646]  ${loading && 'cursor-not-allowed text-[#a7a7a7]'}`} />
           </button>
         </div> 
-        <div className="flex-1 overflow-y-auto emerge">
+        <div className="flex-1 overflow-auto emerge">
           {content}
         </div> 
         <div className='flex-none flex flex-row-reverse gap-1 p-1'>

@@ -10,15 +10,21 @@ import { formatDateLong, getErrorMessage, valueFromId } from '../../constants/fu
 import { PhotosModal } from '../Galeria/DetailsGalery';
 import AbsScroll from '../../components/AbsScroll';
 import CustomSelect from '../../components/CustomSelect';
+import InputForm from '../../components/inputs/inputForm';
+import { useApp } from '../../context/AppContext';
 
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
+    const { notify } = useApp();
     const { supervisionId } = useParams();
-    const { supervision, supervisionStatus, updateSupervision } = useSupervision(supervisionId);
+    const { supervision, supervisionStatus, updateSupervision,updateSupervisionStatus } = useSupervision(supervisionId);
     const [verFotos,setverFotos]= useState(false)
     const [bgOption, setbgOption] = useState('');
     const [initIndex, setInitIndex] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [showModal, setShowModal] = useState(false)
+    const [curp, setCurp] = useState(false)
+    const [idcrede, setidcrede] = useState(false)
     const [comments, setcomments] = useState([]);
     const [bouncingIndex, setBouncingIndex] = useState(null); // Estado para rastrear el índice que está rebotando
     const supervisionData = []
@@ -36,8 +42,8 @@ export const DetailsSupervisions = () => {
    
     if(supervision?.movimiento?.tipo_movimiento === 'Beneficiario' || supervision?.movimiento?.tipo_movimiento === 'Inversor'){
         ImagenesData.push( 
-            supervision?.movimiento?.data?.credencialFrente,
-            supervision?.movimiento?.data?.credencialReverso
+            supervision?.movimiento?.data?.credencialReverso,
+            supervision?.movimiento?.data?.credencialFrente
         )
     }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
         ImagenesData.push( supervision?.movimiento?.data.comprobante)
@@ -51,12 +57,12 @@ export const DetailsSupervisions = () => {
             { label: 'Fecha de nacimiento', value: data.fechaNacimiento ?? '---'},
             { label: 'Sexo', value: data.sexo =="M" ? "Masculino":"Femenino"},
             { label: 'CURP/DNI', value: data.curp ?? '---'},
-            { label: 'Nacionalidad', value: data.nacionalidad ?? '---'},
             { label: 'Dirección', value: data.direccion ?? '---' },
             { label: 'Colonia', value: data.colonia ?? '---'},
             { label: 'Código postal', value: data.codigoPostal ?? '---'},
             { label: 'Ciudad', value: data.ciudad ?? '---'},
             { label: 'Estado', value: data.estado ?? '---'},
+            { label: 'Nacionalidad', value: data.nacionalidad ?? '---'},
             { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
     }else if (supervision?.movimiento?.tipo_movimiento === 'Beneficiario') {
@@ -86,7 +92,9 @@ export const DetailsSupervisions = () => {
         initialValues: {
             comentaios: '',
             estado: '',
-            options:''
+            options:'',
+            curp: '',
+            idCrede: ''
         },
         validationSchema: Yup.object().shape({
             comentaios: Yup.lazy(() => {
@@ -95,14 +103,28 @@ export const DetailsSupervisions = () => {
                     : Yup.string().notRequired();
             }),
             estado: Yup.string().required('Requerido'),
-            options: Yup.string().notRequired()
+            options: Yup.string().notRequired(),
+            curp: curp
+                ? Yup.string().required('Requerido') 
+                : Yup.string().notRequired(),
+            idCrede: idcrede 
+                ? Yup.string().required('Requerido') 
+                : Yup.string().notRequired()
         }),
         onSubmit: async (values) => {
-          try {
-            updateSupervision(values)
-          } catch (e) {
-           // notify(getErrorMessage(e), true)
-          }
+            if(supervision?.movimiento?.tipo_movimiento === 'Inversor'){
+                if(values.estado=='Validada'){
+                    if(supervision?.movimiento?.data?.curp && supervision?.movimiento?.data?.identificadorCredencial){
+                        updateSupervision(values)
+                    }else{
+                        setShowModal(true)
+                    }
+                }else{
+                    updateSupervision(values)
+                }
+            }else{
+                updateSupervision(values)
+            }
         }
     })
 
@@ -119,6 +141,7 @@ export const DetailsSupervisions = () => {
                     comentaios: supervision.comentaios,
                     estado: supervision.estado,
                     options:commentsList
+                    
                 });
             }else{
                 formik.setValues({
@@ -130,6 +153,17 @@ export const DetailsSupervisions = () => {
 
         }
     }, [supervision]);
+
+    const handleSaveModal = () => {
+        if(!formik.values.curp)
+            setCurp(true)
+        if(!formik.values.idCrede)
+            setidcrede(true)
+        if(formik.values.curp && formik.values.idCrede){
+            setShowModal(false);
+            updateSupervision({...formik.values,idInversor:supervision?.movimiento?.data?.id}); 
+        }
+    };
 
     const handleChange = (e) => {
         formik.handleChange(e)
@@ -164,7 +198,7 @@ export const DetailsSupervisions = () => {
 
     useEffect(() => {
         formik.validateForm();  // Cada vez que comments cambia, forzamos la revalidación
-    }, [comments]);
+    }, [comments,curp,idcrede]);
 
     const [isMobile, setIsMobile] = useState(false);
 
@@ -195,6 +229,39 @@ export const DetailsSupervisions = () => {
 
     return (
         <>
+        {showModal && 
+        <div className='absolute z-10 bg-neutral-300/60 size-full total-center'>
+            <div className='flex flex-col bg-white w-1/2 h-[90%] gap-3 rounded-xl'>
+                <div className='flex flex-row w-full bg-slate-300 p-2 rounded-t-xl'>
+                    <div className='font-bold text-center text-xl w-full'><span>Ingresa los datos del inversor</span></div>
+                    <button className='text-[#E04646] ms-auto' onClick={()=>{
+                        formik.setFieldValue('curp', '');
+                        formik.setFieldValue('idCrede', '');
+                        setCurp(false)
+                        setidcrede(false)
+                        setShowModal(false)}
+                    }><Icons.Refused size={24}/></button>
+                </div>
+                <div className='flex flex-col px-4 pb-4 size-full gap-2'>
+                    <div className='flex flex-col w-full'>
+                        <p className='font-bold'>CURP/DNI:</p>
+                        <InputForm formik={formik} id="curp" name="curp" />
+                    </div>
+                    <div className='flex flex-col w-full'>
+                        <p className='font-bold text-nowrap'>ID credencial:</p>
+                        <InputForm formik={formik} id="idCrede" name="idCrede"/>
+                    </div>
+                    <AbsScroll vertical centerColumn>
+                        <img src={supervision?.movimiento?.data?.credencialFrente} />
+                        <img src={supervision?.movimiento?.data?.credencialReverso} />
+                    </AbsScroll>
+                    <div className='flex flex-row w-full'>
+                        <button className='w-full p-2 bg-[#FFD34B] rounded-lg font-bold text-lg' onClick={handleSaveModal}>Aceptar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        }
         {verFotos &&
             <PhotosModal
                photos={ImagenesData}
@@ -289,7 +356,12 @@ export const DetailsSupervisions = () => {
                                 <AbsScroll vertical centerColumn>
                                     { ImagenesData.map((item,i)=>(
                                         item ?
-                                        <div key={i} className='flex justify-center'>{loading&& <Loader/>}
+                                        <div key={i} className='relative flex justify-center'>
+                                        {loading && (
+                                            <div className="absolute flex size-full justify-center items-center">
+                                            <Loader />
+                                            </div>
+                                        )}
                                         <img className={`size-[95%] hover:cursor-pointer ${loading ? 'invisible' : 'visible'}`} src={item} 
                                         onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
                                         onLoad={() => setLoading(false)}/></div>: 

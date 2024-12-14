@@ -6,6 +6,8 @@ const FileInput = ({ id, formik, ...props }) => {
 
    const value = valueFromId(id, formik.values)
    const error = valueFromId(id, formik.errors)
+   const touched = valueFromId(id, formik.touched)
+   const showError = error && (touched || formik.submitCount > 0);
 
    return (
       <div className='flex flex-col'>
@@ -32,7 +34,7 @@ const FileInput = ({ id, formik, ...props }) => {
             </>
             }
          </div>
-         {error &&
+         {showError &&
             <div className='h-fit'>
                 <p className='font-normal text-lg flex items-center gap-1 h-full italic text-red-500 '>
                     <Icons.Alert size="14px" />

@@ -70,6 +70,23 @@ const ColumnsDataAsesores=[
   {label:"Telefono", attribute:"telefono"}
 ];
 
+const ColumnsDataJimas=[
+  {label:"Predio", attribute:"predio",search:true},
+  {label:"Fecha", attribute:"fecha"},
+  {label:"Precio por Kilo", attribute:"precioKilo"},
+  {label:"Peso promedio por planta", attribute:"pesoPromedioPlanta"},
+];
+
+const ColumnsDataPagosSalientes=[
+  {label:"Monto", attribute:"monto"},
+  {label:"Fecha registro", attribute:"fechaRegistro"},
+  {label:"Metodo", attribute:"metodo"},
+  {label:"Comentarios", attribute:"comentarios"},
+  {label:"Estado", attribute:"estado"},
+  {label:"Inversor", attribute:"inversor",search:true},
+];
+
+
 export const Columns={
     ColumnsDataHome,
     ColumnsDataOfertas,
@@ -78,5 +95,7 @@ export const Columns={
     ColumnsDataPrecios,
     ColumnsDataVentas,
     ColumnsDataInversores,
-    ColumnsDataAsesores
+    ColumnsDataAsesores,
+    ColumnsDataJimas,
+    ColumnsDataPagosSalientes
 }
