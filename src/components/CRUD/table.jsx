@@ -23,6 +23,8 @@ import SalesCancelForm from '../forms/SalesCancelForm';
 import AdvisorForm from '../forms/AdvisorForm';
 import JimaForm from '../forms/JimasForm';
 import PagosSForm from '../forms/PagosSForm';
+import { PhotosModal } from '../../screens/Galeria/DetailsGalery';
+import AjusteTiempoForm from '../forms/AjusteTiempoForm';
 
 const CRUD=({
     columns, 
@@ -45,7 +47,8 @@ const CRUD=({
     investors,
     advisors,
     jimas,
-    pagosS
+    pagosS,
+    ajusteTiempo
     })=>{
 
     const navigate = useNavigate();
@@ -82,6 +85,8 @@ const CRUD=({
 
     const EditViewModal = ({ Form, item, close,title}) => {
         const formRef = useRef(null);
+        const [showImage, setshowImage] = useState(false)
+        const [Image, setImage] = useState('');
         const [isSubmitting, setIsSubmitting] = useState(false) 
         const [clicks, setclicks]=useState(0)
         const actions = useMemo(() => [
@@ -90,12 +95,25 @@ const CRUD=({
 
         return (
             <>
+            {showImage &&
+             <div id="modalBackground" className='absolute z-50 inset-0 '>
+                <PhotosModal
+                    photos={[Image]}
+                    onClose={() => setshowImage(false)}
+                    initIndex={0}
+                    supervision={true}
+                />
+             </div>
+            }
             {
                 <GenericModal
                 title={title}
                 close={close}
-                content={<Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting} clicks={clicks} setclicks={setclicks}/>}
-                actions={actions}
+                content={
+                <Form item={item} close={close} formRef={formRef} setIsSubmitting={setIsSubmitting} clicks={clicks} 
+                    setclicks={setclicks} setImage={setImage} setshowImage={setshowImage}/>
+                }
+                actions={pagosS ? (item.estado=='Pagado' ? []:actions):actions}
                 loading={isSubmitting}
                 />
             }</>
@@ -115,7 +133,10 @@ const CRUD=({
     if(jimas){
         setEditForm(() => JimaForm)
     }
-    }, [predios,galleries,advisors,jimas]);
+    if(ajusteTiempo){
+        setEditForm(() => AjusteTiempoForm)
+    }
+    }, [predios,galleries,advisors,jimas,ajusteTiempo]);
 
     useEffect(() => {
         let newElements = data ? [...data] : []; 
@@ -318,7 +339,7 @@ const CRUD=({
                     if(col.attribute==="completo"){
                         newItem[col.attribute] ? newItem[col.attribute]= "Si": newItem[col.attribute]= "No"
                     }else if(col.attribute==="asesor"){
-                        newItem[col.attribute] ? newItem[col.attribute]= newItem[col.attribute]: newItem[col.attribute]= "---"
+                        newItem[col.attribute] ? newItem[col.attribute]= newItem[col.attribute].nombre+" "+newItem[col.attribute].apellidos: newItem[col.attribute]= "---"
                     }else if(col.attribute==="nombre"){
                         newItem[col.attribute]=newItem[col.attribute]+" "+newItem["apellidos"]
                     }else if(col.attribute==="usuario"){
@@ -361,7 +382,21 @@ const CRUD=({
             })
         }
 
-        if(!prices){
+        if(ajusteTiempo){
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="predio"){
+                        console.log("entra")
+                        newItem[col.attribute] = newItem[col.attribute].nombre
+                    }
+                })
+                console.log(item)
+                return newItem
+            })
+        }
+
+        if(!prices && !ajusteTiempo){
             newElements = newElements.filter(item => {
                 return columns.some(col => {
                     return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
@@ -374,7 +409,7 @@ const CRUD=({
 
     return(
         <div className='sm:ml-14 size-full flex flex-col bg-[#f6f6f6] pl-5 py-2 pe-4 sm:pe-3 font-[Roboto]'>
-            <div className='size-full flex flex-col bg-white px-2 py-1 rounded-xl shadow'>
+            <div className='size-full flex flex-col bg-white px-2 py-2 rounded-xl shadow'>
                 <div className='w-full flex items-start mb-4'>
                     <div className={`flex flex-row gap-3 ${searchFilterAdd ? 'max-md:flex-col':'max-sm:flex-col items-center'} w-full`}>
                         {onlysearch && <InputSearch formik={formik}/>}
@@ -444,7 +479,8 @@ const CRUD=({
                         prices && !anio ? "Nuevo precio": 
                         prices &&  anio ? "Nuevo año":
                         pagosS ? "Editar pago saliente":
-                        jimas && "Nueva jima" 
+                        jimas ? "Nueva jima":
+                        "Nuevo ajuste de tiempo" 
                     }
                     open={modal}
                     pagosS={pagosS}/>
@@ -512,7 +548,7 @@ const CRUD=({
                             }}>
                                 {columns.map((col, j) => (
                                 <td className='border-b p-1' key={`TD_${i}_${j}`}>
-                                    {col.Component ? <col.Component state={item[col.attribute]}/> : item[col.attribute]}
+                                    {col.Component ? (ajusteTiempo ? <col.Component state={item[col.attribute]} option={col.option}/>: <col.Component state={item[col.attribute]}/> ): item[col.attribute]}
                                     </td>
                                 ))}
                             </tr>
@@ -520,7 +556,7 @@ const CRUD=({
                     </tbody>
                 </table>
                 </AbsScroll>
-                <div className='mt-auto py-2'>
+                <div className='mt-auto'>
                     <div className='bg-[#E2E8F0] p-2 font-bold text-md rounded-xl w-fit'>
                     <p>Total de 
                         {supervision ? ' supervisiones':
@@ -531,7 +567,9 @@ const CRUD=({
                         sales ? ' ventas':
                         investors ? ' inversores':
                         advisors ? ' asesores':
-                        jimas && ' jimas'
+                        jimas ? ' jimas':
+                        pagosS ? ' pagos salientes':
+                        ' ajustes de tiempo'
                         }: {elements.length}</p>
                     </div>
                 </div>

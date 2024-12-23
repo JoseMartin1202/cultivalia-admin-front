@@ -159,6 +159,9 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
             <div className='flex flex-row items-center gap-3 w-full'>
                 <p className='font-bold'>Forma:</p>
                 <CustomSelect
+                    id='forma'
+                    name='forma'
+                    formik={formik}
                     options={forma}
                     value={formik.values.forma}
                     onChange={(val) => formik.setFieldValue('forma', val)}
@@ -172,6 +175,9 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
                 <div className='flex flex-col w-full'>
                     <p className='font-bold'>Año:</p>
                     <CustomSelect
+                        id='anio'
+                        name='anio'
+                        formik={formik}
                         options={anios}
                         value={formik.values.anio}
                         onChange={(val) => formik.setFieldValue('anio', val)}
@@ -183,6 +189,9 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
                 <div className='flex flex-col w-full'>
                     <p className='font-bold'>Manera:</p>
                     <CustomSelect
+                        id='manera'
+                        name='manera'
+                        formik={formik}
                         options={manera}
                         value={formik.values.manera}
                         onChange={(val) => formik.setFieldValue('manera', val)}
@@ -225,6 +234,9 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
             <div className='flex flex-col w-full'>
                 <p className='font-bold'>Es jimada:</p>
                 <CustomSelect
+                    id='isJimated'
+                    name='isJimated'
+                    formik={formik}
                     options={jimada}
                     value={formik.values.isJimated}
                     onChange={(val) => formik.setFieldValue('isJimated', val)}

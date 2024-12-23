@@ -171,6 +171,9 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
             <div className='flex flex-col sm:w-32'>
                 <p className='font-bold'>Año:</p>
                 <CustomSelect
+                    id='anio'
+                    name='anio'
+                    formik={formik}
                     options={anios}
                     value={formik.values.anio}
                     onChange={(val) => formik.setFieldValue('anio', val)}
@@ -195,6 +198,9 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
             <div className='flex flex-col w-1/2 max-sm:w-full'>
                 <p className='font-bold'>Galeria:</p>
                 <CustomSelect
+                    id='galeria'
+                    name='galeria'
+                    formik={formik}
                     options={galerias}
                     value={formik.values.galeria}
                     onChange={(val) => formik.setFieldValue('galeria', val)}

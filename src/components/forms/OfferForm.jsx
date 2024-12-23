@@ -181,6 +181,9 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
 
     return (
         <form ref={formRef} onSubmit={formik.handleSubmit} className={`p-6 flex flex-col items-center gap-4`}>
+            {offerAddStatus === 'pending' ?
+            <Loader/>:
+            <>
             <div className='flex flex-row w-full sm:items-center sm:gap-3 max-sm:flex-col'>
                 <p className='font-bold min-w-fit'>Tipo de oferta:</p>
                 <div className='relative w-full min-w-fit'>
@@ -204,6 +207,9 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                     <div className='flex flex-col w-full sm:flex-row sm:items-center sm:gap-3'>
                         <p className='font-bold'>Predio:</p>
                         <CustomSelect
+                            id='predio_directa'
+                            name='predio_directa'
+                            formik={formik}
                             options={predios}
                             value={formik.values.predio_directa}
                             onChange={(val) => formik.setFieldValue('predio_directa', val)}
@@ -224,6 +230,9 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                             <div className='flex flex-col flex-1'>
                                 <p className='font-bold'>Estatus:</p>
                                 <CustomSelect
+                                    id='is_visible_directa'
+                                    name='is_visible_directa'
+                                    formik={formik}
                                     options={estadoOptions}
                                     value={formik.values.is_visible_directa}
                                     onChange={(val) => formik.setFieldValue('is_visible_directa', val)}
@@ -243,6 +252,9 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                         <div className='flex flex-col w-full'>
                             <p className='font-bold'>Vendedor/Inversor:</p>
                             <CustomSelect
+                            id='vendedor'
+                            name='vendedor'
+                            formik={formik}
                             options={vendedorOptions}
                             value={formik.values.vendedor}
                             onChange={(val) => formik.setFieldValue('vendedor', val)}
@@ -259,6 +271,9 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                                 <div className='flex flex-col sm:flex-row w-full sm:flex-1 sm:items-center sm:gap-3 '>
                                     <p className='font-bold'>Distribucion:</p>
                                     <CustomSelect
+                                        id='distribucion'
+                                        name='distribucion'
+                                        formik={formik}
                                         options={distribuciones}
                                         value={formik.values.distribucion}
                                         onChange={(val) => formik.setFieldValue('distribucion', val)}
@@ -287,6 +302,9 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                                 <div className='flex flex-col flex-1'>
                                     <p className='font-bold'>Estatus:</p>
                                     <CustomSelect
+                                        id='is_visible_indirecta'
+                                        name='is_visible_indirecta'
+                                        formik={formik}
                                         options={estadoOptions}
                                         value={formik.values.is_visible_indirecta}
                                         onChange={(val) => formik.setFieldValue('is_visible_indirecta', val)}
@@ -310,6 +328,8 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                     }
                 </div>
             }
+            </>}
+            
         </form>
     )
 }

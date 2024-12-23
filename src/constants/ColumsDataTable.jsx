@@ -54,6 +54,7 @@ const ColumnsDataVentas=[
 
 const ColumnsDataInversores=[
   {label:"Inversor", attribute:"nombre",search:true},
+  {label:"Puede invertir", attribute:"completo",Component: EstadoView},
   {label:"Usuario", attribute:"usuario"},
   {label:"Curp", attribute:"curp"},
   {label:"Sexo", attribute:"sexo"},
@@ -61,7 +62,6 @@ const ColumnsDataInversores=[
   {label:"Dirección", attribute:"direccion"},
   {label:"Estado", attribute:"estado"},
   {label:"Asesor", attribute:"asesor"},
-  {label:"Puede invertir", attribute:"completo",Component: EstadoView},
 ];
 
 const ColumnsDataAsesores=[
@@ -82,8 +82,15 @@ const ColumnsDataPagosSalientes=[
   {label:"Fecha registro", attribute:"fechaRegistro"},
   {label:"Metodo", attribute:"metodo"},
   {label:"Comentarios", attribute:"comentarios"},
-  {label:"Estado", attribute:"estado"},
+  {label:"Estado", attribute:"estado",Component: EstadoView},
   {label:"Inversor", attribute:"inversor",search:true},
+];
+
+const ColumnsDataAjusteTiempos=[
+  {label:"Predio", attribute:"predio", search:true},
+  {label:"Años de contrato", attribute:"contratoVariables",Component: EstadoView,option:"anio"},
+  {label:"Porcentaje Cultivalia", attribute:"contratoVariables",Component: EstadoView,option:"porcentaje"},
+  {label:"Comentarios", attribute:"comentarios"}
 ];
 
 
@@ -97,5 +104,6 @@ export const Columns={
     ColumnsDataInversores,
     ColumnsDataAsesores,
     ColumnsDataJimas,
-    ColumnsDataPagosSalientes
+    ColumnsDataPagosSalientes,
+    ColumnsDataAjusteTiempos
 }

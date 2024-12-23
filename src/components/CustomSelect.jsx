@@ -1,9 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Icons } from '../constants/Icons';
+import { valueFromId } from '../constants/functions';
 
-const CustomSelect = ({ options, value, onChange, openUp=false,estadoS='',habilitado=true }) => {
+const CustomSelect = ({ id,formik,options, value, onChange, openUp=false,estadoS='',habilitado=true }) => {
     const [isOpen, setIsOpen] = useState(false);
     const selectRef = useRef(null);
+    const error = valueFromId(id, formik?.errors)
+    const touched = valueFromId(id, formik?.touched)
+    const showError = error && (touched || formik?.submitCount > 0);
   
     const handleOptionClick = (val) => {
       onChange(val);
@@ -31,6 +35,7 @@ const CustomSelect = ({ options, value, onChange, openUp=false,estadoS='',habili
     }, [isOpen]);
   
     return (
+      <>
       <div className="relative w-full" ref={selectRef}>
         <div
           className={`px-4 py-2 border-gray-300 border-2 rounded-[10px] focus:outline-none  ${
@@ -65,6 +70,14 @@ const CustomSelect = ({ options, value, onChange, openUp=false,estadoS='',habili
           </ul>
         )}
       </div>
+      {showError &&
+        <div className='h-fit'>
+            <p className='font-normal text-lg flex items-center gap-1 h-full italic text-red-500 '>
+                <Icons.Alert size="14px" />
+                {error}
+            </p>
+        </div>}
+      </>
     );
   };
 

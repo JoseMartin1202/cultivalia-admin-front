@@ -1,5 +1,5 @@
 export const valueFromId = (id, obj) => {
-    return id.split('.').reduce((acc, curr) => {
+    return id?.split('.').reduce((acc, curr) => {
        if (Object.keys(acc).length === 0) return ''
        return (acc[curr] !== null && acc[curr] !== undefined) ? acc[curr] : ''
     }, obj)

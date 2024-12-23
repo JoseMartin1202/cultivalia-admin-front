@@ -2,7 +2,7 @@ import React from 'react'
 import { Icons } from '../../constants/Icons';
 import { valueFromId } from '../../constants/functions';
 
-const InputForm = ({ id, formik, onChangeExtra, message, password,number,preventSigns,descuento,negative}) => {
+const InputForm = ({ id, formik, onChangeExtra, message, password,number,preventSigns,descuento,negative,readonly}) => {
 
     const handleChange = (e) => {
         formik.handleChange(e)
@@ -35,8 +35,9 @@ const InputForm = ({ id, formik, onChangeExtra, message, password,number,prevent
                 type={`${password ? 'password': number ? 'number':'text'}`}
                 min={number && !negative? "0" : undefined} 
                 step={number ? "any" : undefined}
-                className=' w-full rounded-[10px] border-2 p-2 focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 focus:outline-none'
-                placeholder={message}/>
+                className={`${readonly ? '':'focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500 '} focus:outline-none w-full rounded-[10px] border-2 p-2`}
+                placeholder={message}
+                readOnly={readonly ?? undefined}/>
             </div>
             {showError &&
             <div className='h-fit'>
