@@ -14,8 +14,6 @@ const Gallery=()=>{
         estatusdata={galleriesStatus} 
         path={"detallesGaleria"}
         galleries={true}
-        search={true}
-        add={true}
         searchAdd={true}/>   
     );
 }

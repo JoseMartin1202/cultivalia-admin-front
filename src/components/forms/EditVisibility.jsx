@@ -19,7 +19,7 @@ const EditVisibilityForm = ({item,close,formRef, setIsSubmitting}) => {
     const formik = useFormik({
         initialValues: item.is_visible=='Visible' ? 
             {is_visible: false,
-            estado: 'Finalizada'}
+            estado: 'Cancelada'}
             :
             {is_visible: true,}
         ,

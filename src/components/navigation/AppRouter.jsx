@@ -15,6 +15,7 @@ import Investors from '../../screens/Inversores/Investors'
 import Advisors from '../../screens/Asesores/advisors'
 import Jimas from '../../screens/Jimas/jimas'
 import PagosSalientes from '../../screens/PagoSaliente/pagosSaliente'
+import AjusteTiempo from '../../screens/AjusteTiempo/AjusteTiempo'
 
 const Router = () => {
     const { session, sessionStatus } = useSession()
@@ -35,6 +36,7 @@ const Router = () => {
                     <Route path="/asesores" element={<Advisors />} />
                     <Route path="/jimas" element={<Jimas />} />
                     <Route path="/pagosSalientes" element={<PagosSalientes />} />
+                    <Route path="/ajusteTiempo" element={<AjusteTiempo />} />
                     <Route path="*" element={<Navigate to="/supervisiones" replace />} />
                 </Routes>
             </>

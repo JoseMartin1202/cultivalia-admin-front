@@ -2,8 +2,28 @@ import {React, useState} from 'react'
 import { Icons } from '../constants/Icons';
 import LogoCult from '../assets/cultivaliaLogo.png';
 
-const EstadoView = ({state}) => {
-    
+const EstadoView = ({state,option}) => {
+    // Verificar si el 'state' es un JSON (objeto)
+    const isJson = (obj) => {
+        try {
+            // Si es un string, intentar parsearlo
+            if (typeof obj === 'string') {
+                JSON.parse(obj);
+                return true;
+            }
+            // Si ya es un objeto, también es considerado JSON
+            return typeof obj === 'object' && obj !== null;
+        } catch (e) {
+            return false;
+        }
+    };
+
+    if (isJson(state)) {//ajustetiempo
+        return(
+            option==="anio" ? <span>{state.duracion_anios} años</span>:<span>{state.porcentaje_cultivalia}%</span>
+        );
+    }
+
     switch (state) {
         case "Validada": case "Si":
             return(
@@ -95,7 +115,7 @@ const EstadoView = ({state}) => {
                 </span>
             );
 
-        case "Cancelada":
+        case "Cancelada": case "Cancelado":
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}

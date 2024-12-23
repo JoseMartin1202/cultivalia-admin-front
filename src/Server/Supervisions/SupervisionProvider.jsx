@@ -31,12 +31,10 @@ const useSupervision=(supervisionId)=>{
     const SupervisionMutator = useMutation({
         mutationFn: updatePartial,
         onSuccess: (newSupervision) => {
-            console.log('jala')
             queryClient.setQueryData(['supervisiones'], 
                 (oldSupervisions)=> oldSupervisions.map(s=>s.id===newSupervision.id ? 
                     { ...s, comentaios: newSupervision.comentaios, estado: newSupervision.estado, options:newSupervision.options } :s)
             )
-            console.log('jalax2')
             queryClient.setQueryData(['supervision',newSupervision.id], 
                 (oldSupervision) => ({
                     ...oldSupervision, 

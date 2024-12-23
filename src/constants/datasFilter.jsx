@@ -11,6 +11,7 @@ const OffersFilterData = [
     { name: 'No visibles', value: false },
     { name: 'Vigentes', value: 'Vigente' },
     { name: 'Finalizadas', value: 'Finalizada' },
+    { name: 'Canceladas', value: 'Cancelada' },
 ];
 
 const PricesFilterData = [

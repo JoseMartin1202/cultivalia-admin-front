@@ -3,6 +3,7 @@ import InputForm from '../inputs/inputForm'
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import useAdvisor from '../../Server/Advisors/AdvisorProvider';
+import Loader from '../Loader';
 
 const AdvisorForm = ({close,formRef, setIsSubmitting,item}) => {
     const { advisorAdd,advisorUpdate,advisorAddStatus,advisorUpdateStatus } = useAdvisor(item?.id) 
@@ -38,18 +39,23 @@ const AdvisorForm = ({close,formRef, setIsSubmitting,item}) => {
 
     return (
     <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-col sm:w-80 items-center gap-3'>
-        <div className='flex sm:flex-row flex-col sm:items-center sm:gap-3 w-full'>
+        {advisorAddStatus === 'pending' || advisorUpdateStatus === 'pending' ?
+        <Loader/>:
+        <>
+        <div className='flex flex-col w-full'>
             <p className='font-bold'>Nombre:</p>
             <InputForm formik={formik} id="nombre" name="nombre"/>
         </div>
-        <div className='flex sm:flex-row flex-col sm:items-center sm:gap-3 w-full'>
+        <div className='flex flex-col w-full'>
             <p className='font-bold'>Apellidos:</p>
             <InputForm formik={formik} id="apellidos" name="apellidos"/>
         </div>
-        <div className='flex sm:flex-row flex-col sm:items-center sm:gap-3 w-full'>
+        <div className='flex flex-col w-full'>
             <p className='font-bold'>Teléfono:</p>
             <InputForm formik={formik} id="telefono" name="telefono"/>
         </div>
+        </> }
+        
     </form>
     )
 }
