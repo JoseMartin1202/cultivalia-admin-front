@@ -54,7 +54,10 @@ import {
     FaArrowLeft as LeftArrow,
     FaUserTie as Investor,
     FaHandshake as Advisor,
-    FaRegQuestionCircle as Question
+    FaRegQuestionCircle as Question,
+    FaUserPlus as UserCreated,
+    FaUserClock as UserRevision,
+    FaUserMinus as UserInactive
 } from "react-icons/fa";
 
 import {
@@ -136,5 +139,8 @@ export const Icons={
     Investor,
     Advisor,
     Question,
-    PagosS
+    PagosS,
+    UserCreated,
+    UserRevision,
+    UserInactive
 }

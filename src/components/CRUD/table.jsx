@@ -54,8 +54,8 @@ const CRUD=({
     const navigate = useNavigate();
     const [elements, setElements] = useState();
     const { 
-        filterStateSupervisions, filterStateOffers,filterStatePrices, filterStateSales,
-        setFilterStateSupervisions, setFilterStateOffers,setFilterStatePrices, setFilterStateSales } = useApp();
+        filterStateSupervisions, filterStateOffers,filterStatePrices, filterStateSales, filterStateInversors,
+        setFilterStateSupervisions, setFilterStateOffers,setFilterStatePrices, setFilterStateSales, setfilterStateInversors } = useApp();
     const [modal, setModal] = useState(false);
     const [selectedItem, setSelectedItem] = useState('');
     const [editForm, setEditForm] = useState(null)
@@ -78,7 +78,7 @@ const CRUD=({
     const formik = useFormik({
         initialValues: {
             searchText: '',
-            estado: supervision ? filterStateSupervisions :offers ? filterStateOffers: prices ? filterStatePrices: filterStateSales ,
+            estado: supervision ? filterStateSupervisions :offers ? filterStateOffers: prices ? filterStatePrices:  sales ? filterStateSales: filterStateInversors ,
             groupByYear: false
         }
     })
@@ -147,6 +147,7 @@ const CRUD=({
         if (offers) setFilterStateOffers(formik.values.estado);
         if (prices) setFilterStatePrices(formik.values.estado);
         if (sales) setFilterStateSales(formik.values.estado);
+        if (investors) setfilterStateInversors(formik.values.estado);
 
         let searchText = formik?.values?.searchText?.toLowerCase()
         if (formik?.values?.estado!==undefined && formik?.values?.estado!=='' && filter) {
@@ -336,9 +337,7 @@ const CRUD=({
             newElements= newElements.map((item)=>{
                 const newItem = { ...item };
                 columns.forEach((col)=>{
-                    if(col.attribute==="completo"){
-                        newItem[col.attribute] ? newItem[col.attribute]= "Si": newItem[col.attribute]= "No"
-                    }else if(col.attribute==="asesor"){
+                    if(col.attribute==="asesor"){
                         newItem[col.attribute] ? newItem[col.attribute]= newItem[col.attribute].nombre+" "+newItem[col.attribute].apellidos: newItem[col.attribute]= "---"
                     }else if(col.attribute==="nombre"){
                         newItem[col.attribute]=newItem[col.attribute]+" "+newItem["apellidos"]
@@ -411,7 +410,7 @@ const CRUD=({
         <div className='sm:ml-14 size-full flex flex-col bg-[#f6f6f6] pl-5 py-2 pe-4 sm:pe-3 font-[Roboto]'>
             <div className='size-full flex flex-col bg-white px-2 py-2 rounded-xl shadow'>
                 <div className='w-full flex items-start mb-4'>
-                    <div className={`flex flex-row gap-3 ${searchFilterAdd ? 'max-md:flex-col':'max-sm:flex-col items-center'} w-full`}>
+                    <div className={`flex flex-row gap-3 w-full`}>
                         {onlysearch && <InputSearch formik={formik}/>}
                         {searchAdd && 
                         <div className='flex flex-row w-full gap-2'>
@@ -422,8 +421,9 @@ const CRUD=({
                             setModal(true)
                         }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div>}
                         {searchFilterAdd &&
-                            <><InputSearch formik={formik}/>
-                            <div className='flex flex-row w-full sm:min-w-fit sm:max-w-fit gap-1'>
+                            <div className='flex-col sm:flex-row flex w-full gap-3'>
+                            <InputSearch formik={formik}/>
+                            <div className='flex flex-row gap-2'>
                             {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
                             offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
                             undefined}
@@ -431,14 +431,15 @@ const CRUD=({
                                 setSelectedItem(null)
                                 setEditForm(() => OfferForm);
                                 setModal(true) 
-                            }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></>
+                            }}><Icons.Add className='size-11 text-[#6B9DFF]'/></button></div></div>
                         }
                         {searchFilter &&
                             <div className='flex flex-col sm:flex-row w-full gap-3'>
                             <div className='flex-1 flex'><InputSearch formik={formik}/></div>
                             {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
-                            offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
-                            <Filter data={dataFilter} formik={formik} opt={filterStateSales} />}</div>
+                            offers ? <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
+                            sales ? <Filter data={dataFilter} formik={formik} opt={filterStateSales} />:
+                            <Filter data={dataFilter} formik={formik} opt={filterStateInversors} />}</div>
                         }
                         {switchFilterAdd &&
                             <div className='w-full flex md:flex-row flex-col md:items-center gap-2 box-border'>
@@ -492,19 +493,19 @@ const CRUD=({
                 <AbsScroll vertical horizontal>
                 <table className="custom-table">
                     <thead className='sticky top-0 z-5'>
-                        <tr>
+                        <tr className='bg-[#E2E8F0] h-[35px]'>
                             {supervision ? columns.map((col, i) =>(
-                                <th className={`h-[35px] bg-[#E2E8F0]  ${ i==0 ? 'w-[25%]' : i==1 ? 'w-[35%]':'w-1/5'}`} key={`TH_${i}`}>
+                                <th className={` ${ i==0 ? 'w-[25%]' : i==1 ? 'w-[35%]':'w-1/5'}`} key={`TH_${i}`}>
                                     <p>{col.label}</p>
                                 </th>
                             )):
                             formik.values.groupByYear && prices?
-                            <th className={'h-[35px] bg-[#E2E8F0]'}>
+                            <th>
                                 <p>Año</p>
                             </th>
                             :
                             columns.map((col, i) =>(
-                                <th className={'h-[35px] bg-[#E2E8F0]'} key={`TH_${i}`}>
+                                <th key={`TH_${i}`}>
                                     <p>{col.label}</p>
                                 </th>
                             ))}
@@ -557,7 +558,7 @@ const CRUD=({
                 </table>
                 </AbsScroll>
                 <div className='mt-auto'>
-                    <div className='bg-[#E2E8F0] p-2 font-bold text-md rounded-xl w-fit'>
+                    <div className='bg-[#E2E8F0] p-2 font-bold text-md rounded-lg w-fit'>
                     <p>Total de 
                         {supervision ? ' supervisiones':
                         predios ? ' predios':

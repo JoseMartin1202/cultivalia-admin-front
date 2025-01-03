@@ -33,12 +33,12 @@ const useSupervision=(supervisionId)=>{
         onSuccess: (newSupervision) => {
             queryClient.setQueryData(['supervisiones'], 
                 (oldSupervisions)=> oldSupervisions.map(s=>s.id===newSupervision.id ? 
-                    { ...s, comentaios: newSupervision.comentaios, estado: newSupervision.estado, options:newSupervision.options } :s)
+                    { ...s, comentarios: newSupervision.comentarios, estado: newSupervision.estado, options:newSupervision.options } :s)
             )
             queryClient.setQueryData(['supervision',newSupervision.id], 
                 (oldSupervision) => ({
                     ...oldSupervision, 
-                    comentaios: newSupervision.comentaios, 
+                    comentarios: newSupervision.comentarios, 
                     estado: newSupervision.estado,
                     options: newSupervision.options
                 })

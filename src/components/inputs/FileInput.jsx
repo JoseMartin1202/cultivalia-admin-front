@@ -11,7 +11,7 @@ const FileInput = ({ id, readonly,formik, ...props }) => {
 
    return (
       <div className='flex flex-col'>
-         <div className='relative flex flex-col w-full bg-neutral-200/70 text-neutral-800 total-center '>
+         <div className='relative p-2 flex flex-col w-full bg-neutral-200/70 text-neutral-800 total-center '>
             {!value ? <>
                <input
                   readOnly={readonly ?? undefined}

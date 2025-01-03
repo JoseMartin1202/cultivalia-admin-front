@@ -28,9 +28,18 @@ const SalesFilterData = [
   { name: 'Canceladas', value: 'Cancelada' },
 ];
 
+const InversorsFilterData = [
+  { name: 'Todos', value: '' },
+  { name: 'Creados', value: 'Creado' },
+  { name: 'En Revisión', value: 'Revision' },
+  { name: 'Rechazados', value: 'Rechazado' },
+  { name: 'Completos', value: 'Completo' },
+  { name: 'Inactivos', value: 'Inactivo' },
+];
   export const Filters={
     HomeFilterData,
     OffersFilterData,
     PricesFilterData,
-    SalesFilterData
+    SalesFilterData,
+    InversorsFilterData
   }
