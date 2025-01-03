@@ -15,6 +15,7 @@ export const AppProvider = ({ children }) => {
     const [filterStateOffers, setFilterStateOffers] = useState(true);
     const [filterStatePrices, setFilterStatePrices] = useState(true);
     const [filterStateSales, setFilterStateSales] = useState('Pendiente');
+    const [filterStateInversors, setfilterStateInversors] = useState('');
     const notify = (message, error = false) => {
         let options = {
             position: "bottom-right",
@@ -36,10 +37,12 @@ export const AppProvider = ({ children }) => {
             filterStateOffers,
             filterStatePrices,
             filterStateSales,
+            filterStateInversors,
             setFilterStateSupervisions,
             setFilterStateOffers,
             setFilterStatePrices,
-            setFilterStateSales
+            setFilterStateSales,
+            setfilterStateInversors
         }}>
             {children}
             <ToastContainer />

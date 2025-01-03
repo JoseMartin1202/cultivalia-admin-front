@@ -11,13 +11,11 @@ import { PhotosModal } from '../Galeria/DetailsGalery';
 import AbsScroll from '../../components/AbsScroll';
 import CustomSelect from '../../components/CustomSelect';
 import InputForm from '../../components/inputs/inputForm';
-import { useApp } from '../../context/AppContext';
 
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
-    const { notify } = useApp();
     const { supervisionId } = useParams();
-    const { supervision, supervisionStatus, updateSupervision,updateSupervisionStatus } = useSupervision(supervisionId);
+    const { supervision, supervisionStatus, updateSupervision } = useSupervision(supervisionId);
     const [verFotos,setverFotos]= useState(false)
     const [bgOption, setbgOption] = useState('');
     const [initIndex, setInitIndex] = useState(0)
@@ -38,7 +36,7 @@ export const DetailsSupervisions = () => {
         "Se envió el documento incorrecto"
     ]
 
-    const estados = [{value:'Pendiente',label:'Pendiente'},{value:'Validada',label:'Validada'},{value:'Rechazada',label:'Rechazada'}]
+    const estados = [{value:'Validada',label:'Validada'},{value:'Rechazada',label:'Rechazada'}]
    
     if(supervision?.movimiento?.tipo_movimiento === 'Beneficiario' || supervision?.movimiento?.tipo_movimiento === 'Inversor'){
         ImagenesData.push( 
@@ -87,7 +85,6 @@ export const DetailsSupervisions = () => {
         );
     }
 
-
     const formik = useFormik({
         initialValues: {
             comentaios: '',
@@ -97,12 +94,18 @@ export const DetailsSupervisions = () => {
             idCrede: ''
         },
         validationSchema: Yup.object().shape({
-            comentaios: Yup.lazy(() => {
-                return comments.length === 0
+            comentarios: Yup.lazy(() => {
+                return comments?.length === 0
                     ? Yup.string().required('Escribe o escoge un comentario')
                     : Yup.string().notRequired();
             }),
-            estado: Yup.string().required('Requerido'),
+            estado: Yup.string().required('Requerido').test(
+                'isnt_pendiente',
+                    'Requerido',
+                        function (value) {
+                            return value !='Pendiente';
+                        }
+            ),
             options: Yup.string().notRequired(),
             curp: curp
                 ? Yup.string().required('Requerido') 
@@ -128,31 +131,32 @@ export const DetailsSupervisions = () => {
         }
     })
 
-    const error = valueFromId("comentaios", formik.errors)
-    const touched = valueFromId("comentaios", formik.touched)
+    const error = valueFromId("comentarios", formik.errors)
+    const touched = valueFromId("comentarios", formik.touched)
     const showError = error && (touched || formik.submitCount > 0);
 
     useEffect(() => {
         if (supervision) {
-            if(supervision.options){
-                let commentsList = supervision.options?.split('/');
-                setcomments(commentsList)
-                formik.setValues({
-                    comentaios: supervision.comentaios,
-                    estado: supervision.estado,
-                    options:commentsList
-                    
-                });
-            }else{
-                formik.setValues({
-                    comentaios: supervision.comentaios,
-                    estado: supervision.estado,
-                    options: ''
-                });
-            }
-
+            // if(supervision.options){
+            //     // let commentsList = supervision.options?.split('/');
+            //     let commentsList = supervision.options
+            //     setcomments(commentsList)
+            //     formik.setValues({
+            //         comentarios: supervision.comentarios,
+            //         estado: supervision.estado,
+            //         options:commentsList 
+            //     });
+            // }else{
+        formik.setValues({
+            comentarios: supervision.comentarios,
+            estado: supervision.estado,
+            options: supervision.options
+        });
+            // }
+        setcomments(supervision.options)
         }
     }, [supervision]);
+
 
     const handleSaveModal = () => {
         if(!formik.values.curp)
@@ -170,14 +174,21 @@ export const DetailsSupervisions = () => {
     }
 
     const handleAddComment = (comment,index) => {
-        let newComments;
-        if (!comments.includes(comment)) {
-            newComments = [...comments, comment];
-        } else {
-            newComments = comments.filter(c => c !== comment);
+        // let newComments;
+        // if (!comments.includes(comment)) {
+        //     newComments = [...comments, comment];
+        // } else {
+        //     newComments = comments.filter(c => c !== comment);
+        // }
+        // setcomments(newComments);
+        // formik.setFieldValue('options',newComments.join('/'))
+        if (!comments?.includes(comment)) {
+            setcomments(comment);
+            formik.setFieldValue('options',comment)
+        }else{
+            setcomments('');
+            formik.setFieldValue('options','')
         }
-        setcomments(newComments);
-        formik.setFieldValue('options',newComments.join('/'))
         setBouncingIndex(index);
 
         // Elimina la animación después de 500ms
@@ -307,14 +318,14 @@ export const DetailsSupervisions = () => {
                             </div>
                             <div className='flex sm:flex-1 sm:flex-col'>
                                 <textarea
-                                id="comentaios"
-                                name="comentaios"
-                                value={formik?.values.comentaios || ''}
+                                id="comentarios"
+                                name="comentarios"
+                                value={formik?.values.comentarios || ''}
                                 readOnly={supervision?.estado!='Pendiente'}
                                 onChange={handleChange}
                                 className={`px-2 pt-2 w-full h-full resize-none border bg-white border-gray-300 rounded-md focus:outline-none
                                     ${supervision?.estado=='Pendiente'?'focus:ring-2 focus:ring-indigo-400 focus:border-indigo-500':''}overflow-y-auto`}
-                                placeholder="Escribe otros comentarios aquí..."/>
+                                placeholder={supervision?.estado!='Pendiente'? "Sin comentarios.":"Escribe otros comentarios aquí..."}/>
                             </div>
                         </div>
                     </div>
@@ -389,6 +400,9 @@ export const DetailsSupervisions = () => {
                 <div className={`flex flex-row w-full ${supervision?.estado=="Pendiente" ? 'sm:w-[40%]':''} items-center gap-2`}>
                     <p className='font-bold text-lg'>Estado:</p>
                     <CustomSelect
+                        id="estado"
+                        name="estado"
+                        formik={formik}
                         options={estados}
                         value={formik.values.estado}
                         onChange={(val) => formik.setFieldValue('estado', val)}

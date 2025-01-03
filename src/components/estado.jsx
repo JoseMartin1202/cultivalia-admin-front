@@ -25,7 +25,7 @@ const EstadoView = ({state,option}) => {
     }
 
     switch (state) {
-        case "Validada": case "Si":
+        case "Validada": case "Completo":
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
@@ -33,7 +33,7 @@ const EstadoView = ({state,option}) => {
                 </span>
             );
 
-        case "Rechazada": case "No":
+        case "Rechazada": case "Rechazado":
             return(
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
@@ -120,6 +120,30 @@ const EstadoView = ({state,option}) => {
                 <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
                     {state}
                     <Icons.Cancel className='text-orange-400 size-6'/>
+                </span>
+            );
+        
+        case "Creado":
+            return(
+                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
+                {state}
+                <Icons.UserCreated className='text-[#6B9DFF] size-6'/>
+            </span>
+            );
+
+        case "Revision":
+            return(
+                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
+                    {state}
+                    <Icons.UserRevision className='text-[#6B9DFF] size-6'/>
+                </span>
+            );
+
+        case "Inactivo":
+            return(
+                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
+                    {state}
+                    <Icons.UserInactive className='text-[#6B9DFF] size-6'/>
                 </span>
             );
 

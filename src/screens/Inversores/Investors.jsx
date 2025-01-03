@@ -14,7 +14,8 @@ const Investors=()=>{
         columns={Columns.ColumnsDataInversores} 
         data={investors} 
         estatusdata={investorsStatus}
-        onlysearch={true}
+        searchFilter={true}
+        dataFilter={Filters.InversorsFilterData}
         investors={true}/> 
     );
 }

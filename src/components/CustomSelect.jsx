@@ -45,7 +45,7 @@ const CustomSelect = ({ id,formik,options, value, onChange, openUp=false,estadoS
           style={{ userSelect: 'none' }}
         >
           <span className='w-full'>
-            {options?.find(opt => opt.value === value)?.label || "ninguna"}
+            {options?.find(opt => opt.value === value)?.label || "Pendiente"}
           </span>
           <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center text-gray-700">
             {openUp ? <Icons.ArrowUp className='size-[80%]'/>:<Icons.ArrowDown className='size-[80%]'/>}

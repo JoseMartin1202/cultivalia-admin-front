@@ -120,7 +120,7 @@ export const DetailsGallery=()=>{
         />
     } 
    
-    <div className='sm:ml-14 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto font-[Roboto]'>
+    <div className='sm:ml-14 sm:pl-5 w-full h-full flex flex-col gap-3 bg-slate-100 p-2 overflow-y-auto font-[Roboto]'>
         {showEditNameGallery && 
             <GenericModal
             title={"Actualizar nombre de galería"}
@@ -209,8 +209,8 @@ export const DetailsGallery=()=>{
                 </div>
             </div>
         </div>
-        <div className='w-full flex gap-3 flex-row total-center font-[Roboto]'>
-            <button className='h-full' onClick={()=>{navigate(-1)}}><Icons.ArrowBack className='size-10 text-[#6B9DFF] hover:text-[#81aafe]'/></button>
+        <div className='w-full flex gap-3 flex-row overflow-x-auto font-[Roboto] text-nowrap'>
+            <button onClick={()=>{navigate(-1)}}><Icons.ArrowBack className='size-10 text-[#6B9DFF] hover:text-[#81aafe]'/></button>
             <div className='bg-[#E2E8F0] w-fit p-2 font-bold text-md rounded-xl'>
                     {<p>Fotos: {photosGallery?.length}</p>}
             </div>
@@ -218,7 +218,7 @@ export const DetailsGallery=()=>{
                 <p>Galería: {galeryName?.titulo}</p>
                 <Icons.Edit className='size-5'/>
             </button>
-            <button className='ms-auto hover:bg-red-300 max-sm:text-base text-lg font-bold bg-red-400 rounded-full py-1 px-3' onClick={()=>{setEliminarTodas(true); setModal(true)}}>Eliminar todas</button>
+            <button className='ms-auto hover:bg-red-300 max-sm:text-base  font-bold bg-red-400 rounded-full py-1 px-3' onClick={()=>{setEliminarTodas(true); setModal(true)}}>Eliminar todas</button>
         </div>
     </div>
     </>   
@@ -312,20 +312,20 @@ export const PhotosModal = ({ onClose, initIndex, photos, supervision }) => {
     return (
        <div className='absolute z-10 bg-neutral-900/90 size-full total-center'> 
           <div className='absolute size-full left-0 top-0' onClick={onClose}></div>
-          <div className='py-10 px-14 max-sm:px-2 size-full total-center'>
+          <div className=' px-14 max-sm:px-2 size-full total-center'>
                 {supervision ? <Image src={photos[selectedImg]} alt=""/>:
                 <Image src={photos[selectedImg].file} alt="" />}
           </div>
         {photos.length>1 && <>
             <button
              onClick={handlePrevImg}
-             className='absolute top-0 left-0 h-full outline-none w-14 total-center'>
+             className='absolute top-0 left-0 h-full outline-none w-14 total-center '>
              <Icons.Left className='text-blue-200 size-11 max-sm:size-8' />
           </button>
           <button
              onClick={handleNextImg}
              className='absolute top-0 right-0 h-full outline-none w-14 total-center'>
-             <Icons.Right className='text-blue-200 size-11 max-sm:size-8' />
+             <Icons.Right className='text-blue-200 size-11 max-sm:size-8 ' />
           </button>
         
         </>}

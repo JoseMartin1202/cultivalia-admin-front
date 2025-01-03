@@ -54,7 +54,7 @@ const ColumnsDataVentas=[
 
 const ColumnsDataInversores=[
   {label:"Inversor", attribute:"nombre",search:true},
-  {label:"Puede invertir", attribute:"completo",Component: EstadoView},
+  {label:"Estatus", attribute:"status",Component: EstadoView},
   {label:"Usuario", attribute:"usuario"},
   {label:"Curp", attribute:"curp"},
   {label:"Sexo", attribute:"sexo"},
