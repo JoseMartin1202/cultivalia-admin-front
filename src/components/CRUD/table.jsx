@@ -161,9 +161,10 @@ const CRUD=({
                 const newItem = { ...item };
                 columns.forEach((col)=>{ 
                     if(col.attribute === "supervisar") {
-                        newItem[col.attribute] = newItem[col.attribute].length > 50
-                        ? newItem[col.attribute].substring(0, 50) + "..."
-                        : newItem[col.attribute];
+                        const mensaje=JSON.parse(newItem[col.attribute]).message
+                        newItem[col.attribute] = mensaje.length > 50
+                        ? mensaje.substring(0, 50) + "..."
+                        : mensaje;
                     }else if(col.attribute === "mov"){
                         if(newItem["movimiento"]){
                             if(newItem["movimiento"].tipo_movimiento==="PagoEntrante"){

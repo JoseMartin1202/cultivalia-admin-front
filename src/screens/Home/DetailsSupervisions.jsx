@@ -35,17 +35,8 @@ export const DetailsSupervisions = () => {
         "Inconsistencia de datos",
         "Se envió el documento incorrecto"
     ]
-
-    const estados = [{value:'Validada',label:'Validada'},{value:'Rechazada',label:'Rechazada'}]
-   
-    if(supervision?.movimiento?.tipo_movimiento === 'Beneficiario' || supervision?.movimiento?.tipo_movimiento === 'Inversor'){
-        ImagenesData.push( 
-            supervision?.movimiento?.data?.credencialReverso,
-            supervision?.movimiento?.data?.credencialFrente
-        )
-    }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
-        ImagenesData.push( supervision?.movimiento?.data.comprobante)
-    }    
+    const [dataJson, setdataJson] = useState(null)
+    const estados = [{value:'Validada',label:'Validada'},{value:'Rechazada',label:'Rechazada'}]  
 
     if (supervision?.movimiento?.tipo_movimiento === 'Inversor') {
         const data=supervision?.movimiento?.data || {};
@@ -63,6 +54,10 @@ export const DetailsSupervisions = () => {
             { label: 'Nacionalidad', value: data.nacionalidad ?? '---'},
             { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
+        ImagenesData.push( 
+            supervision?.movimiento?.data?.credencialReverso,
+            supervision?.movimiento?.data?.credencialFrente
+        )
     }else if (supervision?.movimiento?.tipo_movimiento === 'Beneficiario') {
         supervisionData.push(
             { label: 'Nombre completo', value: `${supervision?.movimiento?.data?.nombre} ${supervision?.movimiento?.data?.apellidos}` },
@@ -71,9 +66,12 @@ export const DetailsSupervisions = () => {
             { label: 'Correo', value: supervision?.movimiento?.data?.correo },
             { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
+        ImagenesData.push( 
+            supervision?.movimiento?.data?.credencialReverso,
+            supervision?.movimiento?.data?.credencialFrente
+        )
     }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
-        supervisionData.push(
-            
+        supervisionData.push( 
             { label: 'Monto', value: supervision?.movimiento?.data?.monto },
             { label: 'Método', value: supervision?.movimiento?.data?.metodo },
             { label: 'Inversor', value: `${supervision?.movimiento?.data?.inversor.nombre} ${supervision?.movimiento?.data?.inversor.apellidos}`},
@@ -83,6 +81,7 @@ export const DetailsSupervisions = () => {
                 supervision?.movimiento?.data?.comentarios:'--'},
             { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
+        ImagenesData.push( supervision?.movimiento?.data.comprobante)
     }
 
     const formik = useFormik({
@@ -147,6 +146,7 @@ export const DetailsSupervisions = () => {
             //         options:commentsList 
             //     });
             // }else{
+        setdataJson(JSON.parse(supervision.supervisar))
         formik.setValues({
             comentarios: supervision.comentarios,
             estado: supervision.estado,
@@ -281,16 +281,55 @@ export const DetailsSupervisions = () => {
                supervision={true}
             />
         } 
-        <form onSubmit={formik.handleSubmit} className='sm:pl-[4.5rem] size-full gap-4 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] max-sm:overflow-y-auto max-sm:mb-2 h-screen'>
-            <div className='flex flex-row w-full gap-4 max-md:flex-col-reverse flex-grow '>
-                <div className='flex flex-col w-[48%] gap-4 h-full max-md:flex-row max-md:w-full max-md:h-1/2'>
-                    <div className='flex flex-col flex-1 max-md:max-w-[50%]'>
-                        <p className='font-bold text-lg'>Descripción:</p>
-                        <div className='size-full shadow-md shadow-black/30 bg-white rounded-2xl p-2 overflow-y-auto'>
-                            <span>{supervision?.supervisar}</span>
-                        </div>
+        <form onSubmit={formik.handleSubmit} className='sm:pl-[5rem] size-full box-border gap-3 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] overflow-y-auto'>
+            <div className='flex flex-col-reverse md:flex-row size-full gap-4'>
+                <div className='flex flex-col gap-4 h-full flex-1 sm:flex-row md:flex-col'>
+                    <div className='flex flex-col flex-1 bg-white shadow overflow-y-auto rounded-xl min-h-40'>
+                        {
+                            dataJson && Object.keys(dataJson).length>1 ?
+                            <>
+                            <p className='text-lg text-center text-white bg-[#656464]'>Cambios</p>
+                            <div className='flex flex-col w-full gap-3'>
+                            {Object.keys(dataJson).map((key)=>(
+                                key!=="message" &&
+                                <div key={key} className='flex flex-col w-full text-center p-2'>
+                                    <div className='relative w-full bg-slate-200 flex flex-row items-center rounded-t-lg'>
+                                        <p className='w-full font-bold'>{key.charAt(0).toUpperCase() + key.slice(1)}</p>
+                                        {dataJson[key].old_value!=dataJson[key].new_value ?
+                                        <Icons.Information size="22px" className='absolute right-1 text-[#6B9DFF]'/>:
+                                        <Icons.Nothing size="22px" className='absolute right-1 text-gray-600'/>}
+                                    </div>
+                                    <div className='flex flex-row w-full bg-slate-50 p-[2px] border-x-2 border-b-2 border-slate-200'>
+                                        <p className='w-[45%] '>{dataJson[key].old_value}</p>
+                                        {console.log(dataJson.length)}
+                                        <div className='w-[10%] flex justify-center'>
+                                            <Icons.RigthArrowLong size="24px"/>
+                                        </div>
+                                        <p className='w-[45%]'>{dataJson[key].new_value}</p>
+                                    </div>
+                                </div>
+                            ))}
+                            </div>
+                            </>
+                            :
+                            dataJson ? 
+                            <>
+                            <p className='text-lg text-center text-white bg-[#656464] '>Descripción:</p>
+                            <p className='text-justify pb-2'>{dataJson["message"]}</p>
+                            <div className='flex flex-col w-full gap-3'>
+                            {supervisionData.map((item)=>(
+                                <div key={item.label} className='flex flex-col w-full text-center'>
+                                    <p className='bg-slate-200 rounded-t-lg font-bold'>{item.label}</p>
+                                    <p className='p-[2px] bg-slate-50 border-x-2 border-b-2 border-slate-200'>{item.value}</p>
+                                </div>
+                            ))}
+                            </div>
+                            </>
+                            :
+                            <Loader/>
+                        }
                     </div>
-                    <div className='flex flex-col flex-1'>
+                    <div className='flex flex-col flex-1 min-h-52'>
                         <p htmlFor="comments" className='font-bold text-lg'>Comentarios:</p>
                         {showError &&
                         <div className=''>
@@ -300,7 +339,7 @@ export const DetailsSupervisions = () => {
                             </p>
                         </div>}
                         <div className='flex flex-col lg:flex-row size-full gap-3'>
-                            <div className='flex w-full h-[70%] lg:h-full lg:w-[70%] min-h-14'>
+                            <div className='flex w-full h-[70%] lg:h-full lg:w-[70%]'>
                                 <AbsScroll vertical>
                                     <ul className='grid grid-row gap-2 w-full px-3 py-2'> 
                                         {allComents.map((c,i)=>(  
@@ -330,74 +369,69 @@ export const DetailsSupervisions = () => {
                         </div>
                     </div>
                 </div>
-                <div className='relative w-[52%] shadow-lg shadow-black/30 bg-white rounded-2xl max-md:w-full max-md:h-1/2'>
-                    <div className='absolute size-full top-0 left-0 p-2 '>
-                        { supervision?.movimiento?.tipo_movimiento === 'Contrato' ?
-                            <>
-                            {isMobile ? (
-                                // Mostrar un enlace para abrir el PDF en una nueva pestaña o visor
-                                <div className='flex size-full items-center justify-center'>
-                                    <a href={supervision?.movimiento?.data?.fileSigned} target="_blank" rel="noopener noreferrer" className='p-2 rounded-md bg-[#FFD34B]'>
-                                    Visualizar el PDF en una pestaña nueva
-                                    </a>
-                                </div>
-                            ) : <>{loading && supervision?.movimiento?.data?.fileSigned!=null &&(
-                                <div className='absolute inset-0 flex items-center justify-center z-50'>
-                                    <Loader />
-                                </div>
-                                )}
-                                {supervision?.movimiento?.data?.fileSigned ? 
-                                    <object
-                                    className={`size-full rounded-lg ${loading ? 'invisible' : 'visible'}`}
-                                    data={supervision?.movimiento?.data?.fileSigned}
-                                    type='application/pdf'
-                                    onLoad={() => setLoading(false)}
-                                    onError={() => {
-                                        setLoading(false);
-                                        console.error('Error al cargar el PDF.');
-                                    }}/>
-                                : 
-                                <div className=' size-full total-center border-2 border-gray-300 rounded-lg'>
-                                    <Icons.ContractNull className='size-20 text-gray-500'/>
-                                    <p>Sin contrato</p>
-                                </div>}
-                               </>}
-                            </>
-                            :
-                                <AbsScroll vertical centerColumn>
-                                    { ImagenesData.map((item,i)=>(
-                                        item ?
-                                        <div key={i} className='relative flex justify-center'>
-                                        {loading && (
-                                            <div className="absolute flex size-full justify-center items-center">
-                                            <Loader />
-                                            </div>
-                                        )}
-                                        <img className={`size-[95%] hover:cursor-pointer ${loading ? 'invisible' : 'visible'}`} src={item} 
-                                        onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
-                                        onLoad={() => setLoading(false)}/></div>: 
-
-                                        <div key={i} className=' size-[95%] total-center border-2 border-gray-300 rounded-lg'>
-                                            <Icons.EmptyImage className='size-20 text-gray-500'/>
-                                            <p>Sin imagen</p>
-                                        </div>
-                                        ))
-                                    }
-                                    <div className='w-[95%] border-2 border-gray-300 px-2 rounded-lg text-lg'>
-                                        <p className='font-bold text-3xl pb-3 text-center'>RESUMEN GENERAL</p>
-                                        {supervisionData.map((item, index) => (
-                                        <p key={index}>
-                                            <span className='font-bold'>{item.label}:</span> {item.value ? item.value:"---"}
-                                        </p>
-                                        ))}
+                <div className='flex flex-col w-[52%] shadow bg-white rounded-xl max-md:w-full overflow-hidden max-md:h-1/2 min-h-60'>
+                    <p className='text-lg text-center text-white bg-[#656464]'>Credenciales</p>
+                    <div className='relative w-full h-[95%]'>
+                        <div className='absolute size-full top-0 left-0 p-2 '>
+                            { supervision?.movimiento?.tipo_movimiento === 'Contrato' ?
+                                <>
+                                {isMobile ? (
+                                    // Mostrar un enlace para abrir el PDF en una nueva pestaña o visor
+                                    <div className='flex size-full items-center justify-center'>
+                                        <a href={supervision?.movimiento?.data?.fileSigned} target="_blank" rel="noopener noreferrer" className='p-2 rounded-md bg-[#FFD34B]'>
+                                        Visualizar el PDF en una pestaña nueva
+                                        </a>
                                     </div>
-                                </AbsScroll>
-                        }
+                                ) : <>{loading && supervision?.movimiento?.data?.fileSigned!=null &&(
+                                    <div className='absolute inset-0 flex items-center justify-center z-50'>
+                                        <Loader />
+                                    </div>
+                                    )}
+                                    {supervision?.movimiento?.data?.fileSigned ? 
+                                        <object
+                                        className={`size-full rounded-lg ${loading ? 'invisible' : 'visible'}`}
+                                        data={supervision?.movimiento?.data?.fileSigned}
+                                        type='application/pdf'
+                                        onLoad={() => setLoading(false)}
+                                        onError={() => {
+                                            setLoading(false);
+                                            console.error('Error al cargar el PDF.');
+                                        }}/>
+                                    : 
+                                    <div className=' size-full total-center border-2 border-gray-300 rounded-lg'>
+                                        <Icons.ContractNull className='size-20 text-gray-500'/>
+                                        <p>Sin contrato</p>
+                                    </div>}
+                                </>}
+                                </>
+                                :
+                                    <AbsScroll vertical centerColumn>
+                                        { ImagenesData.map((item,i)=>(
+                                            item ?
+                                            <div key={i} className='relative flex w-full justify-center'>
+                                            {loading && (
+                                                <div className="absolute flex size-full justify-center items-center">
+                                                <Loader />
+                                                </div>
+                                            )}
+                                            <img className={`w-full object-contain hover:cursor-pointer ${loading ? 'invisible' : 'visible'}`} src={item} 
+                                            onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
+                                            onLoad={() => setLoading(false)}/></div>: 
+
+                                            <div key={i} className=' size-[95%] total-center border-2 border-gray-300 rounded-lg'>
+                                                <Icons.EmptyImage className='size-20 text-gray-500'/>
+                                                <p>Sin imagen</p>
+                                            </div>
+                                            ))
+                                        }
+                                    </AbsScroll>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
-            <div className={`w-full h-[40px] min-h-[40px] flex flex-row gap-4  ${supervision?.estado=="Pendiente" ? 'items-center':''} max-sm:flex-col`}>
-                <div className={`flex flex-row w-full ${supervision?.estado=="Pendiente" ? 'sm:w-[40%]':''} items-center gap-2`}>
+            <div className={`w-full h-[40px] min-h-[40px] flex sm:flex-row gap-4 flex-col`}> 
+                <div className={`flex flex-col sm:flex-row w-full ${supervision?.estado=="Pendiente" ? 'sm:w-[40%]':''} sm:items-center gap-2`}>
                     <p className='font-bold text-lg'>Estado:</p>
                     <CustomSelect
                         id="estado"

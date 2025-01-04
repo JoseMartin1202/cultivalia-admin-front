@@ -52,6 +52,7 @@ import {
     FaAngleLeft as Left,
     FaCalendarCheck as Complete,
     FaArrowLeft as LeftArrow,
+    FaLongArrowAltRight  as RigthArrowLong,
     FaUserTie as Investor,
     FaHandshake as Advisor,
     FaRegQuestionCircle as Question,
@@ -72,11 +73,13 @@ import {
     IoMdAdd as AddGallery,
     IoIosArrowUp as ArrowUp,
     IoIosArrowDown as ArrowDown,
+    IoMdRemoveCircleOutline as Nothing
     //IoMdCart as Sales
 } from "react-icons/io";
 
 import { 
-    IoSearch as Search
+    IoSearch as Search,
+    IoInformationCircle as Information
 } from "react-icons/io5";
 
 import {
@@ -142,5 +145,8 @@ export const Icons={
     PagosS,
     UserCreated,
     UserRevision,
-    UserInactive
+    UserInactive,
+    RigthArrowLong,
+    Information,
+    Nothing
 }

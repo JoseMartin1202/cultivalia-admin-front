@@ -14,7 +14,7 @@ const Image = ({ src, alt }) => {
          <img
             src={src} alt={alt}
             onLoad={handleLoad}
-            className='object-contain rounded-lg h-full'
+            className='object-contain rounded-xl h-full'
          />
       </div>
    )
