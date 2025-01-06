@@ -284,20 +284,19 @@ export const DetailsSupervisions = () => {
         <form onSubmit={formik.handleSubmit} className='sm:pl-[5rem] size-full box-border gap-3 flex flex-col bg-[#F1F5F9] p-3 font-[Roboto] overflow-y-auto'>
             <div className='flex flex-col-reverse md:flex-row size-full gap-4'>
                 <div className='flex flex-col gap-4 h-full flex-1 sm:flex-row md:flex-col'>
-                    <div className='flex flex-col flex-1 bg-white shadow overflow-y-auto rounded-xl min-h-40'>
+                    <div className='flex flex-col flex-1 bg-white shadow rounded-xl min-h-40'>
                         {
                             dataJson && Object.keys(dataJson).length>1 ?
                             <>
-                            <p className='text-lg text-center text-white bg-[#656464]'>Cambios</p>
-                            <div className='flex flex-col w-full gap-3'>
+                            <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>Cambios</p>
+                            <div className='flex flex-col size-full p-2'>
+                            <AbsScroll vertical centerColumn>
                             {Object.keys(dataJson).map((key)=>(
                                 key!=="message" &&
-                                <div key={key} className='flex flex-col w-full text-center p-2'>
+                                <div key={key} className='flex flex-col w-full text-center'>
                                     <div className='relative w-full bg-slate-200 flex flex-row items-center rounded-t-lg'>
                                         <p className='w-full font-bold'>{key.charAt(0).toUpperCase() + key.slice(1)}</p>
-                                        {dataJson[key].old_value!=dataJson[key].new_value ?
-                                        <Icons.Information size="22px" className='absolute right-1 text-[#6B9DFF]'/>:
-                                        <Icons.Nothing size="22px" className='absolute right-1 text-gray-600'/>}
+                                        <Icons.Information size="22px" className='absolute right-1 text-[#6B9DFF]'/>
                                     </div>
                                     <div className='flex flex-row w-full bg-slate-50 p-[2px] border-x-2 border-b-2 border-slate-200'>
                                         <p className='w-[45%] '>{dataJson[key].old_value}</p>
@@ -309,20 +308,23 @@ export const DetailsSupervisions = () => {
                                     </div>
                                 </div>
                             ))}
+                            </AbsScroll>
                             </div>
                             </>
                             :
                             dataJson ? 
                             <>
-                            <p className='text-lg text-center text-white bg-[#656464] '>Descripción:</p>
-                            <p className='text-justify pb-2'>{dataJson["message"]}</p>
-                            <div className='flex flex-col w-full gap-3'>
-                            {supervisionData.map((item)=>(
-                                <div key={item.label} className='flex flex-col w-full text-center'>
-                                    <p className='bg-slate-200 rounded-t-lg font-bold'>{item.label}</p>
-                                    <p className='p-[2px] bg-slate-50 border-x-2 border-b-2 border-slate-200'>{item.value}</p>
-                                </div>
-                            ))}
+                            <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl '>Descripción:</p>
+                            <div className='flex flex-col size-full p-2'>
+                                <AbsScroll vertical centerColumn>
+                                <p className='text-justify'>{dataJson["message"]}</p>
+                                {supervisionData.map((item)=>(
+                                    <div key={item.label} className='flex flex-col w-full text-center'>
+                                        <p className='bg-slate-200 rounded-t-lg font-bold'>{item.label}</p>
+                                        <p className='p-[2px] bg-slate-50 border-x-2 border-b-2 border-slate-200'>{item.value}</p>
+                                    </div>
+                                ))}
+                                </AbsScroll>
                             </div>
                             </>
                             :
@@ -369,8 +371,8 @@ export const DetailsSupervisions = () => {
                         </div>
                     </div>
                 </div>
-                <div className='flex flex-col w-[52%] shadow bg-white rounded-xl max-md:w-full overflow-hidden max-md:h-1/2 min-h-60'>
-                    <p className='text-lg text-center text-white bg-[#656464]'>Credenciales</p>
+                <div className='flex flex-col w-[52%] shadow bg-white rounded-xl max-md:w-full  max-md:h-1/2 min-h-60'>
+                    <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>Credenciales</p>
                     <div className='relative w-full h-[95%]'>
                         <div className='absolute size-full top-0 left-0 p-2 '>
                             { supervision?.movimiento?.tipo_movimiento === 'Contrato' ?
@@ -414,7 +416,7 @@ export const DetailsSupervisions = () => {
                                                 <Loader />
                                                 </div>
                                             )}
-                                            <img className={`w-full object-contain hover:cursor-pointer ${loading ? 'invisible' : 'visible'}`} src={item} 
+                                            <img className={`w-full object-contain hover:cursor-pointer rounded ${loading ? 'invisible' : 'visible'}`} src={item} 
                                             onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
                                             onLoad={() => setLoading(false)}/></div>: 
 
@@ -452,7 +454,7 @@ export const DetailsSupervisions = () => {
                     </div>}
                 </div>
                     {supervision?.estado=="Pendiente" && 
-                    <div className='flex flex-row size-full sm:w-[60%] gap-4'>
+                    <div className='flex flex-row size-full sm:w-[60%] gap-4 pb-2'>
                         <button className='bg-[#FFD34B] h-full flex-1 max-sm:py-2 rounded-2xl text-xl flex total-center font-bold' type='submit' >Guardar</button>
                         <button className='bg-[#CBD5E1] h-full flex-1 rounded-2xl text-xl font-bold flex total-center' type='button' onClick={() => { navigate(-1); }}>Cancelar</button>
                     </div>}

@@ -15,7 +15,7 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
     
 
     useEffect(() => {
-        if (jimaAddStatus === 'success') {
+        if (jimaAddStatus === 'pending') {
             setIsSubmitting(false)
             close();
         }
@@ -24,6 +24,7 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
     const formik = useFormik({
         initialValues: {
             predio: '',
+            predioNombre:'',
             pesoPromedioPlanta: '',
             precioKilo: '',
         },
@@ -42,7 +43,7 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
                             return value > 0;
                         }
             ),
-            predio: Yup.string().required('Requerido')
+            predio: Yup.string().required('Requerido'),
         }),
         onSubmit: async (values) => {
             console.log(clicks)
@@ -56,22 +57,27 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
         }
     })
 
-    useEffect(() => {
-        if (propertiesStatus === 'success') {
-            formik.setFieldValue('predio',properties[0].id)
-        }
-    }, [propertiesStatus]);
-
-
     const predios = properties?.map(p => ({
         value: p.id,
         label: p.nombre
     }));
 
+    useEffect(() => {
+        if (propertiesStatus === 'success') {
+            formik.setFieldValue('predio',properties[0].id)
+            formik.setFieldValue('predioNombre',properties[0].nombre)
+        }
+    }, [propertiesStatus]);
+
+    useEffect(() => {
+        const name= predios?.find(p=>p.value==formik.values.predio)?.label
+        formik.setFieldValue('predioNombre',name)
+    }, [formik.values.predio]);
+
     return (
     <>
         {showConfirmar ?
-        <form ref={formRef} onSubmit={formik.handleSubmit} div className='size-full items-center flex flex-col  pb-1 px-2 pt-4 text-justify h-36'>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className='size-full items-center flex flex-col  pb-1 px-2 pt-4 text-justify h-36'>
             {jimaAddStatus === 'pending' ?
             <Loader/>:
             <>

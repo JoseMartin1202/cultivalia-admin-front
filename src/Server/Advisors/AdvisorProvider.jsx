@@ -22,8 +22,8 @@ const useAdvisor=(id)=>{
     /**Querys */
     const AddAsesorMutator = useMutation({
         mutationFn: addAdvisor,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['asesores'])      
+        onSuccess: (newAsesor) => {
+            queryClient.setQueryData(['asesores'], (oldAsesores) => oldAsesores ? [...oldAsesores, newAsesor] : [newAsesor]);
             notify('Asesor añadido con exito')
         },
         onError: (e) => notify(getErrorMessage(e), true),
@@ -31,8 +31,11 @@ const useAdvisor=(id)=>{
 
     const UpdateAsesorMutator = useMutation({
         mutationFn: updateAdvisor,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['asesores'])
+        onSuccess: (newAsesor) => {
+            queryClient.setQueryData(['asesores'], (oldAsesores)=> {
+                return oldAsesores.map(a=>a.id===newAsesor.id ? newAsesor :a)
+            })
+            // queryClient.invalidateQueries(['asesores'])
             notify('Asesor actualizado con exito')
         },
         onError: (e) => notify(getErrorMessage(e), true),
