@@ -4,13 +4,13 @@ import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import useAdvisor from '../../Server/Advisors/AdvisorProvider';
 import Loader from '../Loader';
+import { useQueryClient } from '@tanstack/react-query';
 
 const AdvisorForm = ({close,formRef, setIsSubmitting,item}) => {
     const { advisorAdd,advisorUpdate,advisorAddStatus,advisorUpdateStatus } = useAdvisor(item?.id) 
 
     useEffect(() => {
-        console.log(advisorAddStatus)
-        if (advisorAddStatus === 'success' || advisorUpdateStatus === 'success') {
+        if (advisorAddStatus === 'pending' || advisorUpdateStatus === 'pending' ) {
             setIsSubmitting(false)
             close();
         }

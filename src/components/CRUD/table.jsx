@@ -148,11 +148,10 @@ const CRUD=({
         if (prices) setFilterStatePrices(formik.values.estado);
         if (sales) setFilterStateSales(formik.values.estado);
         if (investors) setfilterStateInversors(formik.values.estado);
-
         let searchText = formik?.values?.searchText?.toLowerCase()
         if (formik?.values?.estado!==undefined && formik?.values?.estado!=='' && filter) {
             newElements = newElements.filter(item => 
-                item.estado === formik.values.estado || item.is_visible === formik.values.estado || item.isCurrent === formik.values.estado 
+                item.estado === formik.values.estado || item.is_visible === formik.values.estado || item.isCurrent === formik.values.estado || item.status === formik.values.estado 
             );
         }
 
@@ -395,7 +394,6 @@ const CRUD=({
                 return newItem
             })
         }
-
         if(!prices && !ajusteTiempo){
             newElements = newElements.filter(item => {
                 return columns.some(col => {
@@ -403,7 +401,6 @@ const CRUD=({
                 });
             });
         }
-
         setElements(newElements)
     }, [data,formik.values]);
 
