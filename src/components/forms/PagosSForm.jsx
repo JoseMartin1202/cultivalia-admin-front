@@ -27,7 +27,7 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
     const [showConfirmar, setshowConfirmar]=useState(false)
 
     useEffect(() => {
-        if (pagoUpdateStatus === 'success') {
+        if (pagoUpdateStatus === 'pending') {
             setIsSubmitting(false)
             close();
         }
@@ -39,6 +39,9 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
             comentarios: item.comentarios ?? '',
             comprobante: item.comprobante ?? '',
             estado: item.estado ?? 'Pagado',
+            inversorNombre: item.inversor.nombre,
+            inversorApellidos: item.inversor.apellidos,
+            inversorId: item.inversor.id
         },
         validationSchema: Yup.object().shape({
             metodo: Yup.string().required('Requerido'),

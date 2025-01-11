@@ -332,7 +332,7 @@ export const DetailsSupervisions = () => {
                         }
                     </div>
                     <div className='flex flex-col flex-1 min-h-52'>
-                        <p htmlFor="comments" className='font-bold text-lg'>Comentarios:</p>
+                        <p htmlFor="comments" className='text-lg bg-[#656464] text-center rounded-t-xl text-white'>Comentarios:</p>
                         {showError &&
                         <div className=''>
                             <p className='font-normal text-sm flex items-center gap-1 h-full italic text-red-500 '>
@@ -340,10 +340,10 @@ export const DetailsSupervisions = () => {
                                 {error}
                             </p>
                         </div>}
-                        <div className='flex flex-col lg:flex-row size-full gap-3'>
+                        <div className='flex flex-col lg:flex-row size-full gap-3 p-2 border-2 border-[#656464] rounded-b-xl'>
                             <div className='flex w-full h-[70%] lg:h-full lg:w-[70%]'>
                                 <AbsScroll vertical>
-                                    <ul className='grid grid-row gap-2 w-full px-3 py-2'> 
+                                    <ul className='grid grid-row gap-2 w-full px-2 pb-2'> 
                                         {allComents.map((c,i)=>(  
                                             <li key={i} className={`${comments?.includes(c) ? 'bg-[#6B9DFF] text-white':'bg-white'} 
                                             py-2 px-3 gap-1 flex flex-row rounded-xl items-center select-none shadow-md
@@ -416,7 +416,7 @@ export const DetailsSupervisions = () => {
                                                 <Loader />
                                                 </div>
                                             )}
-                                            <img className={`w-full object-contain hover:cursor-pointer rounded ${loading ? 'invisible' : 'visible'}`} src={item} 
+                                            <img className={`w-full object-contain hover:cursor-pointer rounded-lg ${loading ? 'invisible' : 'visible'}`} src={item} 
                                             onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
                                             onLoad={() => setLoading(false)}/></div>: 
 

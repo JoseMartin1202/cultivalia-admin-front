@@ -8,7 +8,7 @@ const GalleryForm = ({close,formRef, setIsSubmitting,gallery=null}) => {
     const { galerryAdd,galerryUpdate,galerryAddStatus,galerryUpdateStatus } = useGalleries(gallery) 
 
     useEffect(() => {
-        if (galerryAddStatus === 'success' || galerryUpdateStatus === 'success') {
+        if (galerryAddStatus === 'pending' || galerryUpdateStatus === 'success') {
             setIsSubmitting(false)
             close();
         }

@@ -35,8 +35,8 @@ const useGalleries=(galleryId)=>{
 
     const addGallleryMutator = useMutation({
         mutationFn: addGallery,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['galerias']) 
+        onSuccess: (newGallery) => {
+             queryClient.setQueryData(['galerias'], (oldGalerias) => oldGalerias ? [...oldGalerias, newGallery] : [newGallery]); 
             notify('Galería añadida con exito')
         },
         onError: (e) => notify(getErrorMessage(e), true),
