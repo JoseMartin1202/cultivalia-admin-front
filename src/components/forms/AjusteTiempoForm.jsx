@@ -16,7 +16,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
     
 
     useEffect(() => {
-        if (ajusteAddStatus === 'success') {
+        if (ajusteAddStatus === 'pending') {
             setIsSubmitting(false)
             close();
         }
@@ -25,6 +25,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
     const formik = useFormik({
         initialValues: {
             predio: '',
+            predioNombre:'',
             porcentaje: 30,
             anios:6,
             comentarios: '',
@@ -49,6 +50,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
     useEffect(() => {
         if (propertiesStatus === 'success') {
             formik.setFieldValue('predio',properties[0].id)
+            formik.setFieldValue('predioNombre',properties[0].nombre)
         }
     }, [propertiesStatus]);
 
@@ -57,6 +59,11 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
         value: p.id,
         label: p.nombre
     }));
+
+    useEffect(() => {
+        const name= predios?.find(p=>p.value==formik.values.predio)?.label
+        formik.setFieldValue('predioNombre',name)
+    }, [formik.values.predio]);
 
     const porcentaje = Array.from({ length: 100 }, (_, index) => ({
         value: 100 - index,
@@ -74,7 +81,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
     return (
     <>
         {showConfirmar ?
-        <form ref={formRef} onSubmit={formik.handleSubmit} div className='size-full items-center flex flex-col  pb-1 px-2 pt-4 text-justify h-36'>
+        <form ref={formRef} onSubmit={formik.handleSubmit} className='size-full items-center flex flex-col  pb-1 px-2 pt-4 text-justify h-36'>
             {ajusteAddStatus === 'pending' ?
             <Loader/>:
             <>

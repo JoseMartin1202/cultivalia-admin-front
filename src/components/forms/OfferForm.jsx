@@ -8,6 +8,7 @@ import Loader from '../Loader';
 import { useFormik } from 'formik'
 import * as Yup from 'yup';
 import CustomSelect from '../CustomSelect';
+import usePrices from '../../Server/Prices/PricesProvider';
 
 const OfferForm = ({close,formRef, setIsSubmitting}) => {
 
@@ -25,7 +26,10 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
             is_visible_directa:true,
             is_visible_indirecta:true,
             descuento_porcentaje:0,
-            vendedor:''
+            vendedor:'',
+            // predioName:'',
+            // anio:'',
+            // precioPlanta:''
         },
         validationSchema: Yup.object().shape({
             plantas_totales_directa: Yup.number().when('tipo', {
@@ -91,6 +95,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
     })
 
     const { properties, propertiesStatus } = useProperties();
+    // const { prices, pricesStatus } = usePrices();
     const { offerAdd,offerAddStatus, vendedores, vendedoresStatus, distribucionesInversor, distribucionesInversorStatus } = useOffer(formik.values.vendedor);
     const [telefono, setTelefono] = useState('');
     const [fechaDist, setfechaDist] = useState('');
@@ -124,12 +129,43 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
             const selectedProperty = properties.find(p => p.id == formik.values.predio_directa);
             if (selectedProperty) {
                 formik.setFieldValue('plantas_disponibles_directa', selectedProperty.plantasDisponibles);
+                // formik.setFieldValue('predioName',selectedProperty.nombre)
+                // formik.setFieldValue('anio',selectedProperty.anio.anio)
             } else {
                 formik.setFieldValue('predio_directa', properties[0].id);
                 formik.setFieldValue('plantas_disponibles_directa', properties[0].plantasDisponibles);
+                // formik.setFieldValue('predioName',properties[0].nombre)
+                // formik.setFieldValue('anio',properties[0].anio.anio)
             }
         }  
     }, [propertiesStatus, properties,formik.values.predio_directa]);
+
+    // useEffect(()=>{
+    //     if (pricesStatus === "success") {
+    //         const pricePlanta = prices.find(p => p.anio.anio == formik.values.anio);
+    //         if(pricePlanta){
+    //             formik.setFieldValue('precioPlanta',pricePlanta.precio)
+    //         }else{
+    //             formik.setFieldValue('precioPlanta',prices[0].precio)
+    //         }
+    //     }
+    // },[formik.values.predioName])
+
+    // useEffect(()=>{
+    //    if(formik.values.tipo === "Indirecta"){
+    //         const selectedProperty = properties?.find(p => p.id == formik.values.predio_indirecta);
+    //         if(selectedProperty){
+    //             formik.setFieldValue('predioName',selectedProperty.nombre)
+    //             formik.setFieldValue('anio',selectedProperty.anio.anio)
+    //         }
+    //    }else{
+    //         const selectedProperty = properties?.find(p => p.id == formik.values.predio_directa);
+    //         if(selectedProperty){
+    //             formik.setFieldValue('predioName',selectedProperty.nombre)
+    //             formik.setFieldValue('anio',selectedProperty.anio.anio)
+    //         }
+    //    }
+    // },[formik.values.predio])
 
     useEffect(() => {
         if (formik.values.tipo === "Indirecta") {

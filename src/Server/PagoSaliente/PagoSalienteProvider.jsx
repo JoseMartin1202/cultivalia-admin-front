@@ -3,15 +3,28 @@ import { useAxios } from "../../context/AxiosContext";
 import useSession from '../Session/SessionProvider';
 import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
+import { useState } from 'react';
 
 const usePagoSaliente=(id)=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
+    const [idInv,setID]= useState()
+    const [nombreInv,setNombre]= useState()
+    const [apellidosInv,setApellidos]= useState()
 
     /**Functions */
     const updatePago = async (values) => {
         if(id){
+            const idI=values.inversorId
+            const nombreI=values.inversorNombre
+            const apellidosI=values.inversorApellidos
+            setApellidos(apellidosI)
+            setNombre(nombreI)
+            setID(idI)
+            delete values.inversorId
+            delete values.inversorNombre
+            delete values.inversorApellidos
             const formData = new FormData()
             Object.keys(values).forEach(key => {
                 if (values[key] === null || values[key] === undefined) { return; }
@@ -28,9 +41,18 @@ const usePagoSaliente=(id)=>{
     /**Querys */
     const PagosMutator = useMutation({
         mutationFn: updatePago,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['pagosSalientes']) 
-            notify('Supervisión actualizada con exito')
+        onSuccess: (newPago) => {
+            // newPago={
+            //     ...newPago,
+            //     inversor:{
+            //         id:idInv,
+            //         nombre:nombreInv,
+            //         apellidos:apellidosInv
+            //     }
+            // }
+            // queryClient.setQueryData(['pagosSalientes'], (oldPagos)=> oldPagos.map(p=>p.id===newPago.id ? newPago :p))
+            queryClient.invalidateQueries(['pagosSalientes'])
+            notify('Pago saliente actualizado con exito')
         },
         onError: (e) => console.log(e)
      })

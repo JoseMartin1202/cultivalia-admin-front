@@ -1,12 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext";
 import { useApp } from '../../context/AppContext';
+import { useState } from 'react';
 
 const useOffer=(inversorId,offerId)=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
-    
+    const [predioN,setPredioN]= useState('')
+    const [anio,setAnio]= useState('')
+    const [precioP,setprecioP]= useState('')
     //Functions 
     const updateVisibilidad = async(values) =>{
         const res = await myAxios.patch(`oferta/${offerId}/`, values)
@@ -15,6 +18,9 @@ const useOffer=(inversorId,offerId)=>{
 
     const addOffer = async(values) =>{
         let dataToSend = {};
+        setPredioN(values.predioName)
+        setAnio(values.anio)
+        setprecioP(values.precioPlanta)
         if(values.tipo=="Directa"){
             dataToSend = {
                 tipo: values.tipo,
@@ -74,8 +80,20 @@ const useOffer=(inversorId,offerId)=>{
 
     const OfferAddMutator = useMutation({
         mutationFn: addOffer,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['ofertas']) 
+        onSuccess: (newOferta) => {
+            // no tiene precio planta
+            // newOferta={
+            //     ...newOferta,
+            //     predio:{
+            //         id:newPredio.predio,
+            //         nombre:predioN
+            //     },
+            //     precio_planta:precioP,
+            //     anio_precio:anio
+            // }
+            // console.log(newOferta)
+            // queryClient.setQueryData(['ofertas'], (oldOfertas) => oldOfertas ? [...oldOfertas, newOferta] : [newOferta]); 
+            queryClient.invalidateQueries(['ofertas'])
             notify('Oferta añadida con éxito');
         },
         onError: (e) => notify(getErrorMessage(e), true)

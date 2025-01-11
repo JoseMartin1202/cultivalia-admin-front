@@ -217,7 +217,7 @@ const CRUD=({
                     if(col.attribute==="fecha_creacion"){
                         newItem[col.attribute]= newItem[col.attribute].split('T')[0]
                     }else if(col.attribute==="predio"){
-                        newItem[col.attribute]= newItem["predio_data"].nombre
+                        newItem[col.attribute]= newItem["predio"].nombre
                     }else if(col.attribute==="precio_planta"){
                         newItem[col.attribute]="$"+newItem[col.attribute]
                     }else if(col.attribute==="is_visible"){
@@ -386,7 +386,6 @@ const CRUD=({
                 const newItem = { ...item };
                 columns.forEach((col)=>{
                     if(col.attribute==="predio"){
-                        console.log("entra")
                         newItem[col.attribute] = newItem[col.attribute].nombre
                     }
                 })

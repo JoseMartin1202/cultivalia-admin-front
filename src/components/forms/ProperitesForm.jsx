@@ -15,13 +15,17 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
     const { galleries, galleriesStatus }= useGalleries()
     const { years, yearsStatus }= useYears()
     const [loading, setLoading] = useState(true)
+    const [gallery, setgallery] = useState()
+    const [year, setyear] = useState()
     const [previewImage, setPreviewImage] = useState(null);
     const {propertieAdd,propertieAddStatus,updatePropertie,updatePropertieStatus } = usePropertie(item?.id);
 
     const initialValues = item ? {
         nombre: item.nombre ,
         anio: item.anio ,
-        galeria: item.galeria ,
+        anioNumber:item.anio,
+        galeria: item.galeria,
+        galeriaName: item.galeria,
         latitud: item.latitud ,
         longitud: item.longitud ,
         plantasTotales: item.plantasTotales ,
@@ -31,7 +35,9 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
     }:{
         nombre:'',
         anio: '',
+        anioNumber:'',
         galeria: '',
+        galeriaName: '',
         latitud: '',
         longitud: '',
         plantasTotales: '',
@@ -80,7 +86,7 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
 
     // Monitorear el estado de la mutación para cerrar el modal
     useEffect(() => {
-        if (propertieAddStatus === 'success' || updatePropertieStatus === 'success') {
+        if (propertieAddStatus === 'pending' || updatePropertieStatus === 'pending') {
             setIsSubmitting(false)
             close();
         }
@@ -112,17 +118,35 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
             const yearSelected= years.find(y => y.anio == formik.values.anio);
             if(yearSelected){
                 formik.setFieldValue('anio', yearSelected.id)
+                formik.setFieldValue('anioNumber', yearSelected.anio)
             }else{
                 formik.setFieldValue('anio', years[0].id);
+                formik.setFieldValue('anioNumber', years[0].anio)
             }
             const gallerySelected= galleries.find(g => g.titulo == formik.values.galeria);
             if(gallerySelected){
                 formik.setFieldValue('galeria', gallerySelected.id)
+                formik.setFieldValue('galeriaName', gallerySelected.titulo)
             }else{
                 formik.setFieldValue('galeria', 'ninguna');
+                formik.setFieldValue('galeriaName', '')
             }
        }
     }, [yearsStatus, galleriesStatus, galleries, years]);
+
+    useEffect(() => {
+        const yearSelected= years?.find(y => y.id == formik.values.anio);
+        const gallerySelected= galleries?.find(g => g.id == formik.values.galeria);
+        if(gallerySelected){
+            formik.setFieldValue('galeriaName', gallerySelected.titulo)
+        }else{
+            formik.setFieldValue('galeriaName', '')
+        }
+        if(yearSelected){
+            formik.setFieldValue('anioNumber', yearSelected.anio)
+        }
+           
+     }, [formik.values.galeria,formik.values.anio]);
 
     const anios = years?.map(y => ({
         value: y.id,
@@ -136,7 +160,6 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
             label: g.titulo
         })) || [])
     ];
-    
 
     return (
     <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 flex flex-col gap-3'>

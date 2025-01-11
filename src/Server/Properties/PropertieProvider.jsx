@@ -1,12 +1,14 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext"
 import { useApp } from '../../context/AppContext';
+import { useState } from 'react';
 
 const usePropertie=(propertieId)=>{
     const {myAxios} = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
-
+    const [anioNu,setAnioNu]= useState('')
+    const [galeriaN,setgaleriaN]= useState('')
     /*const getPredio = async() =>{
         const res= await myAxios.get(`predio/${propertieId}/`);
         return res.data
@@ -16,7 +18,12 @@ const usePropertie=(propertieId)=>{
         if(values.galeria=="ninguna"){
             values.galeria='';
         }
-        console.log(values.galeria)
+        const anioNum=values.anioNumber
+        const galeriaName=values.galeriaName
+        setAnioNu(anioNum)
+        setgaleriaN(galeriaName)
+        delete values.anioNumber
+        delete values.galeriaName
         if(typeof values.photo_cover === 'string' ){
             delete values.photo_cover;
         }else  if(values.photo_cover === null ){
@@ -35,6 +42,12 @@ const usePropertie=(propertieId)=>{
         if(values.galeria=="ninguna"){
             values.galeria=null;
         }
+        const anioNum=values.anioNumber
+        const galeriaName=values.galeriaName
+        setAnioNu(anioNum)
+        setgaleriaN(galeriaName)
+        delete values.anioNumber
+        delete values.galeriaName
         const formData = new FormData()
         Object.keys(values).forEach(key => {
             if (values[key] === null || values[key] === undefined) { return; }
@@ -53,8 +66,23 @@ const usePropertie=(propertieId)=>{
 
     const PropertieMutator = useMutation({
         mutationFn: updatePartial,
-        onSuccess: () => {
-             queryClient.invalidateQueries(['predios']) 
+        onSuccess: (newPredio) => {
+            newPredio={
+                ...newPredio,
+                anio:{
+                    id:newPredio.anio,
+                    anio:anioNu
+                },
+                galeria:{
+                    id:newPredio.galeria,
+                    titulo:galeriaN
+                }
+            }
+            queryClient.setQueryData(['predios'], 
+                (oldPredios)=> oldPredios.map(p=>p.id===newPredio.id ? 
+                    newPredio :p)
+            )
+             //queryClient.invalidateQueries(['predios']) 
              notify('Predio actualizado con exito')
          },
         onError: (e) => notify(getErrorMessage(e), true),
@@ -63,8 +91,19 @@ const usePropertie=(propertieId)=>{
 
     const PropertieAddMutator = useMutation({
         mutationFn: addPredio,
-        onSuccess: () => {
-            queryClient.invalidateQueries(['predios']) 
+        onSuccess: (newPredio) => {
+            newPredio={
+                ...newPredio,
+                anio:{
+                    id:newPredio.anio,
+                    anio:anioNu
+                },
+                galeria:{
+                    id:newPredio.galeria,
+                    titulo:galeriaN
+                }
+            }
+            queryClient.setQueryData(['predios'], (oldPredios) => oldPredios ? [...oldPredios, newPredio] : [newPredio]); 
             notify('Predio añadido con éxito');
          },
         onError: (e) => notify(getErrorMessage(e), true)
