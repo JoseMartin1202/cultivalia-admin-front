@@ -27,7 +27,7 @@ export const AppBar = () => {
 
     return(
         <div className={` sm:absolute sm:z-10 font-[Roboto] font-semibold max-sm:py-1 gap-2 sm:pb-2 sm:rounded-e-xl sm:h-full bg-[#1a1f1f] flex flex-col text-white max-sm:flex-row max-sm:w-full max-sm:h-fit ${isHover && !isSmall ? 'w-72':'w-16'}`} onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
-            <div className={`flex max-sm:min-w-20 sm:w-full sm:h-16 pt-2 flex-row sm:flex-col gap-3 px-2 justify-center items-center sm:items-start`}>
+            <div className={`flex max-sm:min-w-20 sm:w-full sm:h-16 py-2 flex-row sm:flex-col gap-3 px-2 justify-center items-center sm:items-start`}>
                 {isHover && !isSmall ? 
                     <img src={LogoCult} className='h-10'/>:
                     <img src={simpleB} className='h-10'/>}

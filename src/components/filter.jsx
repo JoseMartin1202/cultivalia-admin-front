@@ -1,8 +1,9 @@
 import {React, useState} from 'react'
 import { Icons } from '../constants/Icons';
 import '../index.css'
+import AbsScroll from './AbsScroll';
 
-const Filter = ({data, formik, opt }) => {
+const Filter = ({data, formik, opt,icon=true }) => {
     const [bouncingIndex, setBouncingIndex] = useState(null);
     
     const handleClick = (value,index) => {
@@ -15,7 +16,7 @@ const Filter = ({data, formik, opt }) => {
 
     return (
         <div className='border-gray-400/70 sm:max-w-80 md:max-w-96 lg:max-w-full shadow border-2 flex flex-row rounded-lg py-1 px-3 gap-2 overflow-x-auto items-center' >
-                <Icons.Filter className=' size-4 min-w-4'/>
+                {icon && <Icons.Filter className=' size-4 min-w-4'/>}
                 {data.map((item, index) => (
                     <button
                     key={index}

@@ -234,7 +234,7 @@ export const DetailsSupervisions = () => {
         };
     }, []);
 
-    if (supervisionStatus === 'loading' || !supervision) {
+    if (supervisionStatus === 'pending' || !supervision) {
         return <Loader />;
     }
 
@@ -454,7 +454,7 @@ export const DetailsSupervisions = () => {
                     </div>}
                 </div>
                     {supervision?.estado=="Pendiente" && 
-                    <div className='flex flex-row size-full sm:w-[60%] gap-4 pb-2'>
+                    <div className='flex flex-row size-full sm:w-[60%] gap-4 max-sm:pb-2'>
                         <button className='bg-[#FFD34B] h-full flex-1 max-sm:py-2 rounded-2xl text-xl flex total-center font-bold' type='submit' >Guardar</button>
                         <button className='bg-[#CBD5E1] h-full flex-1 rounded-2xl text-xl font-bold flex total-center' type='button' onClick={() => { navigate(-1); }}>Cancelar</button>
                     </div>}
