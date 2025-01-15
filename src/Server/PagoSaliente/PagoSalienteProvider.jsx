@@ -42,16 +42,16 @@ const usePagoSaliente=(id)=>{
     const PagosMutator = useMutation({
         mutationFn: updatePago,
         onSuccess: (newPago) => {
-            // newPago={
-            //     ...newPago,
-            //     inversor:{
-            //         id:idInv,
-            //         nombre:nombreInv,
-            //         apellidos:apellidosInv
-            //     }
-            // }
-            // queryClient.setQueryData(['pagosSalientes'], (oldPagos)=> oldPagos.map(p=>p.id===newPago.id ? newPago :p))
-            queryClient.invalidateQueries(['pagosSalientes'])
+            newPago={
+                ...newPago,
+                inversor:{
+                    id:idInv,
+                    nombre:nombreInv,
+                    apellidos:apellidosInv
+                }
+            }
+            queryClient.setQueryData(['pagosSalientes'], (oldPagos)=> oldPagos.map(p=>p.id===newPago.id ? newPago :p))
+           // queryClient.invalidateQueries(['pagosSalientes'])
             notify('Pago saliente actualizado con exito')
         },
         onError: (e) => console.log(e)

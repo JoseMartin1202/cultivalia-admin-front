@@ -41,7 +41,7 @@ const AbsScroll = ({
                 }}
                 className={`relative w-full h-full ${vertical ? 'overflow-y-auto' : 'overflow-y-hidden'} ${horizontal ? 'overflow-x-auto' : 'overflow-x-hidden'}`}>
                 {loading ? <Loader /> :
-                    <div className={`absolute top-0 w-full ${centerColumn ? 'flex flex-col gap-2 px-1 items-center':''}`}>
+                    <div className={`absolute  w-full ${centerColumn ? 'flex flex-col gap-2 px-1 items-center':''}`}>
                         {children}
                     </div>
                 }

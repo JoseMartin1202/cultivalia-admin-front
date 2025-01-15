@@ -143,7 +143,7 @@ const EstadoView = ({state,option}) => {
             return(
                 <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
                     {state}
-                    <Icons.UserInactive className='text-[#6B9DFF] size-6'/>
+                    <Icons.UserInactive className='text-gray-500 size-6'/>
                 </span>
             );
 

@@ -3,7 +3,7 @@ import { useAxios } from "../../context/AxiosContext";
 import { useApp } from '../../context/AppContext';
 import { useState } from 'react';
 
-const useOffer=(inversorId,offerId)=>{
+const useOffer=(inversorId,offerId,traerInversores)=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
@@ -47,7 +47,7 @@ const useOffer=(inversorId,offerId)=>{
     }
 
     const getVendedores = async()=>{
-        const res= await myAxios.get('inversor/');
+        const res= await myAxios.get('inversor/oferta');
         return res.data
     }
 
@@ -59,7 +59,8 @@ const useOffer=(inversorId,offerId)=>{
     /**Querys */
     const VendedoresQuery = useQuery({
         queryKey:['vendedores'],
-        queryFn: getVendedores
+        queryFn: getVendedores,
+        enabled: !!traerInversores
     })
 
     const DistribucionesInversor = useQuery({

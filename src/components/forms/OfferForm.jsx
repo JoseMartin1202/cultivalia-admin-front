@@ -96,7 +96,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
 
     const { properties, propertiesStatus } = useProperties();
     // const { prices, pricesStatus } = usePrices();
-    const { offerAdd,offerAddStatus, vendedores, vendedoresStatus, distribucionesInversor, distribucionesInversorStatus } = useOffer(formik.values.vendedor);
+    const { offerAdd,offerAddStatus, vendedores, vendedoresStatus, distribucionesInversor, distribucionesInversorStatus } = useOffer(formik.values.vendedor,null,true);
     const [telefono, setTelefono] = useState('');
     const [fechaDist, setfechaDist] = useState('');
 

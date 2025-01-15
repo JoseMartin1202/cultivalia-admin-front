@@ -36,10 +36,20 @@ const InversorsFilterData = [
   { name: 'Completos', value: 'Completo' },
   { name: 'Inactivos', value: 'Inactivo' },
 ];
+
+const InversorDetailFilterData = [
+  { name: 'Distribuciones', value: 'Distribuciones' },
+  { name: 'Compras', value: 'Compras' },
+  { name: 'Pagos entrantes', value: 'Pagos entrantes' },
+  { name: 'Pagos salientes', value: 'Pagos salientes' },
+  { name: 'Beneficiarios', value: 'Beneficiarios' }
+];
+
   export const Filters={
     HomeFilterData,
     OffersFilterData,
     PricesFilterData,
     SalesFilterData,
-    InversorsFilterData
+    InversorsFilterData,
+    InversorDetailFilterData
   }

@@ -404,7 +404,7 @@ const CRUD=({
     }, [data,formik.values]);
 
     return(
-        <div className='sm:ml-14 size-full flex flex-col bg-[#f6f6f6] pl-5 py-2 pe-4 sm:pe-3 font-[Roboto]'>
+        <div className='sm:ml-14 size-full flex flex-col bg-[#f6f6f6] pl-4 py-2 pe-4 sm:pe-3 font-[Roboto]'>
             <div className='size-full flex flex-col bg-white px-2 py-2 rounded-xl shadow'>
                 <div className='w-full flex items-start mb-4'>
                     <div className={`flex flex-row gap-3 w-full`}>
@@ -511,16 +511,16 @@ const CRUD=({
                     <tbody>
                         {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
                         elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado!='Finalizada' || pagosS || galleries || advisors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
+                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado=='Vigente'|| pagosS || galleries || advisors || investors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
                                 if (path) {
-                                navigate(`/${path}/${item.id}`);
+                                    navigate(`/${path}/${item.id}`);
                                 } else {
                                 setSelectedItem(item);
                                     if(predios){
                                         setAgregar(false)
                                         setModal(true);
                                     }
-                                    if(offers && item.estado!='Finalizada'){
+                                    if(offers && item.estado=='Vigente'){
                                         setEditForm(() => EditVisibilityForm);
                                         seteditarVisibilidad(true)
                                         setModal(true)

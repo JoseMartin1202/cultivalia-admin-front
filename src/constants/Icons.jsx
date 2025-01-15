@@ -58,13 +58,23 @@ import {
     FaRegQuestionCircle as Question,
     FaUserPlus as UserCreated,
     FaUserClock as UserRevision,
-    FaUserMinus as UserInactive
+    FaUserMinus as UserInactive,
+    FaQuestionCircle as QuestionFill,
+    FaCalendarDay as Calendar,
+    FaFlag as Flag,
+    FaHandHoldingUsd as Comision
 } from "react-icons/fa";
 
 import {
     FiLogOut as LogOut,
     FiAlertTriangle as Alert
 } from "react-icons/fi";
+
+import {
+    FaMars as Hombre,
+    FaVenus as Mujer,
+    FaLocationDot as Ubication
+} from "react-icons/fa6";
 
 import { 
     IoIosPricetags as Offers,
@@ -90,10 +100,16 @@ import {
     TbPointFilled as point
 } from "react-icons/tb";
 
+import { 
+    PiPlantFill as Plant
+ } from "react-icons/pi";
+
 import {
     MdOutlineFileUpload as Upload,
     MdImageNotSupported as EmptyImage,
-    MdFolderOff  as ContractNull
+    MdFolderOff  as ContractNull,
+    MdOutlinePhoneAndroid as Phone,
+    MdManageSearch  as SearchDetails
 } from "react-icons/md";
 
 export const Icons={
@@ -148,5 +164,15 @@ export const Icons={
     UserInactive,
     RigthArrowLong,
     Information,
-    Nothing
+    Nothing,
+    Phone,
+    Hombre,
+    Mujer,
+    QuestionFill,
+    Ubication,
+    Calendar,
+    Flag,
+    SearchDetails,
+    Comision,
+    Plant
 }
