@@ -66,7 +66,13 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
               return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
             }),
             precio_reventa: Yup.number().when('tipo', (tipo, schema) => {
-              return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
+              return tipo == 'Indirecta' ? schema.required('Requerido').test(
+                'is-more-0',
+                'No valido',
+                function (value) {
+                  return value>0;
+                }
+              ) : schema.notRequired();
             }),
             predio_indirecta: Yup.string().when('tipo', (tipo, schema) => {
               return tipo == 'Indirecta' ? schema.required('Requerido') : schema.notRequired();
@@ -112,7 +118,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
 
     const estadoOptions = [{value:true, label: "Visible"},{value:false, label: "No visible"}]
 
-    const distribuciones = distribucionesInversor?.map(d => ({
+    const distribuciones = distribucionesInversor?.filter(d => d.disponiblesOfertar > 0).map(d => ({
         value: d.id,
         label: d.predio.nombre}
     ));
@@ -129,27 +135,32 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
             const selectedProperty = properties.find(p => p.id == formik.values.predio_directa);
             if (selectedProperty) {
                 formik.setFieldValue('plantas_disponibles_directa', selectedProperty.plantasDisponibles);
-                // formik.setFieldValue('predioName',selectedProperty.nombre)
-                // formik.setFieldValue('anio',selectedProperty.anio.anio)
             } else {
                 formik.setFieldValue('predio_directa', properties[0].id);
                 formik.setFieldValue('plantas_disponibles_directa', properties[0].plantasDisponibles);
-                // formik.setFieldValue('predioName',properties[0].nombre)
-                // formik.setFieldValue('anio',properties[0].anio.anio)
             }
         }  
     }, [propertiesStatus, properties,formik.values.predio_directa]);
 
-    // useEffect(()=>{
-    //     if (pricesStatus === "success") {
-    //         const pricePlanta = prices.find(p => p.anio.anio == formik.values.anio);
-    //         if(pricePlanta){
-    //             formik.setFieldValue('precioPlanta',pricePlanta.precio)
-    //         }else{
-    //             formik.setFieldValue('precioPlanta',prices[0].precio)
-    //         }
-    //     }
-    // },[formik.values.predioName])
+    useEffect(()=>{
+        const updates = {};
+        if (distribucionesInversorStatus === "success" && distribucionesInversor.length > 0) {
+            let distribucion = distribucionesInversor.find(d => d.id == formik.values.distribucion);
+            if (distribucion) {
+                updates.plantas_disponibles_indirecta = distribucion.disponiblesOfertar;
+                updates.predio_indirecta = distribucion.predio.id;
+                setfechaDist(formatDateMedium({ data: distribucion.fecha_registro }));
+            }
+        }
+
+        if (Object.keys(updates).length > 0) {
+            formik.setValues({
+                ...formik.values,
+                ...updates,
+            });
+
+        }
+    },[formik.values.distribucion])
 
     // useEffect(()=>{
     //    if(formik.values.tipo === "Indirecta"){
@@ -192,16 +203,19 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
         }
         // Lógica para definir valor de distribuciones
         if (distribucionesInversorStatus === "success" && distribucionesInversor.length > 0) {
-            let distribucion = distribucionesInversor.find(d => d.id == formik.values.distribucion);
+            let distribucionesFilter=distribucionesInversor.filter(d => d.disponiblesOfertar > 0)
+            let distribucion = distribucionesFilter.find(d => d.id == formik.values.distribucion);
             if (distribucion) {
                 updates.plantas_disponibles_indirecta = distribucion.disponiblesOfertar;
                 updates.predio_indirecta = distribucion.predio.id;
                 setfechaDist(formatDateMedium({ data: distribucion.fecha_registro }));
             } else {
-                updates.plantas_disponibles_indirecta = distribucionesInversor[0].disponiblesOfertar;
-                updates.distribucion = distribucionesInversor[0].id;
-                updates.predio_indirecta = distribucionesInversor[0].predio.id;
-                setfechaDist(formatDateMedium({ data: distribucionesInversor[0].fecha_registro }));
+                if(distribucionesFilter.length>0){
+                    updates.plantas_disponibles_indirecta = distribucionesFilter[0].disponiblesOfertar;
+                    updates.distribucion = distribucionesFilter[0].id;
+                    updates.predio_indirecta = distribucionesFilter[0].predio.id;
+                    setfechaDist(formatDateMedium({ data: distribucionesFilter[0].fecha_registro }));
+                }
             }
         }
 
@@ -301,7 +315,7 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
                             <p>{telefono}</p>
                         </div>
                     </div>
-                    {distribucionesInversorStatus === 'success' && distribucionesInversor?.length > 0 ? (
+                    {distribucionesInversorStatus === 'success' && distribuciones?.length > 0 ? (
                         <>
                             <div className='flex flex-col w-full md:flex-row sm:items-center gap-3 '>
                                 <div className='flex flex-col sm:flex-row w-full sm:flex-1 sm:items-center sm:gap-3 '>
