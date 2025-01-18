@@ -7,9 +7,7 @@ const useOffer=(inversorId,offerId,traerInversores)=>{
     const { myAxios } = useAxios();
     const queryClient = useQueryClient();
     const { notify } = useApp();
-    const [predioN,setPredioN]= useState('')
-    const [anio,setAnio]= useState('')
-    const [precioP,setprecioP]= useState('')
+
     //Functions 
     const updateVisibilidad = async(values) =>{
         const res = await myAxios.patch(`oferta/${offerId}/`, values)
@@ -18,9 +16,6 @@ const useOffer=(inversorId,offerId,traerInversores)=>{
 
     const addOffer = async(values) =>{
         let dataToSend = {};
-        setPredioN(values.predioName)
-        setAnio(values.anio)
-        setprecioP(values.precioPlanta)
         if(values.tipo=="Directa"){
             dataToSend = {
                 tipo: values.tipo,
@@ -39,7 +34,8 @@ const useOffer=(inversorId,offerId,traerInversores)=>{
                 predio: values.predio_indirecta,
                 precio_reventa: values.precio_reventa,
                 distribucion: values.distribucion,
-                descuento_porcentaje: values.descuento_porcentaje
+                descuento_porcentaje: values.descuento_porcentaje,
+                vendedor:values.vendedor
             };
         }
         const res= await myAxios.post(`oferta/`,dataToSend);
