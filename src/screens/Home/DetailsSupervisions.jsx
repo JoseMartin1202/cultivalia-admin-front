@@ -55,8 +55,8 @@ export const DetailsSupervisions = () => {
             { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
         ImagenesData.push( 
-            supervision?.movimiento?.data?.credencialReverso,
-            supervision?.movimiento?.data?.credencialFrente
+            supervision?.movimiento?.data?.credencialFrente,
+            supervision?.movimiento?.data?.credencialReverso
         )
     }else if (supervision?.movimiento?.tipo_movimiento === 'Beneficiario') {
         supervisionData.push(
@@ -447,8 +447,8 @@ export const DetailsSupervisions = () => {
                         habilitado={supervision?.estado=='Pendiente'}
                     />
                     {supervision?.estado!="Pendiente" && 
-                    <div className='flex size-full'> 
-                         <button className='bg-[#CBD5E1] rounded-2xl flex items-center justify-center w-full' type='button' onClick={() => { navigate(-1); }}>
+                    <div className='flex size-full max-sm:pb-2'> 
+                         <button className='bg-[#CBD5E1] min-h-10 rounded-2xl flex items-center justify-center w-full' type='button' onClick={() => { navigate(-1); }}>
                             <Icons.LeftArrow className='h-[60%] w-auto text-black' />
                         </button>
                     </div>}

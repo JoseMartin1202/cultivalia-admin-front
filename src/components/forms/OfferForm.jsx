@@ -162,22 +162,6 @@ const OfferForm = ({close,formRef, setIsSubmitting}) => {
         }
     },[formik.values.distribucion])
 
-    // useEffect(()=>{
-    //    if(formik.values.tipo === "Indirecta"){
-    //         const selectedProperty = properties?.find(p => p.id == formik.values.predio_indirecta);
-    //         if(selectedProperty){
-    //             formik.setFieldValue('predioName',selectedProperty.nombre)
-    //             formik.setFieldValue('anio',selectedProperty.anio.anio)
-    //         }
-    //    }else{
-    //         const selectedProperty = properties?.find(p => p.id == formik.values.predio_directa);
-    //         if(selectedProperty){
-    //             formik.setFieldValue('predioName',selectedProperty.nombre)
-    //             formik.setFieldValue('anio',selectedProperty.anio.anio)
-    //         }
-    //    }
-    // },[formik.values.predio])
-
     useEffect(() => {
         if (formik.values.tipo === "Indirecta") {
             // Lógica para definir valor de vendedores

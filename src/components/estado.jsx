@@ -27,33 +27,33 @@ const EstadoView = ({state,option}) => {
     switch (state) {
         case "Validada": case "Completo":
             return(
-                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row gap-2 items-center'>
                     <Icons.Accepted className='text-[#279E54] size-5'/>
+                    {state}
                 </span>
             );
 
         case "Rechazada": case "Rechazado":
             return(
-                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row gap-2 items-center'>
                     <Icons.Refused className='text-[#E04646] size-5'/>
+                    {state}
                 </span>
             );
             
         case "Pendiente":
             return(
-                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row gap-2 items-center'>
                     <Icons.Wait className='text-[#6B9DFF] size-5'/>
+                    {state}
                 </span>
             );
 
         case "Vigente":
             return(
-                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row gap-1 items-center'>
                     <Icons.Current className='text-[#6B9DFF] size-6'/>
+                    {state}
                 </span>
             );
 
@@ -73,85 +73,78 @@ const EstadoView = ({state,option}) => {
 
         case "Directa":
             return(
-                <span className='total-center'>
+                <span className=''>
                     <img src={LogoCult} className='size-6'/>
                 </span>
             );
 
         case "Indirecta":
             return(
-                <span className='total-center'>
+                <span className=''>
                     <Icons.OfferIndirect className='text-[#5B5B5B] size-6'/>
                 </span>
             );
 
         case "jimada":
             return(
-                <span className='total-center gap-2'>
-                    <p>Si</p>
+                <span className='flex flex-row items-center gap-2'>
                     <Icons.jimated className='text-yellow-600 size-5'/>
+                    <p>Si</p>
                 </span>
             );
 
         case "actual":
             return(
-                <span className='total-center gap-2'>
-                    <p>Si</p>
+                <span className='flex flex-row items-center gap-2'>
                     <Icons.Complete className='text-[#279E54] size-5'/>
+                    <p>Si</p>
                 </span>
             );
 
-        case "NoActual":
+        case "NoActual": case "NoJimada":
             return(
-                <span className='total-center'>
-                    <p>No</p>
-                </span>
-            );
-
-        case "NoJimada":
-            return(
-                <span className='total-center'>
+                <span className=''>
                     <p>No</p>
                 </span>
             );
 
         case "Cancelada": case "Cancelado":
             return(
-                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row items-center gap-2'>
                     <Icons.Cancel className='text-orange-400 size-6'/>
+                    {state}
                 </span>
             );
         
         case "Creado":
             return(
-                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
-                {state}
+                <span className='flex flex-row items-center gap-1'>
                 <Icons.UserCreated className='text-[#6B9DFF] size-6'/>
+                {state}
             </span>
             );
 
         case "Revision":
             return(
-                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row items-center gap-1'>
                     <Icons.UserRevision className='text-[#6B9DFF] size-6'/>
+                    {state}
                 </span>
             );
 
         case "Inactivo":
             return(
-                <span className='flex flex-row total-center gap-1 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row items-center gap-1'>
                     <Icons.UserInactive className='text-gray-500 size-6'/>
+                    {state}
                 </span>
             );
 
         default://Finalizada
             return(
-                <span className='flex flex-row total-center gap-2 max-sm:flex-col'>
-                    {state}
+                <span className='flex flex-row items-center gap-2'>
                     <Icons.Complete className='text-[#279E54] size-6'/>
+                    {state}
                 </span>
             );
     }

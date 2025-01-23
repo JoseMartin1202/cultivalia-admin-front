@@ -17,7 +17,7 @@ import PricesForm from '../forms/PriceForm';
 import ModalElimiar from '../modals/ModalEliminar';
 import GroupTable from './tableGroup';
 import AnioForm from '../forms/AnioForm';
-import { formatDateLong } from '../../constants/functions';
+import { formatDateLong, formatDateSupervision, formatHourSupervision } from '../../constants/functions';
 import EditVisibilityForm from '../forms/EditVisibility';
 import SalesCancelForm from '../forms/SalesCancelForm';
 import AdvisorForm from '../forms/AdvisorForm';
@@ -170,14 +170,16 @@ const CRUD=({
                                 newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" por "+newItem["movimiento"].data.metodo
                             }else  if(newItem["movimiento"].tipo_movimiento==="Contrato"){
                                 newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" de "+newItem["movimiento"].data.inversor.nombre
-                            }else{//Beneficiario
+                            }else{//Beneficiario o inversor
                                 newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" "+newItem["movimiento"].data.nombre+" "+newItem["movimiento"].data.apellidos
                             }
                         }else{
                             newItem[col.attribute]= "Registro no encontrado o borrado"
                         }
                     }else if(col.attribute === "fechaRegistro"){
-                        newItem[col.attribute]= newItem[col.attribute].split('T')[0]
+                        newItem[col.attribute]= formatDateSupervision({data:newItem[col.attribute]})
+                    } else if(col.attribute === "horaRegistro"){
+                        newItem[col.attribute]= formatHourSupervision({data:item['fechaRegistro']})
                     }    
                 })
                 return newItem
@@ -324,7 +326,7 @@ const CRUD=({
                     }else if(col.attribute==="comprador"){
                         newItem[col.attribute]= newItem[col.attribute].nombre+" "+newItem[col.attribute].apellidos
                     }else if(col.attribute==="codigoReferido"){
-                        newItem[col.attribute]= newItem[col.attribute] ? newItem[col.attribute]:"---"
+                        newItem[col.attribute]= newItem[col.attribute] ? `${newItem[col.attribute].codigo} (${newItem[col.attribute].inversor?.nombre} ${newItem[col.attribute].inversor?.apellidos})`:"---"
                     }else if(col.attribute==="monto"){
                         newItem[col.attribute] = Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
                     }
@@ -337,14 +339,11 @@ const CRUD=({
             newElements= newElements.map((item)=>{
                 const newItem = { ...item };
                 columns.forEach((col)=>{
-                    if(col.attribute==="asesor"){
-                        newItem[col.attribute] ? newItem[col.attribute]= newItem[col.attribute].nombre+" "+newItem[col.attribute].apellidos: newItem[col.attribute]= "---"
-                    }else if(col.attribute==="nombre"){
-                        newItem[col.attribute]=newItem[col.attribute]+" "+newItem["apellidos"]
-                    }else if(col.attribute==="usuario"){
-                        newItem[col.attribute]=newItem[col.attribute].username
-                    }else if(col.attribute==="sexo"){
+                    if(col.attribute==="sexo"){
                         newItem[col.attribute]== 'M' ? newItem[col.attribute]='Masculino': newItem[col.attribute]='Femenino'
+                    }else if(col.attribute==="fechaRegistro"){
+                        console.log(formatDateLong({ data: newItem[col.attribute] }))
+                        newItem[col.attribute]= formatDateLong({ data: newItem[col.attribute] })
                     }
                 })
                 return newItem
@@ -420,7 +419,7 @@ const CRUD=({
                         {searchFilterAdd &&
                             <div className='flex-col sm:flex-row flex w-full gap-3'>
                             <InputSearch formik={formik}/>
-                            <div className='flex flex-row gap-2'>
+                            <div className='flex flex-row flex-grow gap-2'>
                             {supervision ? <Filter data={dataFilter} formik={formik} opt={filterStateSupervisions} />:
                             offers ?  <Filter data={dataFilter} formik={formik} opt={filterStateOffers} />:
                             undefined}
@@ -491,11 +490,7 @@ const CRUD=({
                 <table className="custom-table">
                     <thead className='sticky top-0 z-5'>
                         <tr className='bg-[#E2E8F0] h-[35px]'>
-                            {supervision ? columns.map((col, i) =>(
-                                <th className={` ${ i==0 ? 'w-[25%]' : i==1 ? 'w-[35%]':'w-1/5'}`} key={`TH_${i}`}>
-                                    <p>{col.label}</p>
-                                </th>
-                            )):
+                            {
                             formik.values.groupByYear && prices?
                             <th>
                                 <p>Año</p>
@@ -545,8 +540,8 @@ const CRUD=({
                                 }
                             }}>
                                 {columns.map((col, j) => (
-                                <td className='border-b p-1' key={`TD_${i}_${j}`}>
-                                    {col.Component ? (ajusteTiempo ? <col.Component state={item[col.attribute]} option={col.option}/>: <col.Component state={item[col.attribute]}/> ): item[col.attribute]}
+                                <td className='border-b py-1 px-3 text-nowrap' key={`TD_${i}_${j}`}>
+                                    {col.Component ? <col.Component state={item[col.attribute]} option={col.option}/>: item[col.attribute]}
                                     </td>
                                 ))}
                             </tr>

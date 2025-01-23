@@ -36,6 +36,30 @@ export function formatDateLong({ data }) {
    return value
 }
 
+export function formatDateSupervision({ data }) {
+   let value = ""
+   if (data === null) return value
+
+   value = new Intl.DateTimeFormat('es-ES', {
+      dateStyle: 'full',
+   }).format(new Date(data));
+
+   return value
+}
+
+export function formatHourSupervision({ data }) {
+   let value = ""
+   if (data === null) return value
+
+   value = new Intl.DateTimeFormat('es-ES', {
+      hourCycle: 'h12',
+      timeStyle: 'short',
+      timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+   }).format(new Date(data));
+
+   return value
+}
+
 export function formatDateMedium({ data }) {
    let value = ""
    if (data === null) return value
