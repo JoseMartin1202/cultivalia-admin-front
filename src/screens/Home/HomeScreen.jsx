@@ -8,7 +8,7 @@ import { Filters } from '../../constants/datasFilter';
 const HomeScreen = () => {
 
     const { supervisions, supervisionsStatus }= useSupervisions();
-    console.log(supervisions)
+    
     return (
         <CRUD
          columns={Columns.ColumnsDataHome} 

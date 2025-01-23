@@ -7,12 +7,14 @@ import AxiosProvider from './context/AxiosContext'
 import { AppProvider } from './context/AppContext'
 import QueryProvider from './Server/QueryProvider'
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { WebSocketProvider } from './context/WebSocketContext'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
        <QueryProvider>
             <AppProvider>
                 <AxiosProvider>
+                    <WebSocketProvider/>
                     <Router/>
                      <ReactQueryDevtools initialIsOpen={false} />
                 </AxiosProvider>
