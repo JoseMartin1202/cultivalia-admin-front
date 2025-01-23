@@ -1,10 +1,11 @@
 import EstadoView from "../components/estado";
+import { formatDateLong } from "./functions";
 
 const ColumnsDataHome= [
     { label: "Supervisión", attribute:"mov", search:true},
-    { label: "Descripción", attribute: "supervisar", search:true},
-    { label: "Estado", attribute: "estado",Component: EstadoView },
-    { label: "Fecha", attribute: "fechaRegistro" } 
+    { label: "Fecha", attribute: "fechaRegistro" } ,
+    { label: "Hora", attribute: "horaRegistro" } ,
+    { label: "Estado", attribute: "estado",Component: EstadoView }
   ];
 
 const ColumnsDataPredios=[
@@ -53,15 +54,13 @@ const ColumnsDataVentas=[
 ];
 
 const ColumnsDataInversores=[
-  {label:"Inversor", attribute:"nombre",search:true},
+  {label:"Inversor", attribute:"inversor",search:true},
   {label:"Estatus", attribute:"status",Component: EstadoView},
-  {label:"Usuario", attribute:"usuario"},
-  {label:"Curp", attribute:"curp"},
-  {label:"Sexo", attribute:"sexo"},
+  {label:"Correo electronico", attribute:"usuario"},
   {label:"Telefono", attribute:"telefono"},
-  {label:"Dirección", attribute:"direccion"},
-  {label:"Estado", attribute:"estado"},
+  {label:"Fecha de ingreso", attribute:"fechaRegistro"},
   {label:"Asesor", attribute:"asesor"},
+  {label:"Pais", attribute:"pais"},
 ];
 
 const ColumnsDataAsesores=[
@@ -93,6 +92,51 @@ const ColumnsDataAjusteTiempos=[
   {label:"Comentarios", attribute:"comentarios"}
 ];
 
+// Con la nueva tabla
+
+const ColumnsDistribucionesData= [
+  { label: "Total de plantas", attribute:"totalPlantas"},
+  { label: "Tipo", attribute: "tipo" },
+  { label: "Predio", attribute: "predio"} ,
+  { label: "Precio por planta", attribute: "precioPlanta" } ,
+  { label: "Registro", attribute: "fecha_registro",Component: (data)=>formatDateLong(data) }
+];
+
+const ColumnsVentasData= [
+  {label:"Monto", attribute:"monto"},
+  {label:"Tipo", attribute:"tipo"},
+  {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
+  {label:"Fecha registro", attribute:"fecha",Component: (data)=>formatDateLong(data) },
+  {label:"Código referido", attribute:"codigoReferido",Component: (c)=> c.data ? `${c.data?.codigo} (${c.data.inversor.nombre} ${c.data.inversor.apellidos})`:'---'},
+];
+
+const ColumnsPagosSalientes=[
+  {label:"Monto", attribute:"monto"},
+  {label:"Fecha registro", attribute:"fechaRegistro",Component: (data)=>formatDateLong(data)},
+  {label:"Metodo", attribute:"metodo"},
+  {label:"Comentarios", attribute:"comentarios"},
+  {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
+  {label:"Inversor", attribute:"inversor",Component: (inversor)=>inversor.data.nombre+" "+inversor.data.apellidos},
+];
+
+const ColumnsPagosEntrantes=[
+  {label:"Monto", attribute:"monto"},
+  {label:"Fecha registro", attribute:"fechaRegistro",Component: (data)=>formatDateLong(data)},
+  {label:"Metodo", attribute:"metodo"},
+  {label:"Comentarios", attribute:"comentarios"},
+  {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
+  {label:"Inversor", attribute:"inversor",Component: (inversor)=>inversor.data.nombre+" "+inversor.data.apellidos},
+  {label:"Venta", attribute:"venta", Component: (v)=>`${v.data.detalles[0].predio} (${v.data.detalles[0].cantidad} ${v.data.detalles[0].cantidad>1 ? 'plantas':'planta'})`}
+];
+
+const ColumnsBeneficiarios=[
+  {label:"Nombre", attribute:"nombre"},
+  {label:"Apellidos", attribute:"apellidos"},
+  {label:"Sexo", attribute:"sexo",Component:(s)=>s.data=='F' ? 'Femenino':'Masculino'},
+  {label:"Telefono", attribute:"telefono"},
+  {label:"Parentesco", attribute:"parentesco"},
+];
+
 
 export const Columns={
     ColumnsDataHome,
@@ -105,5 +149,10 @@ export const Columns={
     ColumnsDataAsesores,
     ColumnsDataJimas,
     ColumnsDataPagosSalientes,
-    ColumnsDataAjusteTiempos
+    ColumnsDataAjusteTiempos,
+    ColumnsDistribucionesData,
+    ColumnsVentasData,
+    ColumnsPagosSalientes,
+    ColumnsPagosEntrantes,
+    ColumnsBeneficiarios
 }

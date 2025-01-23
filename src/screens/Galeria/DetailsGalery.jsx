@@ -310,7 +310,7 @@ export const PhotosModal = ({ onClose, initIndex, photos, supervision }) => {
     }, [])
 
     return (
-       <div className='absolute z-10 bg-neutral-900/90 size-full total-center'> 
+       <div className='absolute z-40 bg-neutral-900/90 size-full total-center'> 
           <div className='absolute size-full left-0 top-0' onClick={onClose}></div>
           <div className=' px-14 max-sm:px-2 size-full total-center'>
                 {supervision ? <Image src={photos[selectedImg]} alt=""/>:

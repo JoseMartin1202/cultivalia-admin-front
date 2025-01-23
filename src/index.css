@@ -19,9 +19,14 @@
 
 .custom-table{
   width: 100%;
-  text-align: center;
+  text-align: left;
   background-color: white;
+}
 
+th{
+  padding-left: 0.75rem /* 24px */;
+  padding-right: 0.75rem /* 24px */;
+  min-width: 7rem;
 }
 
 .navItem:hover{

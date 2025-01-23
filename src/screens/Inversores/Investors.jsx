@@ -4,6 +4,7 @@ import { Columns } from '../../constants/ColumsDataTable';
 import CRUD from '../../components/CRUD/table';
 import { Filters } from '../../constants/datasFilter';
 import useInvestors from '../../Server/Investors/InvestorsProvider';
+import Table from '../../components/CRUD/tablaOpcion';
 
 const Investors=()=>{
     
