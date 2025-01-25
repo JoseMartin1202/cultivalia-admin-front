@@ -263,8 +263,8 @@ export const DetailsSupervisions = () => {
                         <InputForm formik={formik} id="idCrede" name="idCrede"/>
                     </div>
                     <AbsScroll vertical centerColumn>
-                        <img src={supervision?.movimiento?.data?.credencialFrente} />
-                        <img src={supervision?.movimiento?.data?.credencialReverso} />
+                        <img src={supervision?.movimiento?.data?.credencialFrente} className='w-full object-contain rounded-lg' />
+                        <img src={supervision?.movimiento?.data?.credencialReverso} className='w-full object-contain rounded-lg' />
                     </AbsScroll>
                     <div className='flex flex-row w-full'>
                         <button className='w-full p-2 bg-[#FFD34B] rounded-lg font-bold text-lg' onClick={handleSaveModal}>Aceptar</button>
