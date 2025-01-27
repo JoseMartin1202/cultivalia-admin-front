@@ -39,7 +39,7 @@ const GroupTable = ({colsAgrup,dataAgruped,cols}) => {
         }   
         }>
             {columnas.map((col, j) => (
-            <td className='border-b p-1' key={`TD_${i}_${j}`}>
+            <td className='border-b py-1 px-3' key={`TD_${i}_${j}`}>
                 {col.Component ? <col.Component state={item[col.attribute]}/> : item[col.attribute]}
                 </td>
             ))}

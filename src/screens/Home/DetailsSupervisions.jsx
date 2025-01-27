@@ -22,6 +22,7 @@ export const DetailsSupervisions = () => {
     const [loading, setLoading] = useState(true)
     const [showModal, setShowModal] = useState(false)
     const [curp, setCurp] = useState(false)
+    const [title, setTitle] = useState('Credenciales');
     const [idcrede, setidcrede] = useState(false)
     const [comments, setcomments] = useState([]);
     const [bouncingIndex, setBouncingIndex] = useState(null); // Estado para rastrear el índice que está rebotando
@@ -72,13 +73,10 @@ export const DetailsSupervisions = () => {
         )
     }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
         supervisionData.push( 
-            { label: 'Monto', value: supervision?.movimiento?.data?.monto },
+            { label: 'Monto de la venta', value: supervision?.movimiento?.data?.monto },
             { label: 'Método', value: supervision?.movimiento?.data?.metodo },
             { label: 'Inversor', value: `${supervision?.movimiento?.data?.inversor.nombre} ${supervision?.movimiento?.data?.inversor.apellidos}`},
-            { label: 'Fecha de la venta', value: supervision?.movimiento?.data?.venta.fecha.split('T')[0] },
-            { label: 'Monto de la venta', value: supervision?.movimiento?.data?.venta.monto },
-            { label: 'Comentarios', value: (supervision?.movimiento?.data?.comentarios && supervision?.movimiento?.data?.comentarios!='') ? 
-                supervision?.movimiento?.data?.comentarios:'--'},
+            { label: 'Comentarios',   value: (supervision?.movimiento?.data?.comentarios)},
             { label: 'Fecha de registro', value: formatDateLong({data: supervision?.fechaRegistro})},
         );
         ImagenesData.push( supervision?.movimiento?.data.comprobante)
@@ -86,7 +84,7 @@ export const DetailsSupervisions = () => {
 
     const formik = useFormik({
         initialValues: {
-            comentaios: '',
+            comentarios: '',
             estado: '',
             options:'',
             curp: '',
@@ -148,12 +146,17 @@ export const DetailsSupervisions = () => {
             // }else{
         setdataJson(JSON.parse(supervision.supervisar))
         formik.setValues({
-            comentarios: supervision.comentarios,
+            comentarios: supervision.comentarios ?? '',
             estado: supervision.estado,
             options: supervision.options
         });
             // }
-        setcomments(supervision.options)
+        setcomments(supervision.options ?? [])
+        if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante' && title!='Pago') {
+            setTitle('Pago');
+        }else if (supervision?.movimiento?.tipo_movimiento === 'Contrato' && title!='Contrato'){
+            setTitle('Contrato');
+        }
         }
     }, [supervision]);
 
@@ -263,8 +266,8 @@ export const DetailsSupervisions = () => {
                         <InputForm formik={formik} id="idCrede" name="idCrede"/>
                     </div>
                     <AbsScroll vertical centerColumn>
-                        <img src={supervision?.movimiento?.data?.credencialFrente} />
-                        <img src={supervision?.movimiento?.data?.credencialReverso} />
+                        <img src={supervision?.movimiento?.data?.credencialFrente} className='w-full object-contain rounded-lg' />
+                        <img src={supervision?.movimiento?.data?.credencialReverso} className='w-full object-contain rounded-lg' />
                     </AbsScroll>
                     <div className='flex flex-row w-full'>
                         <button className='w-full p-2 bg-[#FFD34B] rounded-lg font-bold text-lg' onClick={handleSaveModal}>Aceptar</button>
@@ -300,7 +303,6 @@ export const DetailsSupervisions = () => {
                                     </div>
                                     <div className='flex flex-row w-full bg-slate-50 p-[2px] border-x-2 border-b-2 border-slate-200'>
                                         <p className='w-[45%] '>{dataJson[key].old_value}</p>
-                                        {console.log(dataJson.length)}
                                         <div className='w-[10%] flex justify-center'>
                                             <Icons.RigthArrowLong size="24px"/>
                                         </div>
@@ -332,14 +334,14 @@ export const DetailsSupervisions = () => {
                         }
                     </div>
                     <div className='flex flex-col flex-1 min-h-52'>
-                        <p htmlFor="comments" className='text-lg bg-[#656464] text-center rounded-t-xl text-white'>Comentarios:</p>
-                        {showError &&
-                        <div className=''>
+                        {showError && <div className=''>
                             <p className='font-normal text-sm flex items-center gap-1 h-full italic text-red-500 '>
                                 <Icons.Alert size="14px" />
+                                {console.log(comments)}
                                 {error}
                             </p>
                         </div>}
+                        <p htmlFor="comments" className='text-lg bg-[#656464] text-center rounded-t-xl text-white'>Comentarios:</p>
                         <div className='flex flex-col lg:flex-row size-full gap-3 p-2 border-2 border-[#656464] rounded-b-xl'>
                             <div className='flex w-full h-[70%] lg:h-full lg:w-[70%]'>
                                 <AbsScroll vertical>
@@ -372,7 +374,7 @@ export const DetailsSupervisions = () => {
                     </div>
                 </div>
                 <div className='flex flex-col w-[52%] shadow bg-white rounded-xl max-md:w-full  max-md:h-1/2 min-h-60'>
-                    <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>Credenciales</p>
+                    <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>{title}</p>
                     <div className='relative w-full h-[95%]'>
                         <div className='absolute size-full top-0 left-0 p-2 '>
                             { supervision?.movimiento?.tipo_movimiento === 'Contrato' ?
