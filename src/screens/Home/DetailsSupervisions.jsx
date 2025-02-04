@@ -15,7 +15,7 @@ import InputForm from '../../components/inputs/inputForm';
 export const DetailsSupervisions = () => {
     const navigate = useNavigate();
     const { supervisionId } = useParams();
-    const { supervision, supervisionStatus, updateSupervision } = useSupervision(supervisionId);
+    const { supervision, supervisionStatus, updateSupervision,updateSupervisionStatus } = useSupervision(supervisionId);
     const [verFotos,setverFotos]= useState(false)
     const [bgOption, setbgOption] = useState('');
     const [initIndex, setInitIndex] = useState(0)
@@ -237,7 +237,7 @@ export const DetailsSupervisions = () => {
         };
     }, []);
 
-    if (supervisionStatus === 'pending' || !supervision) {
+    if (supervisionStatus === 'pending' || !supervision || updateSupervisionStatus==='pending') {
         return <Loader />;
     }
 
