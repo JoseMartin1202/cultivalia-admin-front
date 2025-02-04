@@ -95,11 +95,13 @@ const ColumnsDataAjusteTiempos=[
 // Con la nueva tabla
 
 const ColumnsDistribucionesData= [
+  {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
+  { label: "Monto", attribute:"monto"},
   { label: "Total de plantas", attribute:"totalPlantas"},
   { label: "Tipo", attribute: "tipo" },
   { label: "Predio", attribute: "predio"} ,
   { label: "Precio por planta", attribute: "precioPlanta" } ,
-  { label: "Registro", attribute: "fecha_registro",Component: (data)=>formatDateLong(data) }
+  { label: "Registro", attribute: "fecha_registro",Component: (data)=> data.data && formatDateLong(data)}
 ];
 
 const ColumnsVentasData= [
@@ -126,7 +128,7 @@ const ColumnsPagosEntrantes=[
   {label:"Comentarios", attribute:"comentarios"},
   {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
   {label:"Inversor", attribute:"inversor",Component: (inversor)=>inversor.data.nombre+" "+inversor.data.apellidos},
-  {label:"Venta", attribute:"venta", Component: (v)=>`${v.data.detalles[0].predio} (${v.data.detalles[0].cantidad} ${v.data.detalles[0].cantidad>1 ? 'plantas':'planta'})`}
+  {label:"Venta", attribute:"venta", Component: (v)=>`${v.data?.detalles[0]?.predio} (${v.data?.detalles[0]?.cantidad} ${v.data?.detalles[0]?.cantidad>1 ? 'plantas':'planta'})`}
 ];
 
 const ColumnsBeneficiarios=[

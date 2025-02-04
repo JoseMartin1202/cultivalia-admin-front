@@ -38,10 +38,7 @@ const InversorsFilterData = [
 ];
 
 const InversorDetailFilterData = [
-  { name: 'Distribuciones', value: 'Distribuciones' },
-  { name: 'Compras', value: 'Compras' },
-  { name: 'Pagos entrantes', value: 'Pagos entrantes' },
-  { name: 'Pagos salientes', value: 'Pagos salientes' },
+  { name: 'Inversiones', value: 'Distribuciones' },
   { name: 'Beneficiarios', value: 'Beneficiarios' },
   { name: 'Credenciales', value: 'Credenciales' }
 ];

@@ -2,7 +2,7 @@ import {React, useState} from 'react'
 import { Icons } from '../constants/Icons';
 import LogoCult from '../assets/cultivaliaLogo.png';
 
-const EstadoView = ({state,option}) => {
+const EstadoView = ({state,option,fontlg}) => {
     // Verificar si el 'state' es un JSON (objeto)
     const isJson = (obj) => {
         try {
@@ -25,26 +25,26 @@ const EstadoView = ({state,option}) => {
     }
 
     switch (state) {
-        case "Validada": case "Completo":
+        case "Validada": case "Completo": case "Activa":
             return(
-                <span className='flex flex-row gap-2 items-center'>
-                    <Icons.Accepted className='text-[#279E54] size-5'/>
+                <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
+                    <Icons.Accepted className={`text-[#279E54] ${fontlg ? 'size-6':'size-5'}`}/>
                     {state}
                 </span>
             );
 
         case "Rechazada": case "Rechazado":
             return(
-                <span className='flex flex-row gap-2 items-center'>
-                    <Icons.Refused className='text-[#E04646] size-5'/>
+                <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
+                    <Icons.Refused className={`text-[#E04646] ${fontlg ? 'size-6':'size-5'}`}/>
                     {state}
                 </span>
             );
             
         case "Pendiente":
             return(
-                <span className='flex flex-row gap-2 items-center'>
-                    <Icons.Wait className='text-[#6B9DFF] size-5'/>
+                <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
+                    <Icons.Wait className={`text-[#6B9DFF] ${fontlg ? 'size-6':'size-5'}`}/>
                     {state}
                 </span>
             );

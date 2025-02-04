@@ -17,14 +17,13 @@ const DetailInvestor=()=>{
     const navigate = useNavigate();
     const [verFotos,setverFotos]= useState(false)
     const [loading, setLoading] = useState(true)
+    const [montoTotal, setmontoTotal] = useState('')
     const [initIndex, setInitIndex] = useState(0)
     const [ImagenesData, setImagenesData] = useState([])
+    const [inversionesAll, setInversionesAll] = useState([])
 
     const { 
         investor, investorStatus, 
-        investorSales, investorSalesStatus,
-        investorPagosE, investorPagosEStatus,
-        investorPagosS, investorPagosStatus,
         investorBeneficiarios, investorBeneficiariosStatus
      } = useInvestor(inversorId,option);
 
@@ -35,8 +34,34 @@ const DetailInvestor=()=>{
                 investor?.credencialFrente,
                 investor?.credencialReverso
             ])
+            var total=0
+            const distribuciones=[]
+            investor?.distribuciones?.map(item => ({
+                ...item,
+                totalPlantas: Number(item.totalPlantas),
+                monto: Number(item.totalPlantas*item.precioPlanta),
+            })).forEach(d => {
+                distribuciones.push({ ...d, type: 'distribucion' })
+                total+=d.monto
+            });
+            const compras=[]
+            investor?.compras?.filter(c =>c.estado !== 'Validada')?.map(item => ({
+                ...item,
+                monto: Number(item.monto)
+            })).forEach(c => {
+                compras.push({ ...c, type: 'compra' })
+                total+=c.monto
+            });
+            console.log(total)
+            setmontoTotal(total)
+            const inversiones = [...distribuciones, ...compras];
+            setInversionesAll(inversiones)
         }
     },[investorStatus])
+
+    useEffect(()=>{
+       console.log(inversionesAll)
+    },[inversionesAll])
 
     if (investorStatus === 'pending' || !investor) {
         return (
@@ -65,11 +90,11 @@ const DetailInvestor=()=>{
         } 
         <div className='sm:pl-[72px] size-full box-border gap-3 flex flex-col bg-[#F1F5F9] pl-4 py-2 pe-4 sm:pe-3 font-[Roboto] overflow-y-auto'>
             <div className='size-full flex flex-col lg:flex-row bg-white p-2 rounded-xl shadow gap-2'>
-                <div className="flex flex-col flex-1 lg:min-w-fit  lg:max-w-fit max-lg:max-h-[30%] border-2 shadow rounded-lg box-border p-3 overflow-auto gap-4">
+                <div className="flex flex-col flex-1 lg:min-w-fit lg:max-w-[330px] max-lg:max-h-[30%] border-2 shadow rounded-lg box-border p-3 overflow-auto gap-4">
                     <button className='flex flex-row gap-2 py-1 px-3 w-fit rounded-lg bg-[#CBD5E1] items-center text-lg' onClick={()=>{navigate(-1)}}>
                         <Icons.ArrowBack className=' size-5'/>Regresar
                     </button>
-                    <div className='flex flex-col max-lg:flex-row max-lg:gap-3'>
+                    <div className='flex flex-col max-lg:flex-row max-lg:gap-3 h-full lg:max-w-[330px]'>
                         <div className='flex flex-row w-1/4 lg:w-full justify-center pb-3 min-w-40'>
                             {investor.fotografia ? 
                              <div className='relative flex w-full justify-center'>
@@ -112,8 +137,8 @@ const DetailInvestor=()=>{
                             <div className='flex flex-row items-center gap-2'>
                                 <Icons.Ubication/> 
                                 <div className='flex flex-col'>
-                                <span>{investor.direccion+", "+investor.colonia}</span>
-                                <span>{"CP:"+investor.codigoPostal+", "+investor.estado}</span>
+                                <span>{investor.direccion}</span>
+                                <span>{investor.colonia+". CP:"+investor.codigoPostal+", "+investor.estado}</span>
                                 </div>
                                 
                             </div>
@@ -125,60 +150,18 @@ const DetailInvestor=()=>{
                                 {investor.fechaNacimiento} 
                             </p>
                         </div>
+                        <div className='mt-auto flex flex-col items-center max-w-full overflow-x-auto pb-4'>
+                            <p className='text-3xl'>--Monto total--</p>
+                            <p className='text-3xl font-bold text-[#49C27A]'>{Number(montoTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>   
+                        </div>
                     </div>
                 </div>
-                <div className='flex flex-col flex-grow rounded-lg'>
+                <div className='flex flex-col flex-grow'>
                     <p className='text-white bg-[#656464] text-lg rounded-t-xl text-center w-full'>Detalles</p>
                     <div className='flex flex-col flex-grow p-2 border-2 border-[#656464] rounded-b-xl'>
                         <OptionsDetailsInveror data={Filters.InversorDetailFilterData} opt={option} setoption={setoption}/>
                         <div className='flex flex-col flex-grow gap-2 px-1'>
-                            {option=='Compras' ?
-                                investorSalesStatus=='success' ?
-                                    ( investorSales.length>0 ?
-                                        <Table 
-                                        data={investorSales.map(item => ({
-                                          ...item,
-                                          monto: Number(item.monto)
-                                        }))} 
-                                        theme='white' 
-                                        columns={Columns.ColumnsVentasData} 
-                                        search={false}
-                                      />
-                                        :
-                                        <EmptyElements/>
-                                    ):
-                                <Loader/>
-                            :
-                            option=='Pagos entrantes' ?
-                                investorPagosEStatus=='success' ?
-                                    (investorPagosE.length>0 ?
-                                        <Table data={investorPagosE.map(item => ({
-                                            ...item,
-                                            monto: Number(item.monto)
-                                          }))}  
-                                        theme='white' 
-                                        columns={Columns.ColumnsPagosEntrantes} 
-                                        search={false}/>
-                                        :
-                                        <EmptyElements/>
-                                    ):
-                                <Loader/>
-                            :
-                            option=='Pagos salientes' ?
-                                investorPagosStatus=='success' ?
-                                    (investorPagosS.length>0 ?
-                                        <Table data={investorPagosS.map(item => ({
-                                            ...item,
-                                            monto: Number(item.monto)
-                                          }))}  
-                                        theme='white' 
-                                        columns={Columns.ColumnsPagosSalientes} 
-                                        search={false}/>
-                                        :
-                                        <EmptyElements/>
-                                    ):
-                                <Loader/>
-                            :
+                            {
                             option=='Beneficiarios' ?
                                 (investorBeneficiariosStatus=='success' ?
                                     (investorBeneficiarios.length>0 ?
@@ -211,13 +194,14 @@ const DetailInvestor=()=>{
                             </AbsScroll>
                             :
                             (investor.distribuciones.length>0 ?
-                                <Table data={investor.distribuciones.map(item => ({
-                                    ...item,
-                                    totalPlantas: Number(item.totalPlantas)
-                                  }))}  
-                                theme='white' 
-                                columns={Columns.ColumnsDistribucionesData} 
-                                search={false}/>
+                                <>
+                                    <Table data={inversionesAll}  
+                                    theme='white' 
+                                    columns={Columns.ColumnsDistribucionesData} 
+                                    search={false}
+                                    handleRowClick = {(row) => { navigate(`/inversion/${row.id}`, { state: { rowData: row } }); }}
+                                   />
+                                </>
                                 :
                                 <EmptyElements/>
                             )
