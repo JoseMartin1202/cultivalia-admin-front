@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
 import { useAxios } from "../../context/AxiosContext";
 import useSession from '../Session/SessionProvider';
+import { useApp } from '../../context/AppContext';
 
 const useInvestor=(inversorId,option)=>{
     const { myAxios } = useAxios();
@@ -44,7 +45,7 @@ const useInvestor=(inversorId,option)=>{
         investor,
         investorStatus,
         investorBeneficiarios,
-        investorBeneficiariosStatus
+        investorBeneficiariosStatus,
     })
 }
 

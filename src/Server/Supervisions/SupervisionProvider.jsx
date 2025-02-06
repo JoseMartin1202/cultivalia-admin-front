@@ -46,7 +46,7 @@ const useSupervision=(supervisionId)=>{
         },
         onError: (e) => {
             navigate(-1)
-            notify('No se pudo actualizar la supervisión')
+            notify('No se pudo actualizar la supervisión',e)
         }
      })
 
