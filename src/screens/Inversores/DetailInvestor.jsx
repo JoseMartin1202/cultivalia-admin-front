@@ -10,10 +10,12 @@ import Table from '../../components/CRUD/tablaOpcion';
 import { Columns } from '../../constants/ColumsDataTable';
 import EmptyElements from '../../components/EmptyElements';
 import { PhotosModal } from '../Galeria/DetailsGalery';
+import { useQueryClient } from '@tanstack/react-query';
+import useNotify from '../../Server/Investors/InvestorNotifyProvider';
 
 const DetailInvestor=()=>{
     const { inversorId } = useParams();
-    const [ option, setoption ] = useState('Distribuciones');
+    const [ option, setoption ] = useState('Inversiones');
     const navigate = useNavigate();
     const [verFotos,setverFotos]= useState(false)
     const [loading, setLoading] = useState(true)
@@ -21,12 +23,14 @@ const DetailInvestor=()=>{
     const [initIndex, setInitIndex] = useState(0)
     const [ImagenesData, setImagenesData] = useState([])
     const [inversionesAll, setInversionesAll] = useState([])
+    const queryClient = useQueryClient();
 
     const { 
         investor, investorStatus, 
         investorBeneficiarios, investorBeneficiariosStatus
      } = useInvestor(inversorId,option);
 
+     const {inversorNotify, investorNotifyStatus} = useNotify(inversorId);
 
     useEffect(()=>{
         if (investorStatus === 'success') {
@@ -58,10 +62,6 @@ const DetailInvestor=()=>{
             setInversionesAll(inversiones)
         }
     },[investorStatus])
-
-    useEffect(()=>{
-       console.log(inversionesAll)
-    },[inversionesAll])
 
     if (investorStatus === 'pending' || !investor) {
         return (
@@ -150,8 +150,8 @@ const DetailInvestor=()=>{
                                 {investor.fechaNacimiento} 
                             </p>
                         </div>
-                        <div className='mt-auto flex flex-col items-center max-w-full overflow-x-auto pb-4'>
-                            <p className='text-3xl'>--Monto total--</p>
+                        <div className='mt-auto flex flex-col items-center max-w-full pb-4'>
+                            <p className='text-3xl text-nowrap'>--Monto total--</p>
                             <p className='text-3xl font-bold text-[#49C27A]'>{Number(montoTotal).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' })}</p>   
                         </div>
                     </div>
@@ -193,6 +193,7 @@ const DetailInvestor=()=>{
                                 }
                             </AbsScroll>
                             :
+                            option=='Inversiones' ?
                             (investor.distribuciones.length>0 ?
                                 <>
                                     <Table data={inversionesAll}  
@@ -205,6 +206,21 @@ const DetailInvestor=()=>{
                                 :
                                 <EmptyElements/>
                             )
+                            :
+                            <div className='flex flex-row items-center gap-2'>
+                                {investor?.status=='Completo' || investor?.status=='Revision' ?
+                                <div className='text-center size-full'>Sin acciones por realizar</div>:
+                                <><p>{'A) Notificarle al inversor que finalice sus acciones pendientes.'}</p>
+                                <button  className='text-white p-2 rounded-lg cursor-pointer bg-[#6B9DFF] hover:bg-[#89adf5]'
+                                onClick={()=>inversorNotify()}> 
+                                    {investorNotifyStatus=='pending' ?
+                                    <div className='size-6'>
+                                        <Loader/>
+                                    </div>:
+                                    'Realizar'}
+                                </button></>
+                                }
+                            </div>
                             }
                         </div>
                     </div>

@@ -38,9 +38,10 @@ const InversorsFilterData = [
 ];
 
 const InversorDetailFilterData = [
-  { name: 'Inversiones', value: 'Distribuciones' },
+  { name: 'Inversiones', value: 'Inversiones' },
   { name: 'Beneficiarios', value: 'Beneficiarios' },
-  { name: 'Credenciales', value: 'Credenciales' }
+  { name: 'Credenciales', value: 'Credenciales' },
+  { name: 'Acciones', value: 'Acciones' }
 ];
 
   export const Filters={
