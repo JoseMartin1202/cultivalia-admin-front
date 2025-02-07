@@ -25,6 +25,7 @@ import JimaForm from '../forms/JimasForm';
 import PagosSForm from '../forms/PagosSForm';
 import { PhotosModal } from '../../screens/Galeria/DetailsGalery';
 import AjusteTiempoForm from '../forms/AjusteTiempoForm';
+import EmptyElements from '../EmptyElements';
 
 const CRUD=({
     columns, 
@@ -506,7 +507,7 @@ const CRUD=({
                     <tbody>
                         {prices && formik.values.groupByYear ? <GroupTable cols={columns} dataAgruped={yearsGroup} colsAgrup={colsGroup} filter={formik.values.estado}/>:
                         elements.map((item, i) => (
-                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado=='Vigente'|| pagosS || galleries || advisors || investors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white`} onClick={() => {
+                            <tr key={`TR_${i}`} className={`${sales && item.estado=='Pendiente'||offers && item.estado=='Vigente'|| pagosS || galleries || advisors || investors || predios || supervision ? 'hover:cursor-pointer hover:bg-blue-100':''} h-[30px] bg-white active:opacity-70 active:duration-0`} onClick={() => {
                                 if (path) {
                                     navigate(`/${path}/${item.id}`);
                                 } else {
@@ -568,10 +569,7 @@ const CRUD=({
                 </div>
                 </>
                 :
-                <div className='size-full total-center flex flex-col gap-3 text-center'>
-                        <Icons.Empty className='size-12 text-orange-300'/>
-                        <p className='text-[20px] '>¡Uuups. No se tiene elementos <br/>que coincidan con lo solicitado!</p>
-                </div>
+                <EmptyElements/>
                 ):
                 <></>}   
             </div>

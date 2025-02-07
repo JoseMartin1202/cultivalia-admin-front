@@ -6,43 +6,23 @@ const useInvestment=(inversionId)=>{
     const { myAxios } = useAxios();
     const { session } = useSession();
 
-    const getInvestorPagosE = async () => {
-        const data=await myAxios.get(`inversor/${inversionId}/admin_pagosE_inversor/`);
-        return data.data;
-    }
-
-    const getInvestorPagosS = async () => {
-        const data=await myAxios.get(`inversor/${inversionId}/admin_pagosS_inversor/`);
+    const getInvestorPagos = async () => {
+        const data=await myAxios.get(`distribucion/${inversionId}/admin_pagos_inversor/`);
         return data.data;
     }
 
     const InvestorPagosEQuery= useQuery({
-        queryKey:['inversorPagosE',inversionId],
-        queryFn:getInvestorPagosE,
+        queryKey:['inversorPagos',inversionId],
+        queryFn:getInvestorPagos,
         enabled: !!inversionId && !!session 
     })
-
-    const InvestorPagosSQuery= useQuery({
-        queryKey:['inversorPagosS',inversionId],
-        queryFn:getInvestorPagosS,
-        enabled: !!inversionId && !!session
-    })
-
     const {
-        data:investorPagosE,
-        status:investorPagosEStatus,
+        data:investorPagos,
+        status:investorPagosStatus,
     } = InvestorPagosEQuery
 
-    const {
-        data:investorPagosS,
-        status:investorPagosStatus,
-    } = InvestorPagosSQuery
-    
-
     return ({
-        investorPagosE,
-        investorPagosEStatus,
-        investorPagosS,
+        investorPagos,
         investorPagosStatus,
     })
 }

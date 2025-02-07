@@ -9,7 +9,8 @@ import {
 } from "react-icons/fa6";
 
 import {
-    RiContractFill as Report 
+    RiContractFill as Report,
+    RiMoneyDollarCircleFill  as Efectivo 
 } from "react-icons/ri";
 
 import {
@@ -62,7 +63,9 @@ import {
     FaQuestionCircle as QuestionFill,
     FaCalendarDay as Calendar,
     FaFlag as Flag,
-    FaHandHoldingUsd as Comision
+    FaHandHoldingUsd as Comision,
+    FaMoneyCheckAlt as Cheque,
+    FaCreditCard as Transferencia
 } from "react-icons/fa";
 
 import {
@@ -103,6 +106,10 @@ import {
 import { 
     PiPlantFill as Plant
  } from "react-icons/pi";
+
+import { 
+    BiSolidBank as Deposito
+} from "react-icons/bi";
 
 import {
     MdOutlineFileUpload as Upload,
@@ -174,5 +181,9 @@ export const Icons={
     Flag,
     SearchDetails,
     Comision,
-    Plant
+    Plant,
+    Cheque,
+    Transferencia,
+    Efectivo,
+    Deposito
 }

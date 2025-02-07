@@ -98,7 +98,8 @@ const ColumnsDistribucionesData= [
   {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
   { label: "Monto", attribute:"monto"},
   { label: "Total de plantas", attribute:"totalPlantas"},
-  { label: "Tipo", attribute: "tipo" },
+  { label: "Tipo", attribute: "tipo", Component: (t)=> t.data=="Inversion" ? "Inversión":"Comisión"},
+  { label: "Procedencia", attribute: "procedencia"},
   { label: "Predio", attribute: "predio"} ,
   { label: "Precio por planta", attribute: "precioPlanta" } ,
   { label: "Registro", attribute: "fecha_registro",Component: (data)=> data.data && formatDateLong(data)}

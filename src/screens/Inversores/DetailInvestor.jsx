@@ -10,7 +10,6 @@ import Table from '../../components/CRUD/tablaOpcion';
 import { Columns } from '../../constants/ColumsDataTable';
 import EmptyElements from '../../components/EmptyElements';
 import { PhotosModal } from '../Galeria/DetailsGalery';
-import { useQueryClient } from '@tanstack/react-query';
 import useNotify from '../../Server/Investors/InvestorNotifyProvider';
 
 const DetailInvestor=()=>{
@@ -23,7 +22,6 @@ const DetailInvestor=()=>{
     const [initIndex, setInitIndex] = useState(0)
     const [ImagenesData, setImagenesData] = useState([])
     const [inversionesAll, setInversionesAll] = useState([])
-    const queryClient = useQueryClient();
 
     const { 
         investor, investorStatus, 
@@ -43,22 +41,27 @@ const DetailInvestor=()=>{
             investor?.distribuciones?.map(item => ({
                 ...item,
                 totalPlantas: Number(item.totalPlantas),
+                precioPlanta: Number(item.precioPlanta),
                 monto: Number(item.totalPlantas*item.precioPlanta),
             })).forEach(d => {
                 distribuciones.push({ ...d, type: 'distribucion' })
                 total+=d.monto
             });
             const compras=[]
-            investor?.compras?.filter(c =>c.estado !== 'Validada')?.map(item => ({
+            investor?.compras?.map(item => ({
                 ...item,
-                monto: Number(item.monto)
+                monto: Number(item.monto),
+                totalPlantas: Number(item.totalPlantas),
+                precioPlanta: Number(item.precioPlanta),
+                procedencia: item.tipo,
+                tipo: "Inversion"
             })).forEach(c => {
                 compras.push({ ...c, type: 'compra' })
                 total+=c.monto
             });
-            console.log(total)
             setmontoTotal(total)
             const inversiones = [...distribuciones, ...compras];
+            console.log(inversiones)
             setInversionesAll(inversiones)
         }
     },[investorStatus])
@@ -182,7 +185,7 @@ const DetailInvestor=()=>{
                                         </div>
                                     )}
                                     <img className={`w-full object-contain hover:cursor-pointer rounded-lg ${loading ? 'invisible' : 'visible'}`} src={item} 
-                                    onClick={()=>{setverFotos(!verFotos); setInitIndex(i)}}
+                                    onClick={()=>{setverFotos(true); setInitIndex(i)}}
                                     onLoad={() => setLoading(false)}/></div>: 
 
                                     <div key={i} className=' size-[95%] total-center border-2 border-gray-300 rounded-lg'>
@@ -200,7 +203,7 @@ const DetailInvestor=()=>{
                                     theme='white' 
                                     columns={Columns.ColumnsDistribucionesData} 
                                     search={false}
-                                    handleRowClick = {(row) => { navigate(`/inversion/${row.id}`, { state: { rowData: row } }); }}
+                                    handleRowClick = {(row) => { row.type=="distribucion" && navigate(`/inversion/${row.id}`, { state: { rowData: row } }); }}
                                    />
                                 </>
                                 :
