@@ -115,7 +115,7 @@ const Table = ({
                                 {filteredData.map((row, i) =>
                                     <tr
                                         onClick={() => handleRowClick && handleRowClick(row)}
-                                        className={`h-8 duration-150 cursor-pointer ${theme === "dark" ? "hover:bg-neutral-700" : "hover:bg-blue-100"} active:opacity-70 active:duration-0`}
+                                        className={`h-8 duration-150  ${row.type!="compra" ? theme === "dark" ? "hover:bg-neutral-700 cursor-pointer" : "hover:bg-blue-100 cursor-pointer":""} active:opacity-70 active:duration-0`}
                                         key={"R" + i}>
                                         {/*<td className="sticky px-2">
                                     <input

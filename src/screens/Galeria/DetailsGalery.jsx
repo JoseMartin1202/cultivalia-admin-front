@@ -196,7 +196,7 @@ export const DetailsGallery=()=>{
                     photosGallery.map((photo,i)=>(
                         <div key={i} className='w-full h-40 rounded-2xl relative'>
                             {loading&& <Loader/>}
-                            <img src={photo.file} className={`over:cursor-pointer size-full object-cover max-h-40 rounded-2xl ${loading ? 'invisible' : 'visible'}`} 
+                            <img src={photo.file} className={`hover:cursor-pointer size-full object-cover max-h-40 rounded-2xl ${loading ? 'invisible' : 'visible'}`} 
                             onClick={()=>{ setInitIndex(i);setShowPhoto(true)}}  onLoad={() => setLoading(false)}/>
                             <button className='absolute top-0 right-0 bg-gray-700/70 rounded-s-lg rounded-se-2xl rounded-ee-lg' 
                             onClick={()=>{setphotoId(photo.id); setEliminarTodas(false); setModal(true)}}>
