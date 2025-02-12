@@ -41,7 +41,7 @@ const EstadoView = ({state,option,fontlg}) => {
                 </span>
             );
             
-        case "Pendiente":
+        case "Pendiente":  case "Pendiente de pago":
             return(
                 <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
                     <Icons.Wait className={`text-[#6B9DFF] ${fontlg ? 'size-6':'size-5'}`}/>

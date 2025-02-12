@@ -120,8 +120,8 @@ const PropertiesForm = ({item,close,formRef, setIsSubmitting }) => {
                 formik.setFieldValue('anio', yearSelected.id)
                 formik.setFieldValue('anioNumber', yearSelected.anio)
             }else{
-                formik.setFieldValue('anio', years[0].id);
-                formik.setFieldValue('anioNumber', years[0].anio)
+                formik.setFieldValue('anio', years[0]?.id);
+                formik.setFieldValue('anioNumber', years[0]?.anio)
             }
             const gallerySelected= galleries.find(g => g.titulo == formik.values.galeria);
             if(gallerySelected){

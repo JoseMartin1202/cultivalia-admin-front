@@ -36,7 +36,6 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
     const formik = useFormik({
         initialValues: {
             metodo: item.metodo ?? 'Transferencia',
-            comentarios: item.comentarios ?? '',
             comprobante: item.comprobante ?? '',
             estado: item.estado ?? 'Pagado',
             inversorNombre: item.inversor.nombre,
@@ -45,7 +44,6 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
         },
         validationSchema: Yup.object().shape({
             metodo: Yup.string().required('Requerido'),
-            comentarios: Yup.string().required('Requerido'),
             comprobante: Yup.string().required('Requerido'),
             estado: Yup.string().required('Requerido').test(
                 'opcionCorrecta',
@@ -172,7 +170,12 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
                     </div>
                     <div className='flex flex-col w-full'>
                         <p className='font-bold'>Comentarios:</p>
-                        <InputForm formik={formik} id="comentarios" name="comentarios" readonly={item.estado!='Pendiente'}/>
+                        <textarea
+                        id="comentarios"
+                        name="comentarios"
+                        value={item.comentarios}
+                        readonly={true}
+                        className='px-2 pt-1 w-full h-20 resize-none border-2 bg-white border-gray-300 rounded-md focus:outline-none'/>
                     </div>
                     <div className='flex flex-col w-full'>
                         <p className='font-bold'>Estado:</p>
