@@ -23,15 +23,15 @@ const useJima=()=>{
     const JimaAddMutator = useMutation({
         mutationFn: addJima,
         onSuccess: (newJima) => {
-            newJima={
-                ...newJima,  // Mantén los otros datos de newJima
-                predio: {    // Asigna un nuevo objeto a predio
-                    id: newJima.predio,  // Suponiendo que newJima.predio contiene el id
-                    nombre: nameJima     // Asigna el valor de nameJima a la propiedad nombre
-                }
-            }
-            queryClient.setQueryData(['jimas'], (oldJimas) => oldJimas ? [...oldJimas, newJima] : [newJima]);
-            // queryClient.invalidateQueries('jimas')
+            // newJima={
+            //     ...newJima,  // Mantén los otros datos de newJima
+            //     predio: {    // Asigna un nuevo objeto a predio
+            //         id: newJima.predio,  // Suponiendo que newJima.predio contiene el id
+            //         nombre: nameJima     // Asigna el valor de nameJima a la propiedad nombre
+            //     }
+            // }
+            // queryClient.setQueryData(['jimas'], (oldJimas) => oldJimas ? [...oldJimas, newJima] : [newJima]);
+            queryClient.invalidateQueries('jimas')
             notify('Jima añadida con exito')
         },
         onError: (e) => console.log(e),

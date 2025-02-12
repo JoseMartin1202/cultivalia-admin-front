@@ -16,7 +16,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
     
 
     useEffect(() => {
-        if (ajusteAddStatus === 'pending') {
+        if (ajusteAddStatus === 'success') {
             setIsSubmitting(false)
             close();
         }

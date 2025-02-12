@@ -15,7 +15,7 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
     
 
     useEffect(() => {
-        if (jimaAddStatus === 'pending') {
+        if (jimaAddStatus === 'success') {
             setIsSubmitting(false)
             close();
         }

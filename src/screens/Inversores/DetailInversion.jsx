@@ -115,7 +115,7 @@ const DetailInversion=()=>{
                                             </div>
                                         </div>
                                         <p><b>Comentarios:</b> {investorPagos?.pagoE?.comentarios}</p>
-                                        <div className='relative w-full h-auto'>
+                                        <div className='relative w-full h-auto justify-center flex'>
                                         {loading && <Loader />}
                                         <img className={`hover:cursor-pointer rounded-lg   ${loading ? 'invisible' : 'visible'}`} src={investorPagos?.pagoE?.comprobante} 
                                         onClick={()=>{setImagenesData([investorPagos?.pagoE?.comprobante]);setverFotos(true); setInitIndex(0)}}
@@ -129,14 +129,14 @@ const DetailInversion=()=>{
                     </div>
                     <div className='flex flex-1 flex-col'>
                         <p className='text-white bg-[#656464] text-lg rounded-t-xl text-center w-full'>Pagos Salientes</p>
-                        <div className='flex flex-grow border-2 border-[#656464] rounded-b-xl'>
+                        <div className='flex flex-grow border-2 border-[#656464] rounded-b-xl p-2'>
                             {investorPagos?.pagosS.length>0 ?
                                 <AbsScroll vertical centerColumn>
                                     {investorPagos?.pagosS.map((p)=>(
                                         <div className='flex flex-col size-full px-2 border-2 rounded-lg'>
                                             <div className='flex flex-row justify-between'>
                                                 <div className='flex flex-col'>
-                                                    <p><b>Fecha de la venta:</b> {formatDateLong({data:p.fechaVenta})}</p>
+                                                    <p><b>Estado:</b> {p.estado}</p>
                                                     <p><b>Fecha de pago:</b> {formatDateLong({data:p.fechaRegistro})}</p>
                                                 </div>
                                                 <div className='flex flex-col items-end'>

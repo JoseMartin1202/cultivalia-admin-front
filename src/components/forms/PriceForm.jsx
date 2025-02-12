@@ -108,7 +108,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
             if (yearSelected) {
                 formik.setFieldValue('anio', yearSelected.id)
             } else {
-                formik.setFieldValue('anio', years[0].id);
+                formik.setFieldValue('anio', years[0]?.id);
             }
         }
     }, [yearsStatus, years]);
@@ -116,7 +116,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
     const anios = years?.map(y => ({
         value: y.id,
         label: y.anio
-    }));
+    })).reverse();
 
     const handleAddYear = (year,index) => {
         let newYears;

@@ -20,6 +20,7 @@ export const DetailsSupervisions = () => {
     const [bgOption, setbgOption] = useState('');
     const [initIndex, setInitIndex] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [inversorInicial, setinversorInicial] = useState(false)
     const [showModal, setShowModal] = useState(false)
     const [curp, setCurp] = useState(false)
     const [title, setTitle] = useState('Credenciales');
@@ -144,7 +145,19 @@ export const DetailsSupervisions = () => {
             //         options:commentsList 
             //     });
             // }else{
-        setdataJson(JSON.parse(supervision.supervisar))
+        const json=JSON.parse(supervision.supervisar)
+        for (const key in json) {
+            if (key!="message"){
+                if (json[key].old_value === null || json[key].old_value === undefined || json[key].old_value === "" ) {
+                    setinversorInicial(true)
+                    break
+                }
+            }else{
+                setinversorInicial(false)
+            }
+            
+        }
+        setdataJson(json)
         formik.setValues({
             comentarios: supervision.comentarios ?? '',
             estado: supervision.estado,
@@ -289,7 +302,7 @@ export const DetailsSupervisions = () => {
                 <div className='flex flex-col gap-4 h-full flex-1 sm:flex-row md:flex-col'>
                     <div className='flex flex-col flex-1 bg-white shadow rounded-xl min-h-40'>
                         {
-                            dataJson && Object.keys(dataJson).length>1 ?
+                            dataJson && Object.keys(dataJson).length>1 && !inversorInicial?
                             <>
                             <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>Cambios</p>
                             <div className='flex flex-col size-full p-2'>
@@ -302,11 +315,19 @@ export const DetailsSupervisions = () => {
                                         <Icons.Information size="22px" className='absolute right-1 text-[#6B9DFF]'/>
                                     </div>
                                     <div className='flex flex-row w-full bg-slate-50 p-[2px] border-x-2 border-b-2 border-slate-200'>
-                                        <p className='w-[45%] '>{dataJson[key].old_value}</p>
+                                        <p className='w-[45%] '>{
+                                        key=="sexo" ? 
+                                            dataJson[key].old_value=="M" ? "Masculino":
+                                            dataJson[key].old_value=="F" ? "Femenino":""
+                                        :dataJson[key].old_value}</p>
                                         <div className='w-[10%] flex justify-center'>
                                             <Icons.RigthArrowLong size="24px"/>
                                         </div>
-                                        <p className='w-[45%]'>{dataJson[key].new_value}</p>
+                                        <p className='w-[45%]'>{
+                                        key=="sexo" ? 
+                                            dataJson[key].new_value=="M" ? "Masculino":
+                                            dataJson[key].new_value=="F" ? "Femenino":""
+                                        :dataJson[key].new_value}</p>
                                     </div>
                                 </div>
                             ))}
@@ -319,7 +340,7 @@ export const DetailsSupervisions = () => {
                             <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl '>Descripción:</p>
                             <div className='flex flex-col size-full p-2'>
                                 <AbsScroll vertical centerColumn>
-                                <p className='text-justify'>{dataJson["message"]}</p>
+                                {!inversorInicial && <p className='text-justify'>{dataJson["message"]}</p>}
                                 {supervisionData.map((item)=>(
                                     <div key={item.label} className='flex flex-col w-full text-center'>
                                         <p className='bg-slate-200 rounded-t-lg font-bold'>{item.label}</p>
