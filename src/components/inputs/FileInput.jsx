@@ -11,6 +11,7 @@ const FileInput = ({ id, readonly,formik, ...props }) => {
 
    return (
       <div className='flex flex-col'>
+         {!readonly &&
          <div className='relative p-2 flex flex-col w-full bg-neutral-200/70 text-neutral-800 total-center '>
             {!value ? <>
                <input
@@ -23,7 +24,6 @@ const FileInput = ({ id, readonly,formik, ...props }) => {
                   <p className='text-neutral-700'> Click aquí o arrastra un archivo para subir </p>
                </label>
             </> : <>
-            {!readonly && 
                <div className='relative flex w-full h-10 py-1 total-center'>
                   <p className='font-medium'>{value.name || "File loaded"}</p>
                   <button
@@ -32,10 +32,11 @@ const FileInput = ({ id, readonly,formik, ...props }) => {
                      className='absolute hover:bg-slate-300 right-1 size-8 total-center'>
                      <Icons.Clear size="20px" />
                   </button>
-               </div>}
+               </div>
             </>
             }
          </div>
+         }
          {showError &&
             <div className='h-fit'>
                 <p className='font-normal text-lg flex items-center gap-1 h-full italic text-red-500 '>

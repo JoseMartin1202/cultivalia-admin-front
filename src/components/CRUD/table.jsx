@@ -376,7 +376,7 @@ const CRUD=({
                     }else  if(col.attribute==="monto"){
                         console.log(newItem[col.attribute])
                         newItem[col.attribute] = Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
-                    }else  if(col.attribute==="comentarios"){
+                    }else  if(col.attribute==="descripcion"){
                         newItem[col.attribute] = newItem[col.attribute].substring(0,50)+"...";
                     }
                 })
