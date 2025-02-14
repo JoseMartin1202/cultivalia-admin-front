@@ -80,7 +80,7 @@ const ColumnsDataPagosSalientes=[
   {label:"Monto", attribute:"monto"},
   {label:"Fecha registro", attribute:"fechaRegistro"},
   {label:"Metodo", attribute:"metodo"},
-  {label:"Comentarios", attribute:"comentarios"},
+  {label:"Desripción", attribute:"descripcion"},
   {label:"Estado", attribute:"estado",Component: EstadoView},
   {label:"Inversor", attribute:"inversor",search:true},
 ];

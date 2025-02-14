@@ -18,6 +18,7 @@ import Santander from '../../assets/santander.png';
 import AbsScroll from '../AbsScroll';
 import '../../index.css'
 import { PhotosModal } from '../../screens/Galeria/DetailsGalery';
+import { formatDateLong } from '../../constants/functions';
 
 const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,clicks,setclicks}) => {
     const { pagoUpdate, pagoUpdateStatus } = usePagoSaliente(item.id)
@@ -40,7 +41,8 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
             estado: item.estado ?? 'Pagado',
             inversorNombre: item.inversor.nombre,
             inversorApellidos: item.inversor.apellidos,
-            inversorId: item.inversor.id
+            inversorId: item.inversor.id,
+            comentarios: item.comentarios ?? ''
         },
         validationSchema: Yup.object().shape({
             metodo: Yup.string().required('Requerido'),
@@ -64,6 +66,10 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
             }
         }
     })
+
+    const handleChange = (e) => {
+        formik.handleChange(e)
+    }
 
     const metodo=[{value: "Transferencia", label: "Transferencia"},{value: "Cheque", label: "Cheque"},
         {value: "Efectivo", label: "Efectivo"},{value: "Deposito", label: "Deposito"},{value: "Otro", label: "Otro"}
@@ -108,29 +114,25 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
             </form>: 
             <form ref={formRef} onSubmit={formik.handleSubmit} className='p-4 md:min-w-[690px] lg:min-w-[800px] flex flex-col sm:flex-row gap-3'>
                 <div className='flex flex-1 flex-col'>
-                    <div className='flex flex-row gap-1 w-full'>
-                        <p className='font-bold'>Monto:</p>
-                        <span>{item.monto}</span>
-                    </div>
-                    <div className='flex flex-row gap-1 w-full'>
-                        <p className='font-bold'>Inversor:</p>
-                        <span>{item.inversor.nombre + " "+item.inversor.apellidos}</span>
-                    </div>
+                    <p><b>Monto:</b> {item.monto}</p>
+                    <p><b>Inversor:</b> {item.inversor.nombre + " "+item.inversor.apellidos}</p>
+                    <p><b>Registro:</b> {formatDateLong({data: item.fechaRegistro})}</p>
                     <div className='flex flex-col gap-2 w-full sm:h-full h-32'>
                         <p className='font-bold'>Cuentas a depositar:</p>
                         <AbsScroll vertical centerColumn>
                         {cuentasInversorStatus=='success' ?
                         cuentasInversor.map((cuenta)=>(
-                            <div className='w-full border-2 flex flex-row gap-2 rounded-lg sm:h-full h-20'>
+                            <div className={`w-full border-2 flex flex-row gap-2 rounded-lg sm:h-full h-20 ${cuenta.principal && 'border-[#49C27A]'}`}>
                                 <div> 
                                     <img className='rounded-md object-cover h-full max-w-20' src={cuenta.banco=='BBVA' ? BBVA: cuenta.banco=='Citibanamex' ? Citibanamex: 
                                     cuenta.banco=='Santander' ? Santander: cuenta.banco=='Banco Azteca' ? BancoAzteca:
                                     Banorte}/>
                                 </div>
-                                <div className='flex flex-col w-full overflow-x-auto'>
+                                <div className='flex flex-col w-full overflow-x-auto pr-2'>
                                     <p className='font-bold'>Titular: <span className='font-normal'>{cuenta.titular}</span></p>
                                     <p className='font-bold'>Numero de cuenta: <span className='font-normal'>{cuenta.numeroCuenta}</span></p>
                                     <p className='font-bold'>Clabe: <span className='font-normal'>{cuenta.clabe}</span></p>
+                                    {cuenta.principal && <p className='ms-auto text-[#49C27A] font-bold'>Cuenta Principal</p>}
                                 </div>
                             </div>
                         )):<></>}
@@ -169,12 +171,22 @@ const PagosSForm = ({item,close,formRef, setIsSubmitting,setshowImage,setImage,c
                         />  
                     </div>
                     <div className='flex flex-col w-full'>
+                        <p className='font-bold'>Descripción:</p>
+                        <textarea
+                        id="descripcion"
+                        name="descripcion"
+                        value={item.descripcion}
+                        readOnly={true}
+                        className='px-2 pt-1 w-full h-20 resize-none border-2 bg-white border-gray-300 rounded-md focus:outline-none'/>
+                    </div>
+                    <div className='flex flex-col w-full'>
                         <p className='font-bold'>Comentarios:</p>
                         <textarea
                         id="comentarios"
                         name="comentarios"
-                        value={item.comentarios}
-                        readonly={true}
+                        value={formik.values.comentarios}
+                        onChange={handleChange}
+                        readOnly={item.estado!='Pendiente'}
                         className='px-2 pt-1 w-full h-20 resize-none border-2 bg-white border-gray-300 rounded-md focus:outline-none'/>
                     </div>
                     <div className='flex flex-col w-full'>

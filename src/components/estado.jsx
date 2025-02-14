@@ -49,6 +49,14 @@ const EstadoView = ({state,option,fontlg}) => {
                 </span>
             );
 
+        case "Ajustando":
+            return(
+                <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
+                    <Icons.Wait className={`text-orange-400 ${fontlg ? 'size-6':'size-5'}`}/>
+                    {state}
+                </span>
+            );
+
         case "Vigente":
             return(
                 <span className='flex flex-row gap-1 items-center'>
