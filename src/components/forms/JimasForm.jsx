@@ -15,7 +15,7 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
     
 
     useEffect(() => {
-        if (jimaAddStatus === 'success') {
+        if (jimaAddStatus === 'success' || jimaAddStatus === 'error') {
             setIsSubmitting(false)
             close();
         }
@@ -46,7 +46,7 @@ const JimaForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => {
             predio: Yup.string().required('Requerido'),
         }),
         onSubmit: async (values) => {
-            console.log(clicks)
+            //console.log(clicks)
             if(clicks==1){
                 setshowConfirmar(true)
                 setclicks(2)

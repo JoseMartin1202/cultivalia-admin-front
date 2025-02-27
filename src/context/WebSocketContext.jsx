@@ -21,7 +21,7 @@ export const WebSocketProvider = ({ children }) => {
       queryFn: async () => {
         const newWs = new WebSocket(`${WS_HOST}${`/ws/inversor/?token=${session.tokens.access}`}`);
         newWs.onopen = () => {
-          console.log('WS abierto');
+          //console.log('WS abierto');
         };
         
         newWs.onmessage = (e) => {
@@ -33,7 +33,7 @@ export const WebSocketProvider = ({ children }) => {
         };
         
         newWs.onclose = () => {
-          console.log('WS cerrado');
+          //console.log('WS cerrado');
         };
 
         return newWs;
@@ -52,7 +52,7 @@ export const WebSocketProvider = ({ children }) => {
     try {
       const json_data = JSON.parse(e.data);
       const queries = query_map[json_data?.model?.toLowerCase()] || [];
-      console.log('INVALIDATE: ', queries);
+      //console.log('INVALIDATE: ', queries);
 
       queryClient.invalidateQueries({
         predicate: (query) => queries.includes(query.queryKey[0])

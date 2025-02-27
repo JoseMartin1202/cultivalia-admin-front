@@ -16,7 +16,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
     
 
     useEffect(() => {
-        if (ajusteAddStatus === 'success') {
+        if (ajusteAddStatus === 'success' || ajusteAddStatus === 'error') {
             setIsSubmitting(false)
             close();
         }
@@ -36,7 +36,7 @@ const AjusteTiempoForm = ({close,formRef, setIsSubmitting,clicks,setclicks}) => 
             anios: Yup.number().required('Requerido'),
         }),
         onSubmit: async (values) => {
-            console.log(clicks)
+            //console.log(clicks)
             if(clicks==1){
                 setshowConfirmar(true)
                 setclicks(2)

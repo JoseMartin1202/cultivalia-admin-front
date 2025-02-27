@@ -42,7 +42,7 @@ const EditVisibilityForm = ({item,close,formRef, setIsSubmitting}) => {
         <div className='size-full total-center flex flex-col gap-3 text-center'>
             {item.is_visible=='Visible' ?
                 <><p className='text-[20px] '>¿Deseas cancelar la oferta seleccionada?</p>
-                <p className='text-lg '>Nota: se retornarán las plantas <br/>al predio correspondiente de la oferta</p>
+                <p className='text-lg '>Nota: se retornarán las plantas <br/>al predio o inversor correspondiente de la oferta</p>
                 <p className='text-lg text-red-500 font-bold'>Esta acción no se puede deshacer</p></>
                 :
                 <><p className='text-[20px] '>¿Deseas hacer visible<br/>la oferta seleccionada?</p>

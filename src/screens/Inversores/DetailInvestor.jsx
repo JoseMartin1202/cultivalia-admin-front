@@ -114,6 +114,7 @@ const DetailInvestor=()=>{
                         <div className='flex flex-col flex-grow'>
                             <p className='text-2xl font-bold'>{investor.nombre+" "+investor.apellidos}</p>
                             <p className='text-xl'>{investor.curp ?? 'CURP/DNI sin asignar' }</p>
+                            <p><b>Codigo Referido:</b> {investor.codigo}</p>
                             <p className='flex flex-row items-center gap-2 text-lg justify-start '>
                                 {investor.status=='Completo' ?    <Icons.Accepted className='text-[#279E54] size-5'/>:
                                 investor.status=='Rechazado' ?  <Icons.Refused className='text-[#E04646] size-5'/>:
@@ -161,7 +162,7 @@ const DetailInvestor=()=>{
                 </div>
                 <div className='flex flex-col flex-grow'>
                     <p className='text-white bg-[#656464] text-lg rounded-t-xl text-center w-full'>Detalles</p>
-                    <div className='flex flex-col flex-grow p-2 border-2 border-[#656464] rounded-b-xl'>
+                    <div className='flex flex-col flex-grow p-2 border-2 border-[#656464] rounded-b-xl gap-1'>
                         <OptionsDetailsInveror data={Filters.InversorDetailFilterData} opt={option} setoption={setoption}/>
                         <div className='flex flex-col flex-grow gap-2 px-1'>
                             {

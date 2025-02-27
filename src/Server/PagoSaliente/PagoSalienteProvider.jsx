@@ -54,7 +54,7 @@ const usePagoSaliente=(id)=>{
            // queryClient.invalidateQueries(['pagosSalientes'])
             notify('Pago saliente actualizado con exito')
         },
-        onError: (e) => console.log(e)
+        onError: (e) => notify('No se pudo actualizar el pago',e)
      })
 
     const {

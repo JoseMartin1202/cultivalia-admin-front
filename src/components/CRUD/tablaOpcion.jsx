@@ -95,15 +95,15 @@ const Table = ({
                             <thead className='text-left'>
                                 <tr className="h-8">
                                     {columns.map((column, index) => (
-                                        <th className={`sticky top-0 z-10 items-center h-8 px-5 text-sm cursor-default font-bold ${theme === "dark" ? "bg-neutral-950    border-neutral-600" : "bg-[#E2E8F0] text-black"} whitespace-nowrap group`} key={index}>
+                                        <th className={`sticky top-0 z-10 items-center h-8 cursor-default font-bold ${theme === "dark" ? "bg-neutral-950    border-neutral-600" : "bg-[#E2E8F0] text-black"} whitespace-nowrap group`} key={index}>
                                             {column.label}
-                                            <div className={`absolute right-0 w-8 h-8 p-1 -translate-y-1/2 top-1/2 ${filter.attribute === column.attribute && filter.ord !== 0 ? "opacity-100" : "opacity-0 group-hover:opacity-100"} duration-100`}>
+                                            <div className={`absolute right-0 w-8 h-8  -translate-y-1/2 top-1/2 ${filter.attribute === column.attribute && filter.ord !== 0 ? "opacity-100" : "opacity-0 group-hover:opacity-100"} duration-100`}>
                                                 <button
                                                     type="button"
                                                     onClick={() => { setFilter(prev => ({ attribute: column.attribute, ord: (prev.attribute === column.attribute ? (prev.ord + 1) % 3 : 1) })) }}
                                                     className={` h-full w-full flex items-center justify-center`} >
                                                     {
-                                                        filter.attribute === column.attribute ? (filter.ord === 1 ? <Icons.ArrowDown size="18px" /> : (filter.ord === 2 ? <Icons.ArrowUp size="18px" /> : <Icons.Filter size="18px" />)) : <Icons.Filter size="18px" />
+                                                        filter.attribute === column.attribute ? (filter.ord === 1 ? <Icons.ArrowDown size="16px" /> : (filter.ord === 2 ? <Icons.ArrowUp size="16px" /> : <Icons.Filter size="16px" />)) : <Icons.Filter size="18px" />
                                                     }
                                                 </button>
                                             </div>
@@ -124,7 +124,7 @@ const Table = ({
                                         }
                                         {columns.map((column, j) =>
                                             <td key={j} className="border-b">
-                                                <p className="flex items-center px-5 py-1 whitespace-nowrap">
+                                                <p className="flex items-center px-3 py-1 whitespace-nowrap">
                                                     {column.Component ?
                                                         <column.Component data={row[column.attribute]} />
                                                         : <>

@@ -74,7 +74,7 @@ export const DetailsSupervisions = () => {
         )
     }else if (supervision?.movimiento?.tipo_movimiento === 'PagoEntrante') {
         supervisionData.push( 
-            { label: 'Monto de la venta', value: supervision?.movimiento?.data?.monto },
+            { label: 'Monto de la venta', value: Number(supervision?.movimiento?.data?.monto).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) },
             { label: 'Método', value: supervision?.movimiento?.data?.metodo },
             { label: 'Inversor', value: `${supervision?.movimiento?.data?.inversor.nombre} ${supervision?.movimiento?.data?.inversor.apellidos}`},
             { label: 'Comentarios',   value: (supervision?.movimiento?.data?.comentarios)},

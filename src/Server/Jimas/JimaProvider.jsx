@@ -34,7 +34,7 @@ const useJima=()=>{
             queryClient.invalidateQueries('jimas')
             notify('Jima añadida con exito')
         },
-        onError: (e) => console.log(e),
+        onError: (e) => notify('No se pudo añadir la jima',e)
     })
 
     const {
