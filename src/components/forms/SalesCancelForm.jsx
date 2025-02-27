@@ -13,7 +13,7 @@ const SalesCancelForm = ({item,close,formRef, setIsSubmitting}) => {
             setIsSubmitting(false)
             close();
         }
-        console.log(salesStatus)
+        //console.log(salesStatus)
     }, [salesStatus]);
 
     const formik = useFormik({
@@ -32,7 +32,7 @@ const SalesCancelForm = ({item,close,formRef, setIsSubmitting}) => {
         <div className='size-full total-center flex flex-col gap-3 text-center'>
             {item.estado=='Pendiente' &&
                 <><p className='text-[20px] '>¿Deseas cancelar la venta seleccionada?</p>
-                <p className='text-lg '>Nota: se retornarán las plantas <br/>al predio o inversor correspondiente de la oferta</p>
+                <p className='text-lg '>Nota: se retornarán las plantas <br/>a la oferta o inversor corresponiente</p>
                 <p className='text-lg text-red-500 font-bold'>Esta acción no se puede deshacer</p></>
             }
         </div>}

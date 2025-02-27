@@ -15,7 +15,7 @@ const OptionsDetailsInveror = ({data, opt, setoption }) => {
     };
 
     return (
-        <div className='h-16'>
+        <div className='flex w-full h-full max-h-12'>
             <AbsScroll horizontal>
                 <div className='border-gray-400/70 max-w-full shadow border-2 flex flex-row rounded-lg py-1 px-2 gap-2 overflow-x-auto items-center' >
                     <Icons.SearchDetails className='size-6 min-w-6'/>

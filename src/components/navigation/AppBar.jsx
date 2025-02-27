@@ -26,14 +26,14 @@ export const AppBar = () => {
     }
 
     return(
-        <div className={` sm:absolute sm:z-10 font-[Roboto] font-semibold max-sm:py-1 gap-2 sm:pb-2 sm:rounded-e-xl sm:h-full bg-[#1a1f1f] flex flex-col text-white max-sm:flex-row max-sm:w-full max-sm:h-fit ${isHover && !isSmall ? 'w-72':'w-16'}`} onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
+        <div className={`sm:absolute transition-[width] duration-200 ease-in-out sm:z-10 font-[Roboto] font-semibold max-sm:py-1 gap-2 sm:pb-2 sm:rounded-e-xl sm:h-full bg-[#1a1f1f] flex flex-col text-white max-sm:flex-row max-sm:w-full max-sm:h-fit ${isHover && !isSmall ? 'w-72':'w-16'}`} onMouseEnter={() => setIsHover(true)} onMouseLeave={() => setIsHover(false)}>
             <div className={`flex max-sm:min-w-20 sm:w-full sm:h-16 py-2 flex-row sm:flex-col gap-3 px-2 justify-center items-center sm:items-start`}>
                 {isHover && !isSmall ? 
-                    <img src={LogoCult} className='h-10'/>:
-                    <img src={simpleB} className='h-10'/>}
+                    <div className='flex flex-row mt-2 items-center'><img src={simpleB} className='h-10'/><img src={LogoCult} className='h-10'/></div>:
+                    <img src={simpleB} className='h-10 sm:mt-2'/>}
                 <div className='h-full w-[2px] sm:w-full sm:min-h-[2px] sm:h-[2px] rounded-full bg-[#49C27A]'/>
             </div>
-            <div className={`${isHover ? 'overflow-y-auto':'overflow-hidden'} flex w-full sm:flex-col flex-row items-center flex-grow box-border gap-1 sm:px-2 sm:min-w-16`}>
+            <div className={`${isHover ? 'overflow-y-auto':'overflow-hidden'} sm:overflow-x-hidden flex w-full sm:flex-col flex-row items-center flex-grow box-border gap-1 sm:px-2 sm:min-w-16`}>
                 <NavLink
                 to="/supervisiones"
                 className={({ isActive }) =>
@@ -41,7 +41,7 @@ export const AppBar = () => {
                     isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f]  hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Home className="size-6"/>
+                    <Icons.Home className="size-6 flex-shrink-0"/>
                     {(isSmall ||isHover && !isSmall) && <span>Supervisiones</span>}
                 </NavLink>
                 <NavLink
@@ -51,7 +51,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Properties className='size-6'/>     
+                    <Icons.Properties className='size-6 flex-shrink-0'/>     
                      {(isSmall ||isHover && !isSmall) && <span>Predios</span>}        
                 </NavLink>
                 <NavLink
@@ -61,7 +61,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f]  hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Gallery className='size-6'/>
+                    <Icons.Gallery className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Galeria</span>}
                 </NavLink>
                 <NavLink
@@ -71,7 +71,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Prices className='size-6'/>
+                    <Icons.Prices className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Precios</span>}
                 </NavLink>
                 <NavLink
@@ -81,7 +81,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Offers className='size-6'/>
+                    <Icons.Offers className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Ofertas</span>}
                 </NavLink>
                 <NavLink
@@ -91,7 +91,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Sales className='size-6'/>
+                    <Icons.Sales className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Ventas</span>}
                 </NavLink>
                 <NavLink
@@ -101,7 +101,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Investor className='size-6'/>
+                    <Icons.Investor className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Inversores</span>}
                 </NavLink>
                 <NavLink
@@ -111,7 +111,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Advisor className='size-6'/>
+                    <Icons.Advisor className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Asesores</span>}
                 </NavLink>
                 <NavLink
@@ -121,7 +121,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.jimated className='size-6'/>
+                    <Icons.jimated className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span>Jimas</span>}
                 </NavLink>
                 <NavLink
@@ -131,7 +131,7 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.PagosS className='size-6'/>
+                    <Icons.PagosS className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) && <span className='text-nowrap'>Pagos Salientes</span>}
                 </NavLink> 
                 <NavLink
@@ -141,9 +141,19 @@ export const AppBar = () => {
                      isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
                     }`
                 }>
-                    <Icons.Wait className='size-6'/>
+                    <Icons.Wait className='size-6 flex-shrink-0'/>
                      {(isSmall ||isHover && !isSmall) &&<span className='text-nowrap'>Ajuste de tiempo</span>}
-                </NavLink>               
+                </NavLink>      
+                <NavLink
+                to="/ganancias"
+                className={({ isActive }) =>
+                    `sm:w-full flex flex-row items-center py-2 gap-2 px-3 rounded-lg ${
+                     isActive ? 'bg-[#3f3f3f] text-[#49C27A]' : 'hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300'
+                    }`
+                }>
+                    <Icons.Ganancias className='size-6 flex-shrink-0'/>
+                     {(isSmall ||isHover && !isSmall) &&<span className='text-nowrap'>Ganancias</span>}
+                </NavLink>          
             </div>
             <div className='flex sm:w-full h-fit flex-col items-center px-2'>
                 <button className='w-full flex rounded-lg flex-row items-center gap-2 p-3 hover:bg-[#3f3f3f] hover:text-[#49C27A] text-slate-300 ' 
@@ -153,7 +163,7 @@ export const AppBar = () => {
                     setFilterStateOffers(true)
                     setFilterStatePrices(true)
                     logout()}}>
-                    <Icons.LogOut className='size-6'/>
+                    <Icons.LogOut className='size-6 flex-shrink-0'/>
                     {isSmall &&<span>Salir</span>}
                     {isHover && !isSmall &&<span>Salir</span>}
                 </button>

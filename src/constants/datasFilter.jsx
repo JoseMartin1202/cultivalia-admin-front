@@ -44,11 +44,18 @@ const InversorDetailFilterData = [
   { name: 'Acciones', value: 'Acciones' }
 ];
 
+const DistribucionDetail = [
+  { name: 'Pagos', value: 'Pagos' },
+  { name: 'Contratos', value: 'Contratos' },
+  { name: 'Cartas', value: 'Cartas' }
+];
+
   export const Filters={
     HomeFilterData,
     OffersFilterData,
     PricesFilterData,
     SalesFilterData,
     InversorsFilterData,
-    InversorDetailFilterData
+    InversorDetailFilterData,
+    DistribucionDetail
   }

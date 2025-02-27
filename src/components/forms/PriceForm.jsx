@@ -125,7 +125,7 @@ const PricesForm = ({close,formRef, setIsSubmitting}) => {
         } else {
             newYears = yearSelected.filter(y => y !== year);
         }
-        console.log(newYears)
+        //console.log(newYears)
         newYears.length==yearsExisting.length ? setAll(true): setAll(false)
         setyearSelected(newYears);
         formik.setFieldValue('anios',newYears.join('/'))

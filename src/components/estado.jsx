@@ -33,7 +33,7 @@ const EstadoView = ({state,option,fontlg}) => {
                 </span>
             );
 
-        case "Rechazada": case "Rechazado":
+        case "Rechazada": case "Rechazado": case "Anulado":
             return(
                 <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
                     <Icons.Refused className={`text-[#E04646] ${fontlg ? 'size-6':'size-5'}`}/>
@@ -56,6 +56,14 @@ const EstadoView = ({state,option,fontlg}) => {
                     {state}
                 </span>
             );
+
+        case "Pagada":
+                return(
+                    <span className={`flex flex-row gap-2 items-center ${fontlg && 'text-3xl'}`}>
+                        <Icons.Paid className={`text-[#279E54] ${fontlg ? 'size-6':'size-5'}`}/>
+                        {state}
+                    </span>
+                );
 
         case "Vigente":
             return(
@@ -93,7 +101,7 @@ const EstadoView = ({state,option,fontlg}) => {
                 </span>
             );
 
-        case "jimada":
+        case "jimada": 
             return(
                 <span className='flex flex-row items-center gap-2'>
                     <Icons.jimated className='text-yellow-600 size-5'/>
@@ -144,6 +152,30 @@ const EstadoView = ({state,option,fontlg}) => {
             return(
                 <span className='flex flex-row items-center gap-1'>
                     <Icons.UserInactive className='text-gray-500 size-6'/>
+                    {state}
+                </span>
+            );
+        
+        case "Creada":
+            return(
+                <span className='flex flex-row items-center gap-2'>
+                    <Icons.Add className='text-[#6B9DFF] size-6'/>
+                    {state}
+                </span>
+            );
+        
+        case "Venta":
+            return(
+                <span className='flex flex-row items-center gap-2'>
+                    <Icons.Sales className='text-[#279E54] size-5'/>
+                    {state}
+                </span>
+            );
+
+        case "Jima":
+            return(
+                <span className='flex flex-row items-center gap-2'>
+                    <Icons.jimated className='text-[#279E54] size-5'/>
                     {state}
                 </span>
             );

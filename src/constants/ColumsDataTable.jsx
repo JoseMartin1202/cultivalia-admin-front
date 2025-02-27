@@ -1,3 +1,4 @@
+import { Component } from "react";
 import EstadoView from "../components/estado";
 import { formatDateLong } from "./functions";
 
@@ -92,6 +93,12 @@ const ColumnsDataAjusteTiempos=[
   {label:"Comentarios", attribute:"comentarios"}
 ];
 
+const ColumnsDataGanancias=[
+  {label:"Monto", attribute:"monto", search:true},
+  {label:"Fecha", attribute:"fecha"},
+  {label:"Descripcion", attribute:"descripcion", search:true}
+];
+
 // Con la nueva tabla
 
 const ColumnsDistribucionesData= [
@@ -140,6 +147,26 @@ const ColumnsBeneficiarios=[
   {label:"Parentesco", attribute:"parentesco"},
 ];
 
+const ColumnsContratos=[
+  {label:"ID", attribute:"id"},
+  {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
+  {label:"Contrato base", attribute:"file", Component:(data)=> data.data ? 'Si':'---'},
+  {label:"Contrato firmado", attribute:"fileSigned",Component:(data)=> data.data ? 'Si':'---'},
+  {label:"Contrato anterior", attribute:"contratoAnterior",Component:(data)=> data.data ? data.data:'---'},
+  {label:"Invalidez", attribute:"motivoInvalidez",Component:(data)=> data.data ? data.data:'---'},
+  {label:"Fecha Creación", attribute:"fechaCreacion",Component: (data)=>formatDateLong(data)},
+  {label:"Fecha validación", attribute:"fecha_validacion",Component: (data)=> data.data ? formatDateLong(data):'---'},
+  {label:"Beneficiario", attribute:"beneficiario"},
+];
+
+const ColumnsCartas=[
+  {label:"ID", attribute:"id"},
+  {label:"Estado", attribute:"estado",Component:(item)=> EstadoView({state:item.data})},
+  {label:"Carta base", attribute:"file", Component:(data)=> data.data ? 'Si':'---'},
+  {label:"Carta firmada", attribute:"fileSigned",Component:(data)=> data.data ? 'Si':'---'},
+  {label:"Motivo", attribute:"motivo",Component:(item)=> EstadoView({state:item.data})},
+  {label:"Creación", attribute:"fechaCreacion",Component: (data)=>formatDateLong(data)},
+];
 
 export const Columns={
     ColumnsDataHome,
@@ -153,9 +180,12 @@ export const Columns={
     ColumnsDataJimas,
     ColumnsDataPagosSalientes,
     ColumnsDataAjusteTiempos,
+    ColumnsDataGanancias,
     ColumnsDistribucionesData,
     ColumnsVentasData,
     ColumnsPagosSalientes,
     ColumnsPagosEntrantes,
-    ColumnsBeneficiarios
+    ColumnsBeneficiarios,
+    ColumnsContratos,
+    ColumnsCartas
 }

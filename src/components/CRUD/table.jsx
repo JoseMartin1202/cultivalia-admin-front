@@ -49,10 +49,12 @@ const CRUD=({
     advisors,
     jimas,
     pagosS,
-    ajusteTiempo
+    ajusteTiempo,
+    ganancias
     })=>{
 
     const navigate = useNavigate();
+    const [ganancia, setGanancia] = useState(0);
     const [elements, setElements] = useState();
     const { 
         filterStateSupervisions, filterStateOffers,filterStatePrices, filterStateSales, filterStateInversors,
@@ -315,7 +317,7 @@ const CRUD=({
             
             setcolsGroup(newCols.splice(1,1))
             setyearsGroup(years)
-            console.log(years)
+            //console.log(years)
         }
 
         if(sales){
@@ -343,7 +345,7 @@ const CRUD=({
                     if(col.attribute==="sexo"){
                         newItem[col.attribute]== 'M' ? newItem[col.attribute]='Masculino': newItem[col.attribute]='Femenino'
                     }else if(col.attribute==="fechaRegistro"){
-                        console.log(formatDateLong({ data: newItem[col.attribute] }))
+                        //console.log(formatDateLong({ data: newItem[col.attribute] }))
                         newItem[col.attribute]= formatDateLong({ data: newItem[col.attribute] })
                     }
                 })
@@ -374,7 +376,7 @@ const CRUD=({
                     }else if(col.attribute==="fechaRegistro"){
                         newItem[col.attribute] = formatDateLong({data:newItem[col.attribute]})
                     }else  if(col.attribute==="monto"){
-                        console.log(newItem[col.attribute])
+                        //console.log(newItem[col.attribute])
                         newItem[col.attribute] = Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
                     }else  if(col.attribute==="descripcion"){
                         newItem[col.attribute] = newItem[col.attribute].substring(0,50)+"...";
@@ -392,13 +394,33 @@ const CRUD=({
                         newItem[col.attribute] = newItem[col.attribute].nombre
                     }
                 })
-                console.log(item)
+                //console.log(item)
                 return newItem
             })
         }
+
+        if(ganancias){
+            let gane=0
+            newElements= newElements.map((item)=>{
+                const newItem = { ...item };
+                columns.forEach((col)=>{
+                    if(col.attribute==="fecha"){
+                        newItem[col.attribute] = formatDateLong({data:newItem[col.attribute]})
+                    }else  if(col.attribute==="monto"){
+                        gane+=Number(newItem[col.attribute])
+                        newItem[col.attribute] = Number(newItem[col.attribute]).toLocaleString('es-MX', { style: 'currency', currency: 'MXN' });
+                    }
+                })
+                return newItem
+            })
+            
+            setGanancia(gane.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }))
+        }
+
         if(!prices && !ajusteTiempo){
             newElements = newElements.filter(item => {
                 return columns.some(col => {
+                    //console.log(col.attribute)
                     return col.search && item[col.attribute] && item[col.attribute].toLowerCase().includes(searchText);
                 });
             });
@@ -408,8 +430,8 @@ const CRUD=({
 
     return(
         <div className='sm:ml-14 size-full flex flex-col bg-[#f6f6f6] pl-4 py-2 pe-4 sm:pe-3 font-[Roboto]'>
-            <div className='size-full flex flex-col bg-white px-2 py-2 rounded-xl shadow'>
-                <div className='w-full flex items-start mb-4'>
+            <div className='size-full flex flex-col bg-white gap-2 px-2 py-2 rounded-xl shadow'>
+                <div className='w-full flex items-start'>
                     <div className={`flex flex-row gap-3 w-full`}>
                         {onlysearch && <InputSearch formik={formik}/>}
                         {searchAdd && 
@@ -536,7 +558,7 @@ const CRUD=({
                                     if(pagosS){
                                         const newItem=data.find(i => i.id === item.id)
                                         newItem.monto=item.monto
-                                        console.log(newItem)
+                                        //console.log(newItem)
                                         setSelectedItem(newItem)
                                         setEditForm(() => PagosSForm);
                                         setModal(true)
@@ -566,8 +588,9 @@ const CRUD=({
                         advisors ? ' asesores':
                         jimas ? ' jimas':
                         pagosS ? ' pagos salientes':
+                        ganancias ? ' ganancias':
                         ' ajustes de tiempo'
-                        }: {elements.length}</p>
+                        }: {ganancias ? ganancia:elements.length}</p>
                     </div>
                 </div>
                 </>

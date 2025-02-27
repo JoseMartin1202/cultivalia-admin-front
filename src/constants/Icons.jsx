@@ -73,6 +73,11 @@ import {
     FiAlertTriangle as Alert
 } from "react-icons/fi";
 
+import { 
+    GiPayMoney as Paid,
+    GiWallet  as Ganancias
+} from "react-icons/gi";
+
 import {
     FaMars as Hombre,
     FaVenus as Mujer,
@@ -100,7 +105,8 @@ import {
 } from "react-icons/hi2";
 
 import {
-    TbPointFilled as point
+    TbPointFilled as point,
+    // TbPigMoney as Ganancias
 } from "react-icons/tb";
 
 import { 
@@ -185,5 +191,7 @@ export const Icons={
     Cheque,
     Transferencia,
     Efectivo,
-    Deposito
+    Deposito,
+    Paid,
+    Ganancias
 }

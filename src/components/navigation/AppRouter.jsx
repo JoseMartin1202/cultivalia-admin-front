@@ -18,6 +18,7 @@ import PagosSalientes from '../../screens/PagoSaliente/pagosSaliente'
 import AjusteTiempo from '../../screens/AjusteTiempo/AjusteTiempo'
 import DetailInvestor from '../../screens/Inversores/DetailInvestor'
 import DetailInversion from '../../screens/Inversores/DetailInversion'
+import Ganancias from '../../screens/Ganancias/ganancias'
 
 const Router = () => {
     const { session, sessionStatus } = useSession()
@@ -41,6 +42,7 @@ const Router = () => {
                     <Route path="/jimas" element={<Jimas />} />
                     <Route path="/pagosSalientes" element={<PagosSalientes />} />
                     <Route path="/ajusteTiempo" element={<AjusteTiempo />} />
+                    <Route path="/ganancias" element={<Ganancias />} />
                     <Route path="*" element={<Navigate to="/supervisiones" replace />} />
                 </Routes>
             </>
