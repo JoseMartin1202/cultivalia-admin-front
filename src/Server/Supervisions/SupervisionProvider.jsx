@@ -39,6 +39,8 @@ const useSupervision=(supervisionId)=>{
                 (oldSupervision) => ({
                     ...oldSupervision, 
                     estado: newSupervision.estado,
+                    options:newSupervision.options,
+                    comentarios:newSupervision.comentarios
                 })
             )
             navigate(-1)

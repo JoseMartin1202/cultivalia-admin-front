@@ -395,10 +395,10 @@ export const DetailsSupervisions = () => {
                     </div>
                 </div>
                 <div className='flex flex-col w-[52%] shadow bg-white rounded-xl max-md:w-full  max-md:h-1/2 min-h-60'>
-                    <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>{title}</p>
+                    <p className='text-lg text-center text-white bg-[#656464] rounded-t-xl'>{(supervision?.movimiento?.tipo_movimiento=='Inversor' || supervision?.movimiento?.tipo_movimiento=='Beneficiario') ? 'Credenciales':supervision?.movimiento?.tipo_movimiento}</p>
                     <div className='relative w-full h-[95%]'>
                         <div className='absolute size-full top-0 left-0 p-2 '>
-                            { supervision?.movimiento?.tipo_movimiento === 'Contrato' ?
+                            { supervision?.movimiento?.tipo_movimiento === 'Contrato' || supervision?.movimiento?.tipo_movimiento === 'Carta' ?
                                 <>
                                 {isMobile ? (
                                     // Mostrar un enlace para abrir el PDF en una nueva pestaña o visor
@@ -425,7 +425,7 @@ export const DetailsSupervisions = () => {
                                     : 
                                     <div className=' size-full total-center border-2 border-gray-300 rounded-lg'>
                                         <Icons.ContractNull className='size-20 text-gray-500'/>
-                                        <p>Sin contrato</p>
+                                        <p>Sin documento</p>
                                     </div>}
                                 </>}
                                 </>
