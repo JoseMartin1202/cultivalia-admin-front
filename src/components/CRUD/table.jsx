@@ -173,6 +173,8 @@ const CRUD=({
                                 newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" por "+newItem["movimiento"].data.metodo
                             }else  if(newItem["movimiento"].tipo_movimiento==="Contrato"){
                                 newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" de "+newItem["movimiento"].data.inversor.nombre
+                            }else  if(newItem["movimiento"].tipo_movimiento==="Carta"){
+                                newItem[col.attribute]= "Carta de "+newItem["movimiento"].data.inversor
                             }else{//Beneficiario o inversor
                                 newItem[col.attribute]= newItem["movimiento"].tipo_movimiento+" "+newItem["movimiento"].data.nombre+" "+newItem["movimiento"].data.apellidos
                             }
